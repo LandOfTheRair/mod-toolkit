@@ -15,7 +15,7 @@ import { events } from "../main";
 export default {
   name: "Droptables",
 
-  props: ["droptables"]
+  props: ["droptables", "items"]
 };
 </script>
 

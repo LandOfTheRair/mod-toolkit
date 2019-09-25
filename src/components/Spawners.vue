@@ -30,7 +30,7 @@ import { events } from '../main';
 export default {
   name: "Spawners",
 
-  props: ["spawners"]
+  props: ["spawners", "npcs"]
 };
 </script>
 

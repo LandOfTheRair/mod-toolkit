@@ -15,6 +15,7 @@
       @cancel="reset()"
       @close="reset()"
       @ok="confirm()"
+      :ok-disabled="!isValidNPC(npc)"
     >
       <div class="d-block text-center">
         <h3>Content</h3>
@@ -89,6 +90,10 @@ export default {
   },
 
   methods: {
+    isValidNPC(npc) {
+      return npc.npcId;
+    },
+
     reset() {
       this.npc = Object.assign({}, defaultNPC);
     },

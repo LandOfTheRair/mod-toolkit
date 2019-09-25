@@ -57,19 +57,19 @@
           <b-tab>
             <template v-slot:title>Droptables ({{ mod.drops.length }})</template>
 
-            <tab-droptables :droptables="mod.drops"></tab-droptables>
+            <tab-droptables :droptables="mod.drops" :items="mod.items"></tab-droptables>
           </b-tab>
 
           <b-tab>
             <template v-slot:title>Recipes ({{ mod.recipes.length }})</template>
 
-            <tab-recipes :recipes="mod.recipes"></tab-recipes>
+            <tab-recipes :recipes="mod.recipes" :items="mod.items"></tab-recipes>
           </b-tab>
 
           <b-tab>
             <template v-slot:title>Spawners ({{ mod.spawners.length }})</template>
 
-            <tab-spawners :spawners="mod.spawners"></tab-spawners>
+            <tab-spawners :spawners="mod.spawners" :npcs="mod.npcs"></tab-spawners>
           </b-tab>
 
           <b-tab disabled>
@@ -138,6 +138,31 @@ export default {
 
       this.mod.maps.push(map);
 
+      this.persist();
+    });
+
+    events.$on("add:npc", npc => {
+      this.mod.npcs.push(npc);
+      this.persist();
+    });
+
+    events.$on("add:item", item => {
+      this.mod.items.push(item);
+      this.persist();
+    });
+
+    events.$on("add:droptable", droptable => {
+      this.mod.drops.push(droptable);
+      this.persist();
+    });
+
+    events.$on("add:recipe", recipe => {
+      this.mod.recipes.push(recipe);
+      this.persist();
+    });
+
+    events.$on("add:spawner", spawner => {
+      this.mod.spawners.push(spawner);
       this.persist();
     });
   },

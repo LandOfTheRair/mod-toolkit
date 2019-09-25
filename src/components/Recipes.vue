@@ -18,7 +18,7 @@ import { events } from '../main';
 export default {
   name: "Recipes",
 
-  props: ["recipes"]
+  props: ["recipes", "items"]
 };
 </script>
 
