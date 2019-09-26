@@ -74,8 +74,7 @@ export default {
     removeMap(index) {
       if (!window.confirm("Are you sure you want to remove this map?")) return;
 
-      this.mod.maps.splice(index, 1);
-      this.persist();
+      events.$emit("remove:map", index);
     }
   }
 };

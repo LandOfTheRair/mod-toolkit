@@ -141,8 +141,23 @@ export default {
       this.persist();
     });
 
-    events.$on("add:npc", npc => {
+    events.$on("remove:map", index => {
+      this.mod.maps.splice(index, 1);
+      this.persist();
+    });
+
+    events.$on("add:npc", ({ npc }) => {
       this.mod.npcs.push(npc);
+      this.persist();
+    });
+
+    events.$on("edit:npc", ({ npc, index }) => {
+      this.$set(this.mod.npcs, index, npc);
+      this.persist();
+    });
+
+    events.$on("remove:npc", ({ index }) => {
+      this.mod.npcs.splice(index, 1);
       this.persist();
     });
 
@@ -214,6 +229,8 @@ html {
 
 .main-tabs .tab-content {
   height: calc(100vh - 56px - 33px - 38px - 1rem - 1rem - 42px - 2rem);
+  max-height: calc(100vh - 56px - 33px - 38px - 1rem - 1rem - 42px - 2rem);
+  overflow-y: auto;
 }
 
 .true-center {
@@ -234,8 +251,11 @@ html {
   display: none;
 }
 
-.col-form-label {
+.form-group:not(.left-header) .col-form-label {
   text-align: right;
+}
+
+.col-form-label {
   font-weight: bold;
 }
 
@@ -278,13 +298,27 @@ fieldset.multi-3 .form-control {
   width: 20% !important;
 }
 
-fieldset.multi .split-label, fieldset.multi-3 .split-label {
+fieldset.multi .split-label,
+fieldset.multi-3 .split-label {
   width: 20% !important;
 }
 
+.sprite-container,
 .sprite {
   width: 64px !important;
   height: 64px !important;
+}
+
+.sprite {
   object-fit: none;
+}
+
+.sprite-container + input {
+  margin-left: 64px !important;
+}
+
+th[role="columnheader"]:last-child {
+  width: 200px;
+  max-width: 200px;
 }
 </style>
