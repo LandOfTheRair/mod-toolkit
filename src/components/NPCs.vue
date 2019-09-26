@@ -6,7 +6,6 @@
       <b-button variant="primary" @click="openModal()">Add one</b-button>
     </div>
 
-    <!-- todo: copy, delete, add buttons -->
     <b-modal
       size="xl"
       ref="modal"
@@ -33,7 +32,7 @@
                       <img
                         src="https://play.rair.land/assets/spritesheets/creatures.png"
                         class="sprite"
-                        v-bind:style="{ 'object-position': objectPosition(npc.sprite) }"
+                        v-bind:style="{ 'object-position': objectPosition(npc.sprite, 40) }"
                       >
                     </div>
 
@@ -431,7 +430,7 @@
 <script>
 import get from "lodash.get";
 
-import { clone } from '../helpers';
+import { clone, objectPosition } from '../helpers';
 import { coreStats, extraStats } from "../constants";
 import { events } from "../main";
 
@@ -496,12 +495,7 @@ export default {
   },
 
   methods: {
-    objectPosition(sprite) {
-      const divisor = 40;
-      const y = Math.floor(sprite / divisor);
-      const x = sprite % divisor;
-      return `-${x * 64}px -${y * 64}px`;
-    },
+    objectPosition,
 
     isValidNPC(npc) {
       const validKeys = [
@@ -513,7 +507,7 @@ export default {
         "skillLevels",
         "skillOnKill"
       ];
-      return validKeys.every(x => get(this.npc, x));
+      return validKeys.every(x => get(npc, x));
     },
 
     reset() {
@@ -541,7 +535,7 @@ export default {
     },
 
     remove(index) {
-      if (!window.confirm("Are you sure you want to remove this npc?")) return;
+      if (!window.confirm("Are you sure you want to remove this NPC?")) return;
       events.$emit("remove:npc", { index });
     },
 

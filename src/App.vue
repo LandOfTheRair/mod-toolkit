@@ -57,7 +57,7 @@
           <b-tab>
             <template v-slot:title>Droptables ({{ mod.drops.length }})</template>
 
-            <tab-droptables :droptables="mod.drops" :items="mod.items"></tab-droptables>
+            <tab-droptables :droptables="mod.drops" :items="mod.items" :maps="mod.maps"></tab-droptables>
           </b-tab>
 
           <b-tab>
@@ -161,23 +161,63 @@ export default {
       this.persist();
     });
 
-    events.$on("add:item", item => {
+    events.$on("add:item", ({ item }) => {
       this.mod.items.push(item);
       this.persist();
     });
 
-    events.$on("add:droptable", droptable => {
-      this.mod.drops.push(droptable);
+    events.$on("edit:item", ({ item, index }) => {
+      this.$set(this.mod.items, index, item);
       this.persist();
     });
 
-    events.$on("add:recipe", recipe => {
+    events.$on("remove:item", ({ index }) => {
+      this.mod.items.splice(index, 1);
+      this.persist();
+    });
+
+    events.$on("add:droptable", ({ droptable }) => {
+      this.mod.droptables.push(droptable);
+      this.persist();
+    });
+
+    events.$on("edit:droptable", ({ droptable, index }) => {
+      this.$set(this.mod.droptables, index, droptable);
+      this.persist();
+    });
+
+    events.$on("remove:droptable", ({ index }) => {
+      this.mod.droptables.splice(index, 1);
+      this.persist();
+    });
+
+    events.$on("add:recipe", ({ recipe }) => {
       this.mod.recipes.push(recipe);
       this.persist();
     });
 
-    events.$on("add:spawner", spawner => {
+    events.$on("edit:recipe", ({ recipe, index }) => {
+      this.$set(this.mod.recipes, index, recipe);
+      this.persist();
+    });
+
+    events.$on("remove:recipe", ({ index }) => {
+      this.mod.recipes.splice(index, 1);
+      this.persist();
+    });
+
+    events.$on("add:spawner", ({ spawner }) => {
       this.mod.spawners.push(spawner);
+      this.persist();
+    });
+
+    events.$on("edit:spawner", ({ spawner, index }) => {
+      this.$set(this.mod.spawners, index, spawner);
+      this.persist();
+    });
+
+    events.$on("remove:spawner", ({ index }) => {
+      this.mod.spawners.splice(index, 1);
       this.persist();
     });
   },

@@ -7,6 +7,7 @@
 // TODO: advanced mode for npc dialog for scripts
 // TODO: advanced mode for quests for scripts
 // TODO: get a list of all traits via HTTP - should be hosted on play.rair.land when ready
+// TODO: npc sprite should be an array
 
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap-vue/dist/bootstrap-vue.min.css";
