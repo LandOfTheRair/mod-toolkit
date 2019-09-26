@@ -215,6 +215,9 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.blank-slate {
   flex-direction: column;
 
   font-size: 2rem;
@@ -224,5 +227,43 @@ html {
 
 .hidden {
   display: none;
+}
+
+.col-form-label {
+  text-align: right;
+  font-weight: bold;
+}
+
+.modal-footer {
+  justify-content: space-between;
+}
+
+fieldset legend {
+  max-height: 38px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  font-size: 90%;
+
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+fieldset.optional legend::after {
+  content: "\A(optional)";
+  font-size: 65%;
+}
+
+fieldset.multi .col {
+  display: flex;
+}
+
+fieldset.multi .form-control {
+  width: 40% !important;
+}
+
+fieldset.multi .split-label {
+  width: 20% !important;
 }
 </style>

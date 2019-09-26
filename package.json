@@ -1,5 +1,5 @@
 {
-  "name": "lotr-mod-kit-final",
+  "name": "lotr-mod-kit",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -26,7 +26,10 @@
     "env": {
       "node": true
     },
-    "extends": ["plugin:vue/essential", "eslint:recommended"],
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
     "rules": {},
     "parserOptions": {
       "parser": "babel-eslint"
@@ -37,7 +40,11 @@
       "autoprefixer": {}
     }
   },
-  "browserslist": ["> 1%", "last 2 versions", "not ie <= 8"],
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
   "keywords": [],
   "description": ""
 }

@@ -1,15 +1,19 @@
 <template>
   <div>
-    <div class="true-center" v-if="npcs.length === 0">No NPCs
+    <div class="true-center blank-slate" v-if="npcs.length === 0">No NPCs
       <br>
 
       <b-button variant="primary" @click="openModal()">Add one</b-button>
     </div>
 
     <b-modal
+      size="xl"
       ref="modal"
       title="Add/Edit NPC"
       ok-title="Save"
+      :no-close-on-backdrop="true"
+      :no-close-on-esc="true"
+      cancel-variant="warning"
       @show="reset()"
       @hide="reset()"
       @cancel="reset()"
@@ -17,18 +21,63 @@
       @ok="confirm()"
       :ok-disabled="!isValidNPC(npc)"
     >
-      <div class="d-block text-center">
-        <h3>Content</h3>
+      <div class="d-block">
+        <b-form>
+          <div class="row">
+            <div class="col-md-6">
+              <b-form-group label-cols-md="3" label="Internal ID">
+                <b-form-input type="text" v-model="npc.npcId" required></b-form-input>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Name" class="optional">
+                <b-form-input type="text" v-model="npc.name"></b-form-input>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Hostility">
+                <b-form-select
+                  v-model="npc.hostility"
+                  required
+                  :options="['OnHit', 'Faction', 'Always', 'Never']"
+                ></b-form-select>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Allegiance">
+                <b-form-select
+                  v-model="npc.allegiance"
+                  required
+                  :options="['Enemy', 'Adventurers', 'Pirates', 'Royalty', 'Townsfolk', 'Underground', 'Wilderness', 'NaturalResource']"
+                ></b-form-select>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Category">
+                <b-form-select
+                  v-model="npc.monsterClass"
+                  required
+                  :options="['Beast', 'Dragon', 'Humanoid', 'Undead']"
+                >
+                <template v-slot:first>
+                  <!-- todo fix this-->
+                  <option :value="''">None</option>
+                </template>
+                </b-form-select>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="HP" class="multi">
+                <b-form-input type="number" v-model="npc.hp.min" min="0"></b-form-input>
+                <div class="split-label true-center">To</div>
+                <b-form-input type="number" v-model="npc.hp.max" min="0"></b-form-input>
+              </b-form-group>
+            </div>
+
+            <div class="col-md-6"></div>
+          </div>
+        </b-form>
       </div>
     </b-modal>
   </div>
 
   <!--
-    TODO: 
-    - id
-    - name (optional)
-    - hostility (faction, always, never)
-    - allegiance (unset, pirates, townsfolk, royalty, adventurers, wilderness, underground, naturalresource, enemy)
+    TODO:
     - monsterClass (unset, undead, beast, humanoid, dragon)
     - sprite (have a sprite picker that lets you pick a front sprite; not sure best way to do here because of every 5th being valid) - always be an array - allow for multiple choices
     - affiliation (optional)
@@ -71,11 +120,19 @@ const defaultNPC = {
   npcId: "",
   name: "",
   hostility: "OnHit",
-  allegiance: "",
+  allegiance: "Enemy",
   monsterClass: "",
   sprite: 0,
   affiliation: "",
-  alignment: ""
+  alignment: "",
+  rightHand: "",
+  leftHand: "",
+  stats: {},
+  gear: {},
+  hp: { min: 0, max: 0 },
+  mp: { min: 0, max: 0 },
+  giveXp: { min: 0, max: 0 },
+  gold: { min: 0, max: 0 }
 };
 
 export default {

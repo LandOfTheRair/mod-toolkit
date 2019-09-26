@@ -9,7 +9,7 @@
       class="hidden"
     >
 
-    <div class="true-center" v-if="maps.length === 0">No maps
+    <div class="true-center blank-slate" v-if="maps.length === 0">No maps
       <br>
 
       <b-button variant="primary" @click="$refs.mapUpload.click()">Upload some</b-button>
