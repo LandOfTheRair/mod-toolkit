@@ -35,7 +35,7 @@
       </div>
 
       <div class="mt-3">
-        <b-tabs content-class="mt-3" fill>
+        <b-tabs content-class="mt-3" fill class="main-tabs">
           <b-tab active>
             <template v-slot:title>Maps ({{ mod.maps.length }})</template>
 
@@ -208,6 +208,11 @@ html {
 }
 
 .tab-content {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.main-tabs .tab-content {
   height: calc(100vh - 56px - 33px - 38px - 1rem - 1rem - 42px - 2rem);
 }
 
@@ -255,15 +260,31 @@ fieldset.optional legend::after {
   font-size: 65%;
 }
 
-fieldset.multi .col {
+fieldset.multi .col,
+fieldset.multi-3 .col,
+fieldset.sprite-field .col {
   display: flex;
+}
+
+fieldset.sprite-field .col {
+  align-items: center;
 }
 
 fieldset.multi .form-control {
   width: 40% !important;
 }
 
-fieldset.multi .split-label {
+fieldset.multi-3 .form-control {
   width: 20% !important;
+}
+
+fieldset.multi .split-label, fieldset.multi-3 .split-label {
+  width: 20% !important;
+}
+
+.sprite {
+  width: 64px !important;
+  height: 64px !important;
+  object-fit: none;
 }
 </style>
