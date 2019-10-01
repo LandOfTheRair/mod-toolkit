@@ -226,7 +226,86 @@
                 </div>
 
                 <div class="col-md-4">
-                  <div class="row"></div>
+                  <div
+                    class="row mt-1"
+                    v-for="attr in typePropSets[currentSelectedItemClass]"
+                    v-bind:key="attr">
+                    <div class="col">
+
+                      <b-form-group label-cols-md="3" label="Ounces" v-if="attr === 'ounces'">
+                        <b-form-input type="number" v-model="item.ounces" placeholder="# ounces" min="0"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Tier" v-if="attr === 'tier'">
+                        <b-form-input type="number" v-model="item.tier" placeholder="Tier #" min="0"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Shots" v-if="attr === 'shots'">
+                        <b-form-input type="number" v-model="item.shots" placeholder="# shots" min="0"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Tier" v-if="attr === 'maxEncrusts'">
+                        <b-form-input type="number" v-model="item.maxEncrusts" placeholder="# encrusts" min="0" max="16"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Book Pages" v-if="attr === 'bookPages'">
+                        <b-form-input type="number" v-model="item.bookPages" placeholder="# pages" min="0"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Total Pages" v-if="attr === 'bookFindablePages'">
+                        <b-form-input type="number" v-model="item.bookFindablePages" placeholder="# pages (total)" min="0"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Page Filter" v-if="attr === 'bookItemFilter'">
+                        <b-form-input type="text" v-model="item.bookItemFilter" placeholder="Page Filter"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Book Page" v-if="attr === 'bookPage'">
+                        <b-form-input type="number" v-model="item.bookPage" placeholder="Page #" min="0"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Trap Uses" v-if="attr === 'trapUses'">
+                        <b-form-input type="number" v-model="item.trapUses" placeholder="# trap uses" min="0"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Damage Type" v-if="attr === 'damageClass'">
+                        <b-form-select v-model="item.damageClass" required :options="damageClasses">
+                            <template v-slot:first>
+                            <option :value="''">Choose damage type</option>
+                            </template>
+                        </b-form-select>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Prone Chance" v-if="attr === 'proneChance'">
+                        <b-form-input type="number" v-model="item.proneChance" placeholder="Prone chance %" min="0" max="100"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-group label-cols-md="3" label="Attack Range" v-if="attr === 'attackRange'">
+                        <b-form-input type="number" v-model="item.attackRange" placeholder="Attack range (tiles)" min="0" max="4"></b-form-input>
+                      </b-form-group>
+
+                      <b-form-checkbox v-model="item.isHeavy" class="offset-md-3" v-if="attr === 'isHeavy'">
+                        <span v-b-tooltip.hover title="Item is heavy and inhibits spellcasting">Heavy Item</span>
+                      </b-form-checkbox>
+
+                      <b-form-checkbox v-model="item.twoHanded" class="offset-md-3" v-if="attr === 'twoHanded'">
+                        <span v-b-tooltip.hover title="Weapon requires both hands to use">Two-handed</span>
+                      </b-form-checkbox>
+
+                      <b-form-checkbox v-model="item.offhand" class="offset-md-3" v-if="attr === 'offhand'">
+                        <span v-b-tooltip.hover title="Weapon will make attacks when held in offhand">Offhand weapon</span>
+                      </b-form-checkbox>
+
+                      <b-form-checkbox v-model="item.returnsOnThrow" class="offset-md-3" v-if="attr === 'returnsOnThrow'">
+                        <span v-b-tooltip.hover title="Weapon returns when thrown">Returns on throw</span>
+                      </b-form-checkbox>
+
+                      <b-form-checkbox v-model="item.canShoot" class="offset-md-3" v-if="attr === 'canShoot'">
+                        <span v-b-tooltip.hover title="Weapon is able to shoot arrows">Can shoot</span>
+                      </b-form-checkbox>
+
+                    </div>
+                  </div>
                 </div>
               </div>
             </b-tab>
@@ -273,21 +352,6 @@
 
   <!--
     TODO
-      - core information (3 col)
-        - col 1: type/secondaryType
-        - col 3 [extra props]
-          - archetype (fake property, maybe inherit from itemtype)
-              - [ auto check some properties in weapon based on chosen itemClass]
-            - arrow: shots, tier, damageClass
-            - armor: isHeavy
-            - weapon: tier, damageClass, returnsOnThrow, proneChance, twoHanded, type, secondaryType, attackRange, offhand, isHeavy, canShoot
-            - gem: maxEncrusts, stats.effect
-            - book: bookPages (id/text), bookItemFilter (required), bookFindablePages (optional)
-            - trap: trapUses, effect.levelRequirement, effect.skillRequirement, effect.uses
-            - page: extendedDesc, bookPage
-            - bottle/food: ounces
-            - scroll: bookPage
-
       - traits, effects, requirements
         - trait name/level (allow multiple names as array, and level as min/max)
         - effect name/potency/chance/duration/canApply/autocast
@@ -349,12 +413,15 @@ export default {
         { group: "Weapons", keys: weaponClasses },
         { group: "Items", keys: itemClasses }
       ],
-      currentSelectedItemClass: '',
+      currentSelectedItemClass: "",
       typePropSets,
+      damageClasses,
       itemTypes,
       tableFields: [
         { key: "sprite", label: "Sprite" },
-        { key: "name", label: "ID", sortable: true },
+        { key: "name", label: "Name", sortable: true },
+        { key: "itemClass", label: "Type", sortable: true },
+        { key: "type", label: "Skill", sortable: true },
         { key: "actions", label: "Actions", class: "text-right" }
       ],
       currentAddStat: "",
@@ -375,7 +442,6 @@ export default {
 
     reset() {
       this.item = clone(defaultItem);
-      this.editingRandomStats = {};
       this.isEditing = -1;
     },
 
@@ -398,6 +464,7 @@ export default {
     edit(index) {
       this.item = clone(this.items[index]);
       this.isEditing = index;
+      this.currentSelectedItemClass = this.item.itemClass;
       this.openModal();
     },
 
@@ -435,7 +502,7 @@ export default {
 
       const resetProps = typePropDefaults[oldType] || {};
       Object.keys(resetProps).forEach(prop => {
-        if(prop === 'stats') {
+        if (prop === "stats") {
           Object.keys(resetProps[prop]).forEach(subProp => {
             this.$delete(this.item[prop], subProp);
           });
@@ -447,7 +514,7 @@ export default {
 
       const newProps = typePropDefaults[newType] || {};
       Object.keys(newProps).forEach(prop => {
-        if(prop === 'stats') {
+        if (prop === "stats") {
           Object.keys(newProps[prop]).forEach(subProp => {
             this.$set(this.item[prop], subProp, newProps[prop][subProp]);
           });
@@ -457,8 +524,8 @@ export default {
         this.$set(this.item, prop, newProps[prop]);
       });
 
-      if(!this.item.type) this.$set(this.item, 'type', 'Martial');
-      if(!this.item.secondaryType) this.$set(this.item, 'secondaryType', '');
+      if (!this.item.type) this.$set(this.item, "type", "Martial");
+      if (!this.item.secondaryType) this.$set(this.item, "secondaryType", "");
 
       this.item.itemClass = newType;
     }

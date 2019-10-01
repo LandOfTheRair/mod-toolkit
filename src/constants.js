@@ -93,6 +93,7 @@ export const gearSlots = [
 
 export const itemClasses = [
   "Abacus",
+  "Arrow",
   "Book",
   "Bottle",
   "Box",
@@ -110,7 +111,6 @@ export const itemClasses = [
 ];
 
 export const weaponClasses = [
-  "Arrow",
   "Axe",
   "Blunderbuss",
   "Broadsword",
@@ -236,12 +236,12 @@ weaponClasses.forEach(weaponType => {
   typePropSets[weaponType].push(
     "tier",
     "damageClass",
-    "returnsOnThrow",
     "proneChance",
-    "twoHanded",
     "attackRange",
-    "offhand",
     "isHeavy",
+    "twoHanded",
+    "offhand",
+    "returnsOnThrow",
     "canShoot"
   );
 
@@ -274,7 +274,7 @@ weaponClasses.forEach(weaponType => {
 
   if (["Crossbow", "Shortbow", "Longbow", "Blunderbuss"].includes(weaponType)) {
     typePropDefaults[weaponType].canShoot = true;
-    typePropDefaults[weaponType].attackRange = 5;
+    typePropDefaults[weaponType].attackRange = 4;
   }
 
   if (["Shield", "Saucer"].includes(weaponType)) {
@@ -328,6 +328,8 @@ weaponClasses.forEach(weaponType => {
   ) {
     typePropDefaults[weaponType].isSackable = true;
   }
+
+  typePropSets[weaponType] = [...new Set(typePropSets[weaponType])];
 });
 
 armorClasses.forEach(armorType => {
@@ -352,4 +354,6 @@ armorClasses.forEach(armorType => {
     typePropDefaults[armorType].stats.mitigation = 25;
     typePropDefaults[armorType].isHeavy = true;
   }
+
+  typePropSets[armorType] = [...new Set(typePropSets[armorType])];
 });

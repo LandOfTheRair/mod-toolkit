@@ -313,7 +313,7 @@
                       <b-input-group>
                         <b-form-select v-model="currentExtraStat" required :options="extraStats">
                             <template v-slot:first>
-                              <option :value="''">Add Extra Stat</option>
+                            <option :value="''">Add Extra Stat</option>
                             </template>
                         </b-form-select>
 
@@ -407,6 +407,7 @@
       - rightHand
       - leftHand
       - all other gear slots (armor, robe1, robe2, hands, feet, ring1, ring2, waist, head, neck, ear, wrists)
+        - needs to support weighted choices
     
     - drops section (3 column?)
       - drops
