@@ -194,7 +194,7 @@ export const typePropDefaults = {
   Gem: { maxEncrusts: 5 },
   Book: { bookPages: 1, bookItemFilter: "", bookFindablePages: "" },
   Trap: { trapUses: 1 },
-  Twig: { type: 'Staff' }
+  Twig: { type: "Staff" }
 };
 
 const typePropPrimarySecondary = {
@@ -222,9 +222,16 @@ const typePropPrimarySecondary = {
   Wand: { p: "Wand" }
 };
 
+itemClasses.forEach(itemType => {
+  typePropDefaults[itemType] = typePropDefaults[itemType] || {};
+
+  typePropDefaults[itemType].isSackable = true;
+});
+
 weaponClasses.forEach(weaponType => {
   typePropSets[weaponType] = typePropSets[weaponType] || [];
   typePropDefaults[weaponType] = typePropDefaults[weaponType] || {};
+  typePropDefaults[weaponType].stats = typePropDefaults[weaponType].stats || {};
 
   typePropSets[weaponType].push(
     "tier",
@@ -232,8 +239,6 @@ weaponClasses.forEach(weaponType => {
     "returnsOnThrow",
     "proneChance",
     "twoHanded",
-    "type",
-    "secondaryType",
     "attackRange",
     "offhand",
     "isHeavy",
@@ -273,8 +278,6 @@ weaponClasses.forEach(weaponType => {
   }
 
   if (["Shield", "Saucer"].includes(weaponType)) {
-    typePropDefaults[weaponType].stats =
-      typePropDefaults[weaponType].stats || {};
     typePropDefaults[weaponType].stats.accuracy = 0;
     typePropDefaults[weaponType].stats.mitigation = 5;
     typePropDefaults[weaponType].tier = 1;
@@ -311,26 +314,42 @@ weaponClasses.forEach(weaponType => {
     typePropDefaults[weaponType].secondaryType =
       typePropPrimarySecondary[weaponType].s || "";
   }
+
+  if (
+    [
+      "Dagger",
+      "Shortsword",
+      "Arrow",
+      "Axe",
+      "Hammer",
+      "Totem",
+      "Wand"
+    ].includes(weaponType)
+  ) {
+    typePropDefaults[weaponType].isSackable = true;
+  }
 });
 
 armorClasses.forEach(armorType => {
   typePropSets[armorType] = typePropSets[armorType] || [];
   typePropDefaults[armorType] = typePropDefaults[armorType] || {};
+  typePropDefaults[armorType].stats = typePropDefaults[armorType].stats || {};
 
   typePropSets[armorType].push("isHeavy");
 
   typePropDefaults[armorType].isBeltable = false;
+  typePropDefaults[armorType].isSackable = true;
 
-  if (["Tunic", "Fur"].includes(armorType)) {
-    typePropDefaults[armorType].isSackable = true;
+  if (["Breastplate", "Fullplate", "Scaleplate"].includes(armorType)) {
+    typePropDefaults[armorType].isSackable = false;
   }
 
   if (["Tunic", "Fur", "Scaleplate"].includes(armorType)) {
-    typePropDefaults[armorType].mitigation = 10;
+    typePropDefaults[armorType].stats.mitigation = 10;
   }
 
   if (["Fullplate", "Breastplate"].includes(armorType)) {
-    typePropDefaults[armorType].mitigation = 25;
+    typePropDefaults[armorType].stats.mitigation = 25;
     typePropDefaults[armorType].isHeavy = true;
   }
 });

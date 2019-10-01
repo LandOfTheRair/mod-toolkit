@@ -433,7 +433,33 @@ export default {
       const oldType = this.item.itemClass;
       const newType = this.currentSelectedItemClass;
 
-      // TODO: finish this by setting/unsetting item properties
+      const resetProps = typePropDefaults[oldType] || {};
+      Object.keys(resetProps).forEach(prop => {
+        if(prop === 'stats') {
+          Object.keys(resetProps[prop]).forEach(subProp => {
+            this.$delete(this.item[prop], subProp);
+          });
+          return;
+        }
+
+        this.$delete(this.item, prop);
+      });
+
+      const newProps = typePropDefaults[newType] || {};
+      Object.keys(newProps).forEach(prop => {
+        if(prop === 'stats') {
+          Object.keys(newProps[prop]).forEach(subProp => {
+            this.$set(this.item[prop], subProp, newProps[prop][subProp]);
+          });
+          return;
+        }
+
+        this.$set(this.item, prop, newProps[prop]);
+      });
+
+      if(!this.item.type) this.$set(this.item, 'type', 'Martial');
+      if(!this.item.secondaryType) this.$set(this.item, 'secondaryType', '');
+
       this.item.itemClass = newType;
     }
   }
