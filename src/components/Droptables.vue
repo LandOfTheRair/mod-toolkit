@@ -1,10 +1,14 @@
 <template>
   <div>
-    <div class="true-center blank-slate" v-if="items.length === 0 && maps.length === 0 && droptables.length === 0">
-      Add items & maps first
-    </div>
+    <div
+      class="true-center blank-slate"
+      v-if="(items.length === 0 || maps.length === 0) && droptables.length === 0"
+    >Add items & maps first</div>
 
-    <div class="true-center blank-slate" v-if="items.length && maps.length && droptables.length === 0">No Droptables
+    <div
+      class="true-center blank-slate"
+      v-if="items.length && maps.length && droptables.length === 0"
+    >No Droptables
       <br>
 
       <b-button variant="primary" @click="openModal()">Add one</b-button>
@@ -28,17 +32,11 @@
       <div class="d-block">
         <b-form>
           <b-tabs content-class="mt-3" fill>
-            <b-tab title="Core Stats">
+            <b-tab title="Core Stats"></b-tab>
 
-            </b-tab>
+            <b-tab title="Traits, Effects & Requirements"></b-tab>
 
-            <b-tab title="Traits, Effects & Requirements">
-              
-            </b-tab>
-
-            <b-tab title="Miscellaneous">
-              
-            </b-tab>
+            <b-tab title="Miscellaneous"></b-tab>
           </b-tabs>
         </b-form>
       </div>
@@ -142,7 +140,8 @@ export default {
     },
 
     remove(index) {
-      if (!window.confirm("Are you sure you want to remove this droptable?")) return;
+      if (!window.confirm("Are you sure you want to remove this droptable?"))
+        return;
       events.$emit("remove:droptable", { index });
     }
   }
