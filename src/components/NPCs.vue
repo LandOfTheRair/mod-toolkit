@@ -312,9 +312,9 @@
                     <div class="col-md-12">
                       <b-input-group>
                         <b-form-select v-model="currentExtraStat" required :options="extraStats">
-                          <template v-slot:first>
-                            <option :value="''">Add Extra Stat</option>
-                          </template>
+                            <template v-slot:first>
+                              <option :value="''">Add Extra Stat</option>
+                            </template>
                         </b-form-select>
 
                         <b-input-group-append>
@@ -327,6 +327,7 @@
                       </b-input-group>
                     </div>
                   </div>
+                  
                   <div class="row mt-1" v-for="(value, stat) in npc.otherStats" v-bind:key="stat">
                     <div class="col">
                       <b-form-group :label="stat" class="left-header">
@@ -545,7 +546,7 @@ export default {
     },
 
     addExtraStat(key) {
-      if (!key) return;
+      if (!key || this.npc.otherStats[key]) return;
       this.$set(this.npc.otherStats, key, 0);
     },
 

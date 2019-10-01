@@ -63,6 +63,17 @@ export const extraStats = [
   { stat: "damageFactor", help: "Multiply damage by a raw multiplier" }
 ];
 
+export const damageClasses = [
+  "physical",
+  "necrotic",
+  "energy",
+  "water",
+  "fire",
+  "ice",
+  "poison",
+  "disease"
+];
+
 export const gearSlots = [
   "rightHand",
   "leftHand",
@@ -79,3 +90,247 @@ export const gearSlots = [
   "gear.Feet",
   "gear.Ear"
 ];
+
+export const itemClasses = [
+  "Abacus",
+  "Book",
+  "Bottle",
+  "Box",
+  // 'Coin',
+  // 'Corpse',
+  "Flower",
+  "Food",
+  "Gem",
+  "Key",
+  "Rock",
+  "Scale",
+  "Scroll",
+  "Trap",
+  "Twig"
+];
+
+export const weaponClasses = [
+  "Arrow",
+  "Axe",
+  "Blunderbuss",
+  "Broadsword",
+  "Claws",
+  "Club",
+  "Crossbow",
+  "Dagger",
+  "Flail",
+  "Gloves",
+  "Greataxe",
+  "Greatmace",
+  "Greatsword",
+  "Halberd",
+  "Hammer",
+  "Longbow",
+  "Longsword",
+  "Mace",
+  "Shield",
+  "Shortbow",
+  "Shortsword",
+  "Spear",
+  "Staff",
+  "Totem",
+  "Wand"
+];
+
+export const armorClasses = [
+  "Amulet",
+  "Boots",
+  "Bracers",
+  "Breastplate",
+  "Claws",
+  "Cloak",
+  "Earring",
+  "Fullplate",
+  "Fur",
+  "Gloves",
+  "Hat",
+  "Helm",
+  "Ring",
+  "Robe",
+  "Sash",
+  "Saucer",
+  "Scaleplate",
+  "Skull",
+  "Tunic"
+];
+
+export const itemTypes = [
+  "Axe",
+  "Conjuration",
+  "Dagger",
+  "Mace",
+  "Martial",
+  "Onehanded",
+  "Polearm",
+  "Ranged",
+  "Restoration",
+  "Shortsword",
+  "Staff",
+  "Thievery",
+  "Throwing",
+  "Twohanded",
+  "Wand"
+];
+
+export const typePropSets = {
+  Arrow: ["shots", "tier", "damageClass"],
+  Bottle: ["ounces"],
+  Food: ["ounces"],
+  Gem: ["maxEncrusts"],
+  Book: ["bookPages", "bookItemFilter", "bookFindablePages"],
+  Trap: ["trapUses"],
+  Scroll: ["bookPage"]
+};
+
+export const typePropDefaults = {
+  Arrow: { shots: 1000, tier: 1, damageClass: "physical" },
+  Bottle: { ounces: 1 },
+  Food: { ounces: 1 },
+  Gem: { maxEncrusts: 5 },
+  Book: { bookPages: 1, bookItemFilter: "", bookFindablePages: "" },
+  Trap: { trapUses: 1 },
+  Twig: { type: 'Staff' }
+};
+
+const typePropPrimarySecondary = {
+  Axe: { p: "Axe" },
+  Blunderbuss: { p: "Ranged", s: "Twohanded" },
+  Broadsword: { p: "Onehanded" },
+  Club: { p: "Mace" },
+  Crossbow: { p: "Ranged" },
+  Dagger: { p: "Dagger" },
+  Flail: { p: "Mace" },
+  Greataxe: { p: "Axe", s: "Twohanded" },
+  Greatmace: { p: "Mace", s: "Twohanded" },
+  Greatsword: { p: "Twohanded" },
+  Halberd: { p: "Polearm", s: "Twohanded" },
+  Hammer: { p: "Mace" },
+  Longbow: { p: "Ranged", s: "Twohanded" },
+  Longsword: { p: "Onehanded" },
+  Mace: { p: "Mace" },
+  Shield: { p: "Mace" },
+  Shortbow: { p: "Ranged" },
+  Shortsword: { p: "Shortsword" },
+  Spear: { p: "Staff" },
+  Staff: { p: "Staff" },
+  Totem: { p: "Wand" },
+  Wand: { p: "Wand" }
+};
+
+weaponClasses.forEach(weaponType => {
+  typePropSets[weaponType] = typePropSets[weaponType] || [];
+  typePropDefaults[weaponType] = typePropDefaults[weaponType] || {};
+
+  typePropSets[weaponType].push(
+    "tier",
+    "damageClass",
+    "returnsOnThrow",
+    "proneChance",
+    "twoHanded",
+    "type",
+    "secondaryType",
+    "attackRange",
+    "offhand",
+    "isHeavy",
+    "canShoot"
+  );
+
+  typePropDefaults[weaponType].tier = 1;
+  typePropDefaults[weaponType].damageClass = "physical";
+  typePropDefaults[weaponType].proneChance = 0;
+  typePropDefaults[weaponType].attackRange = 0;
+  typePropDefaults[weaponType].isBeltable = true;
+  typePropDefaults[weaponType].isSackable = false;
+
+  if (weaponType === "Arrow") {
+    typePropDefaults[weaponType].isBeltable = true;
+    typePropDefaults[weaponType].isSackable = true;
+  }
+
+  if (weaponType === "Halberd") {
+    typePropDefaults[weaponType].isBeltable = false;
+    typePropDefaults[weaponType].twoHanded = true;
+    typePropDefaults[weaponType].attackRange = 1;
+  }
+
+  if (
+    ["Blunderbuss", "Shortbow", "Longbow", "Greatmace", "Greataxe"].includes(
+      weaponType
+    )
+  ) {
+    typePropDefaults[weaponType].twoHanded = true;
+    typePropDefaults[weaponType].secondaryType = "Twohanded";
+  }
+
+  if (["Crossbow", "Shortbow", "Longbow", "Blunderbuss"].includes(weaponType)) {
+    typePropDefaults[weaponType].canShoot = true;
+    typePropDefaults[weaponType].attackRange = 5;
+  }
+
+  if (["Shield", "Saucer"].includes(weaponType)) {
+    typePropDefaults[weaponType].stats =
+      typePropDefaults[weaponType].stats || {};
+    typePropDefaults[weaponType].stats.accuracy = 0;
+    typePropDefaults[weaponType].stats.mitigation = 5;
+    typePropDefaults[weaponType].tier = 1;
+  }
+
+  if (["Saucer"].includes(weaponType)) {
+    typePropDefaults[weaponType].isSackable = true;
+  }
+
+  if (
+    [
+      "Halberd",
+      "Longbow",
+      "Shortbow",
+      "Blunderbuss",
+      "Greatsword",
+      "Greataxe",
+      "Greatmace"
+    ].includes(weaponType)
+  ) {
+    typePropDefaults[weaponType].twoHanded = true;
+  }
+
+  if (["Halberd", "Greatsword", "Greataxe", "Greatmace"].includes(weaponType)) {
+    typePropDefaults[weaponType].proneChance = 5;
+  }
+
+  if (["Longbow", "Shortbow", "Blunderbuss", "Crossbow"].includes(weaponType)) {
+    typePropDefaults[weaponType].proneChance = 5;
+  }
+
+  if (typePropPrimarySecondary[weaponType]) {
+    typePropDefaults[weaponType].type = typePropPrimarySecondary[weaponType].p;
+    typePropDefaults[weaponType].secondaryType =
+      typePropPrimarySecondary[weaponType].s || "";
+  }
+});
+
+armorClasses.forEach(armorType => {
+  typePropSets[armorType] = typePropSets[armorType] || [];
+  typePropDefaults[armorType] = typePropDefaults[armorType] || {};
+
+  typePropSets[armorType].push("isHeavy");
+
+  typePropDefaults[armorType].isBeltable = false;
+
+  if (["Tunic", "Fur"].includes(armorType)) {
+    typePropDefaults[armorType].isSackable = true;
+  }
+
+  if (["Tunic", "Fur", "Scaleplate"].includes(armorType)) {
+    typePropDefaults[armorType].mitigation = 10;
+  }
+
+  if (["Fullplate", "Breastplate"].includes(armorType)) {
+    typePropDefaults[armorType].mitigation = 25;
+    typePropDefaults[armorType].isHeavy = true;
+  }
+});

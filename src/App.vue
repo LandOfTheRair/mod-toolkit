@@ -293,10 +293,14 @@ html {
 
 .form-group:not(.left-header) .col-form-label {
   text-align: right;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .col-form-label {
   font-weight: bold;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .modal-footer {
@@ -313,6 +317,11 @@ fieldset legend {
 
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+}
+
+fieldset.optional legend {
+  flex-direction: column;
+  align-items: flex-end !important;
 }
 
 fieldset.optional legend::after {
@@ -360,5 +369,18 @@ fieldset.multi-3 .split-label {
 th[role="columnheader"]:last-child {
   width: 200px;
   max-width: 200px;
+}
+
+.tooltip {
+  pointer-events: none;
+}
+
+.modal-xl {
+  max-width: calc(100vw - 50px);
+}
+
+.thin-button {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 </style>

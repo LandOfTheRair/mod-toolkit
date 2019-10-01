@@ -5,6 +5,7 @@
 <script>
 import { events } from '../main';
 
+
 export default {
   name: "Dialogs",
 
