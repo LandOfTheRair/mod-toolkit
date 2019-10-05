@@ -177,17 +177,17 @@ export default {
     });
 
     events.$on("add:droptable", ({ droptable }) => {
-      this.mod.droptables.push(droptable);
+      this.mod.drops.push(droptable);
       this.persist();
     });
 
     events.$on("edit:droptable", ({ droptable, index }) => {
-      this.$set(this.mod.droptables, index, droptable);
+      this.$set(this.mod.drops, index, droptable);
       this.persist();
     });
 
     events.$on("remove:droptable", ({ index }) => {
-      this.mod.droptables.splice(index, 1);
+      this.mod.drops.splice(index, 1);
       this.persist();
     });
 

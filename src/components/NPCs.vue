@@ -393,9 +393,9 @@
       </template>
 
       <template v-slot:cell(actions)="data">
-        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.index)">Copy</b-button>
-        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.index)">Edit</b-button>
-        <b-button size="sm" variant="danger" @click="remove(data.index)">Remove</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.item)">Copy</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.item)">Edit</b-button>
+        <b-button size="sm" variant="danger" @click="remove(data.item)">Remove</b-button>
       </template>
     </b-table>
   </div>
@@ -525,20 +525,19 @@ export default {
       this.$refs.modal.show();
     },
 
-    copy(index) {
-      const npc = this.npcs[index];
+    copy(npc) {
       events.$emit("add:npc", { npc: clone(npc) });
     },
 
-    edit(index) {
-      this.npc = clone(this.npcs[index]);
-      this.isEditing = index;
+    edit(npc) {
+      this.npc = clone(npc);
+      this.isEditing = this.npcs.findIndex(x => x === npc);
       this.openModal();
     },
 
-    remove(index) {
+    remove(npc) {
       if (!window.confirm("Are you sure you want to remove this NPC?")) return;
-      events.$emit("remove:npc", { index });
+      events.$emit("remove:npc", { index: this.npcs.findIndex(x => x === npc) });
     },
 
     updateKeyMaxIfNotPresent($event, key) {

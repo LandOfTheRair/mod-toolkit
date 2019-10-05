@@ -44,9 +44,9 @@
       </template>
 
       <template v-slot:cell(actions)="data">
-        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.index)">Copy</b-button>
-        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.index)">Edit</b-button>
-        <b-button size="sm" variant="danger" @click="remove(data.index)">Remove</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.item)">Copy</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.item)">Edit</b-button>
+        <b-button size="sm" variant="danger" @click="remove(data.item)">Remove</b-button>
       </template>
     </b-table>
   </div>
@@ -107,20 +107,19 @@ export default {
       this.$refs.modal.show();
     },
 
-    copy(index) {
-      const recipe = this.recipes[index];
+    copy(recipe) {
       events.$emit("add:recipe", { recipe: clone(recipe) });
     },
 
-    edit(index) {
-      this.recipe = clone(this.recipes[index]);
-      this.isEditing = index;
+    edit(recipe) {
+      this.recipe = clone(recipe);
+      this.isEditing = this.recipes.findIndex(x => x === recipe);;
       this.openModal();
     },
 
-    remove(index) {
+    remove(recipe) {
       if (!window.confirm("Are you sure you want to remove this recipe?")) return;
-      events.$emit("remove:recipe", { index });
+      events.$emit("remove:recipe", { index: this.recipes.findIndex(x => x === recipe) });
     }
   }
 };

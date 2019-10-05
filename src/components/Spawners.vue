@@ -44,9 +44,9 @@
       </template>
 
       <template v-slot:cell(actions)="data">
-        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.index)">Copy</b-button>
-        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.index)">Edit</b-button>
-        <b-button size="sm" variant="danger" @click="remove(data.index)">Remove</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.item)">Copy</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.item)">Edit</b-button>
+        <b-button size="sm" variant="danger" @click="remove(data.item)">Remove</b-button>
       </template>
     </b-table>
   </div>
@@ -125,20 +125,19 @@ export default {
       this.$refs.modal.show();
     },
 
-    copy(index) {
-      const spawner = this.spawners[index];
+    copy(spawner) {
       events.$emit("add:spawner", { spawner: clone(spawner) });
     },
 
-    edit(index) {
-      this.spawner = clone(this.spawners[index]);
-      this.isEditing = index;
+    edit(spawner) {
+      this.spawner = clone(spawner);
+      this.isEditing = this.spawners.findIndex(x => x === spawner);
       this.openModal();
     },
 
-    remove(index) {
+    remove(spawner) {
       if (!window.confirm("Are you sure you want to remove this spawner?")) return;
-      events.$emit("remove:spawner", { index });
+      events.$emit("remove:spawner", { index: this.spawners.findIndex(x => x === spawner) });
     }
   }
 };

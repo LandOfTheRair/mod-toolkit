@@ -31,13 +31,46 @@
     >
       <div class="d-block">
         <b-form>
-          <b-tabs content-class="mt-3" fill>
-            <b-tab title="Core Stats"></b-tab>
+          <div class="row mt-1">
+            <div class="col-6">
+              <b-form-group label-cols-md="3" label="Map">
+                <b-form-select v-model="droptable.mapName" required @change.native="droptable.regionName = ''">
+                  <option :value="''">Choose map (unselects region)</option>
+                  <option v-for="map in mapNames" :value="map" v-bind:key="map">{{ map }}</option>
+                </b-form-select>
+              </b-form-group>
+            </div>
+          </div>
 
-            <b-tab title="Traits, Effects & Requirements"></b-tab>
+          <div class="row mt-1">
+            <div class="col-6">
+              <b-form-group label-cols-md="3" label="Region">
+                <b-form-select v-model="droptable.regionName" required @change.native="droptable.mapName = ''">
+                  <option :value="''">Choose region (unselects map)</option>
+                  <option v-for="region in regionNames" :value="region" v-bind:key="region">{{ region }}</option>
+                </b-form-select>
+              </b-form-group>
+            </div>
+          </div>
 
-            <b-tab title="Miscellaneous"></b-tab>
-          </b-tabs>
+          <div class="row mt-1">
+            <div class="col-6">
+              <b-form-group label-cols-md="3" label="Item">
+                <b-form-select v-model="droptable.result" required>
+                  <option :value="''">Choose item</option>
+                  <option v-for="item in items" :value="item.name" v-bind:key="item.name">{{ item.name }}</option>
+                </b-form-select>
+              </b-form-group>
+            </div>
+          </div>
+
+          <div class="row mt-1">
+            <div class="col-6">
+              <b-form-group label-cols-md="3" label="Chance to Drop (1/x)">
+                <b-form-input type="number" v-model="droptable.maxChance" placeholder="Chance - x" min="0"></b-form-input>
+              </b-form-group>
+            </div>
+          </div>
         </b-form>
       </div>
     </b-modal>
@@ -54,22 +87,15 @@
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
       </template>
 
-      <template v-slot:cell(chance)="data">1/{{ data.item.chance }}</template>
+      <template v-slot:cell(maxChance)="data">1/{{ data.item.maxChance }}</template>
 
       <template v-slot:cell(actions)="data">
-        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.index)">Copy</b-button>
-        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.index)">Edit</b-button>
-        <b-button size="sm" variant="danger" @click="remove(data.index)">Remove</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.item)">Copy</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.item)">Edit</b-button>
+        <b-button size="sm" variant="danger" @click="remove(data.item)">Remove</b-button>
       </template>
     </b-table>
   </div>
-  <!--
-  TODO:
-    - map drop section (Choose map)
-    - region drop section (choose region from uploaded maps)
-
-    array: {result/maxChance} (chance always set to 1)
-  -->
 </template>
 
 <script>
@@ -81,6 +107,7 @@ import { events } from "../main";
 const defaultDroptable = {
   result: "",
   chance: 1,
+  maxChance: 0,
   mapName: "",
   regionName: ""
 };
@@ -96,7 +123,7 @@ export default {
       sortDesc: false,
       tableFields: [
         { key: "result", label: "Item", sortable: true },
-        { key: "chance", label: "Chance", sortable: true },
+        { key: "maxChance", label: "Chance", sortable: true },
         { key: "mapName", label: "Map", sortable: true },
         { key: "regionName", label: "Region", sortable: true },
         { key: "actions", label: "Actions", class: "text-right" }
@@ -106,10 +133,25 @@ export default {
     };
   },
 
+  computed: {
+    regionNames() {
+      const regions = this.maps.map(x => {
+        if(!x.map || !x.map.properties || !x.map.properties.region) return '';
+        return x.map.properties.region;
+      });
+
+      return [...new Set(regions)];
+    },
+
+    mapNames() {
+      return this.maps.map(x => x.name);
+    }
+  },
+
   methods: {
     isValidDroptable(droptable) {
-      const validKeys = ["result"];
-      return validKeys.every(x => get(droptable, x));
+      const validKeys = ["result", "maxChance", "chance"];
+      return validKeys.every(x => get(droptable, x)) && (droptable.mapName || droptable.regionName);
     },
 
     reset() {
@@ -128,21 +170,20 @@ export default {
       this.$refs.modal.show();
     },
 
-    copy(index) {
-      const droptable = this.droptables[index];
+    copy(droptable) {
       events.$emit("add:droptable", { droptable: clone(droptable) });
     },
 
-    edit(index) {
-      this.droptable = clone(this.droptables[index]);
-      this.isEditing = index;
+    edit(droptable) {
+      this.droptable = clone(droptable);
+      this.isEditing = this.droptables.findIndex(x => x === droptable);
       this.openModal();
     },
 
-    remove(index) {
+    remove(droptable) {
       if (!window.confirm("Are you sure you want to remove this droptable?"))
         return;
-      events.$emit("remove:droptable", { index });
+      events.$emit("remove:droptable", { index: this.droptables.findIndex(x => x === droptable) });
     }
   }
 };

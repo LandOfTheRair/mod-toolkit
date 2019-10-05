@@ -343,9 +343,9 @@
       <template v-slot:cell(name)="data">{{ data.item.name }}</template>
 
       <template v-slot:cell(actions)="data">
-        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.index)">Copy</b-button>
-        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.index)">Edit</b-button>
-        <b-button size="sm" variant="danger" @click="remove(data.index)">Remove</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.item)">Copy</b-button>
+        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.item)">Edit</b-button>
+        <b-button size="sm" variant="danger" @click="remove(data.item)">Remove</b-button>
       </template>
     </b-table>
   </div>
@@ -456,21 +456,25 @@ export default {
       this.$refs.modal.show();
     },
 
-    copy(index) {
-      const item = this.items[index];
-      events.$emit("add:item", { item: clone(item) });
+    copy(item) {
+      const cloneItem = clone(item);
+      cloneItem.name = cloneItem.name + ' (Copy)';
+
+      events.$emit("add:item", { item: cloneItem });
     },
 
-    edit(index) {
-      this.item = clone(this.items[index]);
-      this.isEditing = index;
+    edit(item) {
+      this.item = clone(item);
+      this.isEditing = this.items.findIndex(x => x === item);
       this.currentSelectedItemClass = this.item.itemClass;
+
+      console.log(item, this.item, this.isEditing)
       this.openModal();
     },
 
-    remove(index) {
+    remove(item) {
       if (!window.confirm("Are you sure you want to remove this item?")) return;
-      events.$emit("remove:item", { index });
+      events.$emit("remove:item", { index: this.items.findIndex(x => x === item) });
     },
 
     addStat(key) {
