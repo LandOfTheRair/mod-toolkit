@@ -27,6 +27,47 @@
     >
       <div class="d-block">
         <b-form>
+          <div class="row mt-1">
+            <div class="col-6">
+              <b-form-group label-cols-md="3" label="Tradeskill">
+                <b-form-select v-model="recipe.recipeType" required>
+                  <option :value="''">Choose tradeskill</option>
+                  <option v-for="ts in recipeTypes" :value="ts" v-bind:key="ts">{{ ts }}</option>
+                </b-form-select>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Item">
+                <b-form-select v-model="recipe.item" required>
+                  <option :value="''">Choose result item</option>
+                  <option v-for="item in items" :value="item.name" v-bind:key="item.name">{{ item.name }}</option>
+                </b-form-select>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Max skill">
+                <b-form-input type="number" v-model="recipe.maxSkillForGains" placeholder="Max skill to gain skill from" min="0"></b-form-input>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Skill earned">
+                <b-form-input type="number" v-model="recipe.skillGained" placeholder="Skill earned" min="0"></b-form-input>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="XP earned">
+                <b-form-input type="number" v-model="recipe.xpGained" placeholder="XP earned" min="0"></b-form-input>
+              </b-form-group>
+            </div>
+
+            <div class="col-5">
+              <b-form-group label-cols-md="3" v-for="n in 8" v-bind:key="n">
+                  <template v-slot:label>
+                    Ingredient #{{ n }}
+                  </template>
+                <b-form-select v-model="recipe.ingredients[n - 1]" required>
+                  <option :value="null">Choose ingredient #{{ n }}</option>
+                  <option v-for="item in items" :value="item.name" v-bind:key="item.name">{{ item.name }}</option>
+                </b-form-select>
+              </b-form-group>
+            </div>
+          </div>
         </b-form>
       </div>
     </b-modal>
@@ -37,10 +78,14 @@
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       :fields="tableFields"
-      :items="droptables"
+      :items="recipes"
     >
       <template v-slot:head(actions)="data">
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
+      </template>
+
+      <template v-slot:cell(ingredients)="data">
+        <div v-for="item in data.item.ingredients" v-bind:key="item">{{ item }}</div>
       </template>
 
       <template v-slot:cell(actions)="data">
@@ -50,11 +95,6 @@
       </template>
     </b-table>
   </div>
-
-  <!-- TODO:
-    - recipe type
-    - rest of recipe object
-  -->
 </template>
 
 <script>
@@ -64,7 +104,12 @@ import { clone } from "../helpers";
 import { events } from "../main";
 
 const defaultRecipe = {
-  result: ""
+  item: "",
+  skillGained: 0,
+  maxSkillForGains: 0,
+  xpGained: 0,
+  ingredients: [],
+  recipeType: ''
 };
 
 export default {
@@ -76,8 +121,11 @@ export default {
     return {
       sortBy: "name",
       sortDesc: false,
+      recipeTypes: ['alchemy', 'metalworking'],
       tableFields: [
-        { key: "result", label: "Item", sortable: true },
+        { key: "recipeType", label: "Recipe Type", sortable: true },
+        { key: "item", label: "Item", sortable: true },
+        { key: "ingredients", label: "Ingredients", sortable: true },
         { key: "actions", label: "Actions", class: "text-right" }
       ],
       isEditing: -1,
@@ -87,8 +135,8 @@ export default {
 
   methods: {
     isValidRecipe(recipe) {
-      const validKeys = ["result"];
-      return validKeys.every(x => get(recipe, x));
+      const validKeys = ["item", "skillGained", "xpGained", "recipeType", "maxSkillForGains"];
+      return validKeys.every(x => get(recipe, x)) && recipe.ingredients.filter(Boolean).length >= 2;
     },
 
     reset() {

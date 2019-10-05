@@ -31,7 +31,7 @@
     >
       <div class="d-block">
         <b-form>
-          <div class="row mt-1">
+          <div class="row">
             <div class="col-6">
               <b-form-group label-cols-md="3" label="Map">
                 <b-form-select v-model="droptable.mapName" required @change.native="droptable.regionName = ''">
@@ -39,33 +39,21 @@
                   <option v-for="map in mapNames" :value="map" v-bind:key="map">{{ map }}</option>
                 </b-form-select>
               </b-form-group>
-            </div>
-          </div>
 
-          <div class="row mt-1">
-            <div class="col-6">
               <b-form-group label-cols-md="3" label="Region">
                 <b-form-select v-model="droptable.regionName" required @change.native="droptable.mapName = ''">
                   <option :value="''">Choose region (unselects map)</option>
                   <option v-for="region in regionNames" :value="region" v-bind:key="region">{{ region }}</option>
                 </b-form-select>
               </b-form-group>
-            </div>
-          </div>
 
-          <div class="row mt-1">
-            <div class="col-6">
               <b-form-group label-cols-md="3" label="Item">
                 <b-form-select v-model="droptable.result" required>
                   <option :value="''">Choose item</option>
                   <option v-for="item in items" :value="item.name" v-bind:key="item.name">{{ item.name }}</option>
                 </b-form-select>
               </b-form-group>
-            </div>
-          </div>
 
-          <div class="row mt-1">
-            <div class="col-6">
               <b-form-group label-cols-md="3" label="Chance to Drop (1/x)">
                 <b-form-input type="number" v-model="droptable.maxChance" placeholder="Chance - x" min="0"></b-form-input>
               </b-form-group>

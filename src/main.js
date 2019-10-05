@@ -1,4 +1,4 @@
-// TODO: warn when items are not used by any creature, drop table
+// TODO: warn when items are not used by any creature, drop table, recipe
 // TODO: validate map properties (region, maxskill, maxlevel, etc)
 // TODO: with map, check spawner names / spawners
 // TODO: with map, check lair names against monsters
@@ -7,6 +7,7 @@
 // TODO: advanced mode for npc dialog for scripts
 // TODO: advanced mode for quests for scripts
 // TODO: get a list of all traits via HTTP - should be hosted on play.rair.land when ready
+// TODO: get all tradeskills, skills, traits, and other external data via an api or something?
 // TODO: npc sprite should be an array
 // TODO: host Content json files somewhere (content.rair.land?) and have an import option in each subtype to import stuff from there
 // TODO: provide link to template map and allow for easy download/setup for Tiled - provide sample config with spritesheets in correct location
