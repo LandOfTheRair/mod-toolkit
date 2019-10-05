@@ -133,8 +133,11 @@ export default {
   },
 
   created() {
+    // map
     events.$on("add:map", map => {
       if (!this.mod.modkitName) this.mod.modkitName = map.name;
+
+      if(this.mod.maps.find(x => x.name === map.name)) map.name = `${map.name} (2)`;
 
       this.mod.maps.push(map);
 
@@ -146,12 +149,17 @@ export default {
       this.persist();
     });
 
+    // npc
     events.$on("add:npc", ({ npc }) => {
+      if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (2)`;
+
       this.mod.npcs.push(npc);
       this.persist();
     });
 
     events.$on("edit:npc", ({ npc, index }) => {
+      if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (2)`;
+
       this.$set(this.mod.npcs, index, npc);
       this.persist();
     });
@@ -161,13 +169,23 @@ export default {
       this.persist();
     });
 
+    // item
     events.$on("add:item", ({ item }) => {
+      if(this.mod.items.find(x => x.name === item.name)) item.name = `${item.name} (2)`;
+
       this.mod.items.push(item);
       this.persist();
     });
 
     events.$on("edit:item", ({ item, index }) => {
+      if(this.mod.items.find(x => x.name === item.name)) item.name = `${item.name} (2)`;
+
+      const oldName = this.mod.items[index].name;
+      const newName = item.name;
+
       this.$set(this.mod.items, index, item);
+
+      this.updateItemsAcrossMod(oldName, newName);
       this.persist();
     });
 
@@ -176,6 +194,7 @@ export default {
       this.persist();
     });
 
+    // droptable
     events.$on("add:droptable", ({ droptable }) => {
       this.mod.drops.push(droptable);
       this.persist();
@@ -191,6 +210,7 @@ export default {
       this.persist();
     });
 
+    // recipe
     events.$on("add:recipe", ({ recipe }) => {
       this.mod.recipes.push(recipe);
       this.persist();
@@ -206,12 +226,17 @@ export default {
       this.persist();
     });
 
+    // spawner
     events.$on("add:spawner", ({ spawner }) => {
+      if(this.mod.spawners.find(x => x.tag === spawner.tag)) spawner.tag = `${spawner.tag} (2)`;
+
       this.mod.spawners.push(spawner);
       this.persist();
     });
 
     events.$on("edit:spawner", ({ spawner, index }) => {
+      if(this.mod.spawners.find(x => x.tag === spawner.tag)) spawner.tag = `${spawner.tag} (2)`;
+
       this.$set(this.mod.spawners, index, spawner);
       this.persist();
     });
@@ -251,6 +276,23 @@ export default {
 
       this.mod = Object.assign({}, defaultData);
       this.persist();
+    },
+
+    updateItemsAcrossMod(oldName, newName) {
+
+      this.mod.drops.forEach(droptable => {
+        if(droptable.result === oldName) droptable.result = newName;
+      });
+
+      this.mod.recipes.forEach(recipe => {
+        if(recipe.item === oldName) recipe.item = newName;
+
+        recipe.ingredients.forEach((ing, index) => {
+          if(ing !== oldName) return;
+
+          recipe.ingredients[index] = newName;
+        });
+      });
     }
   }
 };

@@ -71,6 +71,7 @@
       - stripY
       - eliteTickCap
       - isDangerous 
+      - tag (important)
   -->
 </template>
 

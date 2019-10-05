@@ -85,7 +85,7 @@
       </template>
 
       <template v-slot:cell(ingredients)="data">
-        <div v-for="item in data.item.ingredients" v-bind:key="item">{{ item }}</div>
+        <div v-for="(item, index) in data.item.ingredients" v-bind:key="index">{{ item }}</div>
       </template>
 
       <template v-slot:cell(actions)="data">

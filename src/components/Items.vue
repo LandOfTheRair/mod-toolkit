@@ -468,7 +468,6 @@ export default {
       this.isEditing = this.items.findIndex(x => x === item);
       this.currentSelectedItemClass = this.item.itemClass;
 
-      console.log(item, this.item, this.isEditing)
       this.openModal();
     },
 

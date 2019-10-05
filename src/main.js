@@ -12,6 +12,8 @@
 // TODO: host Content json files somewhere (content.rair.land?) and have an import option in each subtype to import stuff from there
 // TODO: provide link to template map and allow for easy download/setup for Tiled - provide sample config with spritesheets in correct location
 // TODO: make sure all items and npcs have unique names
+// TODO: when updating item name, update npc gear as well
+// TODO: when updating npc id, update spawner npcId list
 
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "../node_modules/bootstrap-vue/dist/bootstrap-vue.min.css";
