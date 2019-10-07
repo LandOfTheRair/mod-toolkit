@@ -375,7 +375,7 @@
           <img
             src="https://play.rair.land/assets/spritesheets/creatures.png"
             class="sprite"
-            v-bind:style="{ 'object-position': objectPosition(data.item.sprite) }"
+            v-bind:style="{ 'object-position': objectPosition(data.item.sprite, 40) }"
           >
         </div>
       </template>
