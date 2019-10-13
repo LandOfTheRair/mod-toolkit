@@ -29,9 +29,9 @@
       @ok="confirm()"
       :ok-disabled="!isValidDroptable(droptable)"
     >
-      <div class="d-block">
+      <div class="d-block p-1">
         <b-form>
-          <div class="row">
+          <div class="row mt-3">
             <div class="col-6">
               <b-form-group label-cols-md="3" label="Map">
                 <b-form-select v-model="droptable.mapName" required @change.native="droptable.regionName = ''">

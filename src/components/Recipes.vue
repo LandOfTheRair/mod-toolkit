@@ -25,9 +25,9 @@
       @ok="confirm()"
       :ok-disabled="!isValidRecipe(recipe)"
     >
-      <div class="d-block">
+      <div class="d-block p-1">
         <b-form>
-          <div class="row mt-1">
+          <div class="row mt-3">
             <div class="col-6">
               <b-form-group label-cols-md="3" label="Tradeskill">
                 <b-form-select v-model="recipe.recipeType" required>

@@ -21,7 +21,7 @@
       @ok="confirm()"
       :ok-disabled="!isValidNPC(npc)"
     >
-      <div class="d-block">
+      <div class="d-block p-1">
         <b-form>
           <b-tabs content-class="mt-3" fill>
             <b-tab title="Core Stats">
