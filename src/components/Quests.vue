@@ -3,12 +3,10 @@
 </template>
 
 <script>
-import { events } from '../main';
-
 export default {
-  name: "Quests",
+  name: 'Quests',
 
-  props: ["quests"]
+  props: ['quests']
 };
 </script>
 

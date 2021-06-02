@@ -71,7 +71,7 @@
       :fields="tableFields"
       :items="droptables"
     >
-      <template v-slot:head(actions)="data">
+      <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
       </template>
 
@@ -87,34 +87,34 @@
 </template>
 
 <script>
-import get from "lodash.get";
+import get from 'lodash.get';
 
-import { clone } from "../helpers";
-import { events } from "../main";
+import { clone } from '../helpers';
+import { events } from '../main';
 
 const defaultDroptable = {
-  result: "",
+  result: '',
   chance: 1,
   maxChance: 0,
-  mapName: "",
-  regionName: ""
+  mapName: '',
+  regionName: ''
 };
 
 export default {
-  name: "Droptables",
+  name: 'Droptables',
 
-  props: ["droptables", "maps", "items"],
+  props: ['droptables', 'maps', 'items'],
 
   data: function() {
     return {
-      sortBy: "name",
+      sortBy: 'name',
       sortDesc: false,
       tableFields: [
-        { key: "result", label: "Item", sortable: true },
-        { key: "maxChance", label: "Chance", sortable: true },
-        { key: "mapName", label: "Map", sortable: true },
-        { key: "regionName", label: "Region", sortable: true },
-        { key: "actions", label: "Actions", class: "text-right" }
+        { key: 'result', label: 'Item', sortable: true },
+        { key: 'maxChance', label: 'Chance', sortable: true },
+        { key: 'mapName', label: 'Map', sortable: true },
+        { key: 'regionName', label: 'Region', sortable: true },
+        { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
       isEditing: -1,
       droptable: clone(defaultDroptable)
@@ -138,7 +138,7 @@ export default {
 
   methods: {
     isValidDroptable(droptable) {
-      const validKeys = ["result", "maxChance", "chance"];
+      const validKeys = ['result', 'maxChance', 'chance'];
       return validKeys.every(x => get(droptable, x)) && (droptable.mapName || droptable.regionName);
     },
 
@@ -148,7 +148,7 @@ export default {
     },
 
     confirm() {
-      events.$emit(`${this.isEditing >= 0 ? "edit" : "add"}:droptable`, {
+      events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:droptable`, {
         droptable: this.droptable,
         index: this.isEditing
       });
@@ -159,7 +159,7 @@ export default {
     },
 
     copy(droptable) {
-      events.$emit("add:droptable", { droptable: clone(droptable) });
+      events.$emit('add:droptable', { droptable: clone(droptable) });
     },
 
     edit(droptable) {
@@ -168,10 +168,11 @@ export default {
       this.openModal();
     },
 
-    remove(droptable) {
-      if (!window.confirm("Are you sure you want to remove this droptable?"))
-        return;
-      events.$emit("remove:droptable", { index: this.droptables.findIndex(x => x === droptable) });
+    async remove(droptable) {
+      const willRemove = await this.$dialog.confirm({ title: 'Remove Droptable?', text: 'Are you sure you want to remove this droptable?' });
+      if(!willRemove) return;
+
+      events.$emit('remove:droptable', { index: this.droptables.findIndex(x => x === droptable) });
     }
   }
 };

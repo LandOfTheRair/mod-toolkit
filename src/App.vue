@@ -1,5 +1,9 @@
 <template>
   <div id="app" v-cloak>
+
+    <img src="file://./resources/maps/src/content/__assets/spritesheets/items.png" v-if="isLoaded" class="hidden" />
+    <img src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png" v-if="isLoaded" class="hidden" />
+
     <b-navbar type="dark" variant="dark">
       <b-navbar-brand>Land of the Rair Mod Toolkit</b-navbar-brand>
 
@@ -9,30 +13,25 @@
         text="Save"
         class="ml-auto"
         @click="persist()"
+        v-if="isLoaded"
         variant="outline-primary"
       >
-        <b-dropdown-item
-          href="https://github.com/bjorn/tiled/releases/tag/v1.1.4"
-          target="_blank"
-        >Get Map Editor</b-dropdown-item>
+        <b-dropdown-item @click="getResources()">Update Resources</b-dropdown-item>
+        <b-dropdown-item @click="changeName()">Change Mod Name</b-dropdown-item>
         <b-dropdown-item @click="exportMod()">Export Mod</b-dropdown-item>
         <b-dropdown-item @click="importMod()">Import Mod</b-dropdown-item>
         <b-dropdown-item @click="resetMod()">Reset Mod</b-dropdown-item>
       </b-dropdown>
     </b-navbar>
 
-    <div class="px-3">
-      <h3 class="text-center my-3">Modkit Title</h3>
+    <div class="px-3 loading" v-if="!isLoaded">
+      First time load...
+      <br>
+      Gathering resources...
+    </div>
 
-      <div>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Modkit Title"
-          v-model.trim="mod.modkitName"
-          @keyup="persist()"
-        >
-      </div>
+    <div class="px-3" v-if="mod && isLoaded">
+      <h3 class="text-center my-3">{{ mod.modkitName || 'Unnamed Modkit' }}</h3>
 
       <div class="mt-3">
         <b-tabs content-class="mt-3" fill class="main-tabs">
@@ -90,19 +89,22 @@
 </template>
 
 <script>
-import { events } from "./main";
+import localforage from 'localforage';
 
-import MapsTab from "./components/Maps";
-import NPCsTab from "./components/NPCs";
-import ItemsTab from "./components/Items";
-import DroptablesTab from "./components/Droptables";
-import RecipesTab from "./components/Recipes";
-import SpawnersTab from "./components/Spawners";
-import DialogsTab from "./components/Dialogs";
-import QuestsTab from "./components/Quests";
+import { events } from './main';
+
+import MapsTab from './components/Maps';
+import NPCsTab from './components/NPCs';
+import ItemsTab from './components/Items';
+import DroptablesTab from './components/Droptables';
+import RecipesTab from './components/Recipes';
+import SpawnersTab from './components/Spawners';
+import DialogsTab from './components/Dialogs';
+import QuestsTab from './components/Quests';
 
 const defaultData = {
-  modkitName: "",
+  modkitName: '',
+  version: 1,
   npcs: [],
   items: [],
   drops: [],
@@ -111,15 +113,8 @@ const defaultData = {
   maps: []
 };
 
-let loadedData = {};
-try {
-  loadedData = JSON.parse(localStorage.getItem("mod"));
-} catch (e) {}
-
-const opts = Object.assign({}, defaultData, loadedData);
-
 export default {
-  name: "App",
+  name: 'App',
 
   components: {
     tabMaps: MapsTab,
@@ -132,53 +127,75 @@ export default {
     tabQuests: QuestsTab
   },
 
+  async beforeCreate() {
+
+    try {
+      const mod = await localforage.getItem('mod');
+      this.mod = Object.assign({}, defaultData, JSON.parse(mod));
+      this.ensureMapsExist();
+
+    } catch (e) {
+      console.error(e);
+    }
+
+  },
+
   created() {
+    this.watchIPC();
+    this.watchKeybinds();
+
+    window.api.send('READY_CHECK');
+
     // map
-    events.$on("add:map", map => {
+    events.$on('add:map', map => {
       if (!this.mod.modkitName) this.mod.modkitName = map.name;
 
-      if(this.mod.maps.find(x => x.name === map.name)) map.name = `${map.name} (2)`;
+      const existingMap = this.mod.maps.find(x => x.name === map.name);
+      if(existingMap) {
+        existingMap.map = map.map;
 
-      this.mod.maps.push(map);
+      } else {
+        this.mod.maps.push(map);
+      }
 
       this.persist();
     });
 
-    events.$on("remove:map", index => {
+    events.$on('remove:map', index => {
       this.mod.maps.splice(index, 1);
       this.persist();
     });
 
     // npc
-    events.$on("add:npc", ({ npc }) => {
-      if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (2)`;
+    events.$on('add:npc', ({ npc }) => {
+      if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (copy)`;
 
       this.mod.npcs.push(npc);
       this.persist();
     });
 
-    events.$on("edit:npc", ({ npc, index }) => {
-      if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (2)`;
+    events.$on('edit:npc', ({ npc, index }) => {
+      if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (copy)`;
 
       this.$set(this.mod.npcs, index, npc);
       this.persist();
     });
 
-    events.$on("remove:npc", ({ index }) => {
+    events.$on('remove:npc', ({ index }) => {
       this.mod.npcs.splice(index, 1);
       this.persist();
     });
 
     // item
-    events.$on("add:item", ({ item }) => {
-      if(this.mod.items.find(x => x.name === item.name)) item.name = `${item.name} (2)`;
+    events.$on('add:item', ({ item }) => {
+      if(this.mod.items.find(x => x.name === item.name)) item.name = `${item.name} (copy)`;
 
       this.mod.items.push(item);
       this.persist();
     });
 
-    events.$on("edit:item", ({ item, index }) => {
-      if(this.mod.items.find(x => x.name === item.name)) item.name = `${item.name} (2)`;
+    events.$on('edit:item', ({ item, index }) => {
+      if(this.mod.items.find(x => x.name === item.name)) item.name = `${item.name} (copy)`;
 
       const oldName = this.mod.items[index].name;
       const newName = item.name;
@@ -189,90 +206,112 @@ export default {
       this.persist();
     });
 
-    events.$on("remove:item", ({ index }) => {
+    events.$on('remove:item', ({ index }) => {
       this.mod.items.splice(index, 1);
       this.persist();
     });
 
     // droptable
-    events.$on("add:droptable", ({ droptable }) => {
+    events.$on('add:droptable', ({ droptable }) => {
       this.mod.drops.push(droptable);
       this.persist();
     });
 
-    events.$on("edit:droptable", ({ droptable, index }) => {
+    events.$on('edit:droptable', ({ droptable, index }) => {
       this.$set(this.mod.drops, index, droptable);
       this.persist();
     });
 
-    events.$on("remove:droptable", ({ index }) => {
+    events.$on('remove:droptable', ({ index }) => {
       this.mod.drops.splice(index, 1);
       this.persist();
     });
 
     // recipe
-    events.$on("add:recipe", ({ recipe }) => {
+    events.$on('add:recipe', ({ recipe }) => {
       this.mod.recipes.push(recipe);
       this.persist();
     });
 
-    events.$on("edit:recipe", ({ recipe, index }) => {
+    events.$on('edit:recipe', ({ recipe, index }) => {
       this.$set(this.mod.recipes, index, recipe);
       this.persist();
     });
 
-    events.$on("remove:recipe", ({ index }) => {
+    events.$on('remove:recipe', ({ index }) => {
       this.mod.recipes.splice(index, 1);
       this.persist();
     });
 
     // spawner
-    events.$on("add:spawner", ({ spawner }) => {
-      if(this.mod.spawners.find(x => x.tag === spawner.tag)) spawner.tag = `${spawner.tag} (2)`;
+    events.$on('add:spawner', ({ spawner }) => {
+      if(this.mod.spawners.find(x => x.tag === spawner.tag)) spawner.tag = `${spawner.tag} (copy)`;
 
       this.mod.spawners.push(spawner);
       this.persist();
     });
 
-    events.$on("edit:spawner", ({ spawner, index }) => {
-      if(this.mod.spawners.find(x => x.tag === spawner.tag)) spawner.tag = `${spawner.tag} (2)`;
+    events.$on('edit:spawner', ({ spawner, index }) => {
+      if(this.mod.spawners.find(x => x.tag === spawner.tag)) spawner.tag = `${spawner.tag} (copy)`;
 
       this.$set(this.mod.spawners, index, spawner);
       this.persist();
     });
 
-    events.$on("remove:spawner", ({ index }) => {
+    events.$on('remove:spawner', ({ index }) => {
       this.mod.spawners.splice(index, 1);
       this.persist();
     });
   },
 
-  data: function() {
+  data() {
     return {
-      mod: opts
+      isLoaded: this.isLoaded,
+      mod: this.mod
     };
   },
 
   methods: {
+    watchIPC() {
+      window.api.receive('ready', () => {
+        this.isLoaded = true;
+      });
+
+      window.api.receive('notify', ({ type, text }) => {
+        this.$dialog.notify[type](text, { position: 'bottom-right' });
+      });
+
+      window.api.receive('newmap', mapData => {
+        events.$emit('add:map', mapData);
+      });
+    },
+
+    watchKeybinds() {
+      document.onkeypress = (e) => {
+        if(e.keyCode !== 19 || !e.ctrlKey) return;
+        this.persist();
+      };
+    },
+
     persist() {
-      localStorage.setItem("mod", JSON.stringify(this.mod));
+      localforage.setItem('mod', JSON.stringify(this.mod));
     },
 
     exportMod() {
-      console.log("export");
+      console.log('export');
     },
 
     importMod() {
-      console.log("import");
+      console.log('import');
     },
 
-    resetMod() {
-      if (
-        !window.confirm(
-          "Are you sure you want to do this? You will reset all of your existing content, so make sure you have backed it up first!"
-        )
-      )
-        return;
+    getResources() {
+      window.api.send('UPDATE_RESOURCES');
+    },
+
+    async resetMod() {
+      const willReset = await this.$dialog.confirm({ title: 'Reset Mod?', text: 'Are you sure you want to do this? You will reset all of your existing content, so make sure you have backed it up first!' });
+      if(!willReset) return;
 
       this.mod = Object.assign({}, defaultData);
       this.persist();
@@ -292,6 +331,21 @@ export default {
 
           recipe.ingredients[index] = newName;
         });
+      });
+    },
+
+    async changeName() {
+      const newName = await this.$dialog.prompt({ title: 'What would you like to call your mod?', text: 'Use the map or region name' });
+      if(!newName) return;
+
+      this.mod.modkitName = newName;
+
+      this.persist();
+    },
+
+    ensureMapsExist() {
+      this.mod.maps.forEach(map => {
+        window.api.send('ENSURE_MAP', { ...map });
       });
     }
   }
@@ -424,5 +478,23 @@ th[role="columnheader"]:last-child {
 .thin-button {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+table td {
+  min-height: 64px;
+  vertical-align: middle !important;
+}
+
+.loading {
+  height: calc(100vh - 64px);
+  width: 100vw;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 3em;
+  opacity: 0.7;
+  text-align: center;
 }
 </style>

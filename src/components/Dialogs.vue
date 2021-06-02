@@ -3,13 +3,10 @@
 </template>
 
 <script>
-import { events } from '../main';
-
-
 export default {
-  name: "Dialogs",
+  name: 'Dialogs',
 
-  props: ["dialogs"]
+  props: ['dialogs']
 };
 </script>
 

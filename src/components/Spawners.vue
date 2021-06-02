@@ -97,6 +97,16 @@
                 ></b-form-input>
               </b-form-group>
 
+              <b-form-group label-cols-md="3" label="Attribute Add Chance">
+                <b-form-input
+                  type="number"
+                  v-model="spawner.attributeAddChance"
+                  min="0"
+                  max="100"
+                  placeholder="Attribute Add Chance"
+                ></b-form-input>
+              </b-form-group>
+
               <div class="row mb-3">
                 <b-form-checkbox v-model="spawner.alwaysSpawn" class="col-md-4 offset-md-3">
                   <span
@@ -122,6 +132,18 @@
                     v-b-tooltip.hover
                     title="Spawner will only spawn a creature if creature is dead. Useful for lairs/resources."
                   >Require Dead To Respawn</span>
+                </b-form-checkbox>
+              </div>
+
+              <div class="row mb-3">
+                <b-form-checkbox
+                  v-model="spawner.respectKnowledge"
+                  class="col-md-9 offset-md-3"
+                >
+                  <span
+                    v-b-tooltip.hover
+                    title="Spawner will only tick if players are nearby. Turning off is useful to let towns stay vibrant."
+                  >Respect Knowledge</span>
                 </b-form-checkbox>
               </div>
 
@@ -252,7 +274,7 @@
       :fields="tableFields"
       :items="spawners"
     >
-      <template v-slot:head(actions)="data">
+      <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
       </template>
 
@@ -274,10 +296,10 @@
 </template>
 
 <script>
-import get from "lodash.get";
+import get from 'lodash.get';
 
-import { clone } from "../helpers";
-import { events } from "../main";
+import { clone } from '../helpers';
+import { events } from '../main';
 
 const defaultSpawner = {
   npcIds: [],
@@ -289,28 +311,30 @@ const defaultSpawner = {
   spawnRadius: 0,
   maxCreatures: 5,
   stripRadius: 0,
-  _paths: ""
+  respectKnowledge: true,
+  attributeAddChance: 0,
+  _paths: ''
 };
 
 export default {
-  name: "Spawners",
+  name: 'Spawners',
 
-  props: ["spawners", "npcs"],
+  props: ['spawners', 'npcs'],
 
   data: function() {
     return {
-      sortBy: "name",
+      sortBy: 'name',
       sortDesc: false,
       tableFields: [
-        { key: "tag", label: "Tag", sortable: true },
-        { key: "respawnRate", label: "Respawn", sortable: true },
-        { key: "npcIds", label: "NPCs", sortable: true },
-        { key: "isDangerous", label: "Dangerous?", sortable: true },
-        { key: "actions", label: "Actions", class: "text-right" }
+        { key: 'tag', label: 'Tag', sortable: true },
+        { key: 'respawnRate', label: 'Respawn', sortable: true },
+        { key: 'npcIds', label: 'NPCs', sortable: true },
+        { key: 'isDangerous', label: 'Dangerous?', sortable: true },
+        { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
       isEditing: -1,
       spawner: clone(defaultSpawner),
-      currentAddNPC: ""
+      currentAddNPC: ''
     };
   },
 
@@ -322,7 +346,7 @@ export default {
 
   methods: {
     isValidSpawner(spawner) {
-      const validKeys = ["npcIds", "tag"];
+      const validKeys = ['npcIds', 'tag'];
       return validKeys.every(x => get(spawner, x));
     },
 
@@ -333,11 +357,11 @@ export default {
 
     confirm() {
       this.spawner.paths = this.spawner._paths
-        ? this.spawner._paths.split("\n")
+        ? this.spawner._paths.split('\n')
         : [];
       delete this.spawner._paths;
 
-      events.$emit(`${this.isEditing >= 0 ? "edit" : "add"}:spawner`, {
+      events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:spawner`, {
         spawner: this.spawner,
         index: this.isEditing
       });
@@ -348,22 +372,23 @@ export default {
     },
 
     copy(spawner) {
-      events.$emit("add:spawner", { spawner: clone(spawner) });
+      events.$emit('add:spawner', { spawner: clone(spawner) });
     },
 
     edit(spawner) {
       this.spawner = clone(spawner);
       this.spawner._paths = this.spawner.paths
-        ? this.spawner.paths.join("\n")
-        : "";
+        ? this.spawner.paths.join('\n')
+        : '';
       this.isEditing = this.spawners.findIndex(x => x === spawner);
       this.openModal();
     },
 
-    remove(spawner) {
-      if (!window.confirm("Are you sure you want to remove this spawner?"))
-        return;
-      events.$emit("remove:spawner", {
+    async remove(spawner) {
+      const willRemove = await this.$dialog.confirm({ title: 'Remove Spawner?', text: 'Are you sure you want to remove this spawner?' });
+      if(!willRemove) return;
+
+      events.$emit('remove:spawner', {
         index: this.spawners.findIndex(x => x === spawner)
       });
     },

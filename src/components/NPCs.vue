@@ -30,7 +30,7 @@
                   <b-form-group class="sprite-field" label-cols-md="3" label="Sprite">
                     <div class="sprite-container">
                       <img
-                        src="https://play.rair.land/assets/spritesheets/creatures.png"
+                        src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
                         class="sprite"
                         v-bind:style="{ 'object-position': objectPosition(npc.sprite, 40) }"
                       >
@@ -366,14 +366,14 @@
              :sort-desc.sync="sortDesc" 
              :fields="tableFields" 
              :items="npcs">
-      <template v-slot:head(actions)="data">
+      <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
       </template>
 
       <template v-slot:cell(sprite)="data">
         <div class="sprite-container">
           <img
-            src="https://play.rair.land/assets/spritesheets/creatures.png"
+            src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
             class="sprite"
             v-bind:style="{ 'object-position': objectPosition(data.item.sprite, 40) }"
           >
@@ -430,24 +430,24 @@
 </template>
 
 <script>
-import get from "lodash.get";
+import get from 'lodash.get';
 
 import { clone, objectPosition } from '../helpers';
-import { coreStats, extraStats } from "../constants";
-import { events } from "../main";
+import { coreStats, extraStats } from '../constants';
+import { events } from '../main';
 
 const defaultNPC = {
   sprite: 0,
-  npcId: "",
-  name: "",
-  hostility: "OnHit",
-  allegiance: "Enemy",
-  monsterClass: "",
-  baseClass: "",
-  affiliation: "",
-  alignment: "Neutral",
-  rightHand: "",
-  leftHand: "",
+  npcId: '',
+  name: '',
+  hostility: 'OnHit',
+  allegiance: 'Enemy',
+  monsterClass: '',
+  baseClass: '',
+  affiliation: '',
+  alignment: 'Neutral',
+  rightHand: '',
+  leftHand: '',
   stats: {
     str: 0,
     dex: 0,
@@ -470,27 +470,27 @@ const defaultNPC = {
 };
 
 export default {
-  name: "NPCs",
+  name: 'NPCs',
 
-  props: ["npcs", "items"],
+  props: ['npcs', 'items'],
 
   data: function() {
     return {
       sortBy: 'name',
       sortDesc: false,
       tableFields: [
-        { key: "sprite", label: "Sprite" },
-        { key: "name", label: "ID", sortable: true },
-        { key: "level", label: "Level", sortable: true },
-        { key: "skillLevels", label: "Skill", sortable: true },
-        { key: "baseClass", label: "Class", sortable: true },
-        { key: "category", label: "Category", sortable: true },
-        { key: "allegiance", label: "Allegiance", sortable: true },
-        { key: "actions", label: "Actions", class: "text-right" }
+        { key: 'sprite', label: 'Sprite' },
+        { key: 'name', label: 'ID', sortable: true },
+        { key: 'level', label: 'Level', sortable: true },
+        { key: 'skillLevels', label: 'Skill', sortable: true },
+        { key: 'baseClass', label: 'Class', sortable: true },
+        { key: 'category', label: 'Category', sortable: true },
+        { key: 'allegiance', label: 'Allegiance', sortable: true },
+        { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
       isEditing: -1,
       linkStats: true,
-      currentExtraStat: "",
+      currentExtraStat: '',
       extraStats: extraStats.map(x => x.stat),
       npc: clone(defaultNPC)
     };
@@ -501,13 +501,13 @@ export default {
 
     isValidNPC(npc) {
       const validKeys = [
-        "npcId",
-        "hp.min",
-        "giveXp.min",
-        "gold.min",
-        "level",
-        "skillLevels",
-        "skillOnKill"
+        'npcId',
+        'hp.min',
+        'giveXp.min',
+        'gold.min',
+        'level',
+        'skillLevels',
+        'skillOnKill'
       ];
       return validKeys.every(x => get(npc, x));
     },
@@ -526,7 +526,7 @@ export default {
     },
 
     copy(npc) {
-      events.$emit("add:npc", { npc: clone(npc) });
+      events.$emit('add:npc', { npc: clone(npc) });
     },
 
     edit(npc) {
@@ -535,9 +535,11 @@ export default {
       this.openModal();
     },
 
-    remove(npc) {
-      if (!window.confirm("Are you sure you want to remove this NPC?")) return;
-      events.$emit("remove:npc", { index: this.npcs.findIndex(x => x === npc) });
+    async remove(npc) {
+      const willRemove = await this.$dialog.confirm({ title: 'Remove NPC?', text: 'Are you sure you want to remove this NPC?' });
+      if(!willRemove) return;
+
+      events.$emit('remove:npc', { index: this.npcs.findIndex(x => x === npc) });
     },
 
     updateKeyMaxIfNotPresent($event, key) {

@@ -30,13 +30,13 @@
                   <b-form-group class="sprite-field" label-cols-md="3" label="Sprite">
                     <div class="sprite-container">
                       <img
-                        src="https://play.rair.land/assets/spritesheets/items.png"
+                        src="file://./resources/maps/src/content/__assets/spritesheets/items.png"
                         class="sprite"
                         v-bind:style="{ 'object-position': objectPosition(item.sprite, 32) }"
                       >
                     </div>
 
-                    <b-form-input type="number" v-model="item.sprite" step="5" min="0" required></b-form-input>
+                    <b-form-input type="number" v-model="item.sprite" min="0" required></b-form-input>
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Name">
@@ -47,7 +47,7 @@
                     <b-form-select
                       v-model="currentSelectedItemClass"
                       required
-                      @change.native="changeItemType()"
+                      @change="changeItemType($event)"
                     >
                       <option :value="''">Choose item type</option>
                       <optgroup
@@ -80,8 +80,8 @@
                     </b-form-select>
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Max Enchant">
-                    <b-form-input type="number" v-model="item.maxEnchantLevel" min="0"></b-form-input>
+                  <b-form-group label-cols-md="3" label="Max # Upgrades">
+                    <b-form-input type="number" v-model="item.maxUpgrades" min="0"></b-form-input>
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Value" class="multi">
@@ -326,14 +326,14 @@
       :fields="tableFields"
       :items="items"
     >
-      <template v-slot:head(actions)="data">
+      <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
       </template>
 
       <template v-slot:cell(sprite)="data">
         <div class="sprite-container">
           <img
-            src="https://play.rair.land/assets/spritesheets/items.png"
+            src="file://./resources/maps/src/content/__assets/spritesheets/items.png"
             class="sprite"
             v-bind:style="{ 'object-position': objectPosition(data.item.sprite, 32) }"
           >
@@ -351,7 +351,7 @@
   </div>
 
   <!--
-    TODO
+    TODO:
       - traits, effects, requirements
         - trait name/level (allow multiple names as array, and level as min/max)
         - effect name/potency/chance/duration/canApply/autocast
@@ -364,14 +364,13 @@
         - containedItems (chance/item)
         - cosmetic (name/isPermanent)
         - destroyOnDrop
-        - notUsableAfterHours
   -->
 </template>
 
 <script>
-import get from "lodash.get";
+import get from 'lodash.get';
 
-import { clone, objectPosition, isUndefined } from "../helpers";
+import { clone, objectPosition, isUndefined } from '../helpers';
 import {
   coreStats,
   extraStats,
@@ -382,49 +381,49 @@ import {
   typePropSets,
   typePropDefaults,
   itemTypes
-} from "../constants";
-import { events } from "../main";
+} from '../constants';
+import { events } from '../main';
 
 const defaultItem = {
   sprite: 0,
-  name: "",
-  itemClass: "",
-  maxEnchantLevel: 5,
+  name: '',
+  itemClass: '',
+  maxUpgrades: 0,
   value: 1,
   sellValue: 0,
-  desc: "an item",
+  desc: 'an item',
   stats: {},
   randomStats: {},
-  type: "Martial",
-  secondaryType: ""
+  type: 'Martial',
+  secondaryType: ''
 };
 
 export default {
-  name: "Items",
+  name: 'Items',
 
-  props: ["items"],
+  props: ['items'],
 
   data: function() {
     return {
-      sortBy: "name",
+      sortBy: 'name',
       sortDesc: false,
       itemGroups: [
-        { group: "Armor", keys: armorClasses },
-        { group: "Weapons", keys: weaponClasses },
-        { group: "Items", keys: itemClasses }
+        { group: 'Armor', keys: armorClasses },
+        { group: 'Weapons', keys: weaponClasses },
+        { group: 'Items', keys: itemClasses }
       ],
-      currentSelectedItemClass: "",
+      currentSelectedItemClass: '',
       typePropSets,
       damageClasses,
       itemTypes,
       tableFields: [
-        { key: "sprite", label: "Sprite" },
-        { key: "name", label: "Name", sortable: true },
-        { key: "itemClass", label: "Type", sortable: true },
-        { key: "type", label: "Skill", sortable: true },
-        { key: "actions", label: "Actions", class: "text-right" }
+        { key: 'sprite', label: 'Sprite' },
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'itemClass', label: 'Type', sortable: true },
+        { key: 'type', label: 'Skill', sortable: true },
+        { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
-      currentAddStat: "",
+      currentAddStat: '',
       isEditing: -1,
       linkStats: true,
       allStats: [...coreStats.map(x => x.stat), ...extraStats.map(x => x.stat)],
@@ -436,7 +435,7 @@ export default {
     objectPosition,
 
     isValidItem(item) {
-      const validKeys = ["name", "itemClass", "desc", "value", "type"];
+      const validKeys = ['name', 'itemClass', 'desc', 'value', 'type'];
       return validKeys.every(x => get(item, x));
     },
 
@@ -446,7 +445,7 @@ export default {
     },
 
     confirm() {
-      events.$emit(`${this.isEditing >= 0 ? "edit" : "add"}:item`, {
+      events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:item`, {
         item: this.item,
         index: this.isEditing
       });
@@ -460,7 +459,7 @@ export default {
       const cloneItem = clone(item);
       cloneItem.name = cloneItem.name + ' (Copy)';
 
-      events.$emit("add:item", { item: cloneItem });
+      events.$emit('add:item', { item: cloneItem });
     },
 
     edit(item) {
@@ -471,9 +470,11 @@ export default {
       this.openModal();
     },
 
-    remove(item) {
-      if (!window.confirm("Are you sure you want to remove this item?")) return;
-      events.$emit("remove:item", { index: this.items.findIndex(x => x === item) });
+    async remove(item) {
+      const willRemove = await this.$dialog.confirm({ title: 'Remove Item?', text: 'Are you sure you want to remove this item?' });
+      if(!willRemove) return;
+
+      events.$emit('remove:item', { index: this.items.findIndex(x => x === item) });
     },
 
     addStat(key) {
@@ -499,13 +500,13 @@ export default {
       }
     },
 
-    changeItemType() {
+    changeItemType(event) {
       const oldType = this.item.itemClass;
-      const newType = this.currentSelectedItemClass;
+      const newType = event;
 
       const resetProps = typePropDefaults[oldType] || {};
       Object.keys(resetProps).forEach(prop => {
-        if (prop === "stats") {
+        if (prop === 'stats') {
           Object.keys(resetProps[prop]).forEach(subProp => {
             this.$delete(this.item[prop], subProp);
           });
@@ -517,7 +518,7 @@ export default {
 
       const newProps = typePropDefaults[newType] || {};
       Object.keys(newProps).forEach(prop => {
-        if (prop === "stats") {
+        if (prop === 'stats') {
           Object.keys(newProps[prop]).forEach(subProp => {
             this.$set(this.item[prop], subProp, newProps[prop][subProp]);
           });
@@ -527,8 +528,8 @@ export default {
         this.$set(this.item, prop, newProps[prop]);
       });
 
-      if (!this.item.type) this.$set(this.item, "type", "Martial");
-      if (!this.item.secondaryType) this.$set(this.item, "secondaryType", "");
+      if (!this.item.type) this.$set(this.item, 'type', 'Martial');
+      if (!this.item.secondaryType) this.$set(this.item, 'secondaryType', '');
 
       this.item.itemClass = newType;
     }

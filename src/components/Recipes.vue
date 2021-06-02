@@ -43,16 +43,34 @@
                 </b-form-select>
               </b-form-group>
 
-              <b-form-group label-cols-md="3" label="Max skill">
-                <b-form-input type="number" v-model="recipe.maxSkillForGains" placeholder="Max skill to gain skill from" min="0"></b-form-input>
+              <b-form-group label-cols-md="3" label="Category">
+                <b-form-input type="text" v-model="recipe.category" required placeholder="Display category for the recipe"></b-form-input>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Min Skill" class="multi">
+                <b-form-input
+                  type="number"
+                  v-model="recipe.requireSkill"
+                  min="0"
+                  placeholder="Min Skill"
+                ></b-form-input>
+                <div class="split-label true-center">
+                  <strong>Max Skill</strong>
+                </div>
+                <b-form-input
+                  type="number"
+                  v-model="recipe.maxSkillForGains"
+                  min="0"
+                  placeholder="Max Skill"
+                ></b-form-input>
               </b-form-group>
 
               <b-form-group label-cols-md="3" label="Skill earned">
-                <b-form-input type="number" v-model="recipe.skillGained" placeholder="Skill earned" min="0"></b-form-input>
+                <b-form-input type="number" v-model="recipe.skillGained" required placeholder="Skill earned" min="0"></b-form-input>
               </b-form-group>
 
               <b-form-group label-cols-md="3" label="XP earned">
-                <b-form-input type="number" v-model="recipe.xpGained" placeholder="XP earned" min="0"></b-form-input>
+                <b-form-input type="number" v-model="recipe.xpGained" required placeholder="XP earned" min="0"></b-form-input>
               </b-form-group>
             </div>
 
@@ -80,7 +98,7 @@
       :fields="tableFields"
       :items="recipes"
     >
-      <template v-slot:head(actions)="data">
+      <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
       </template>
 
@@ -95,38 +113,46 @@
       </template>
     </b-table>
   </div>
+
+  <!-- 
+    TODO:
+      oz ingredients,
+      requireLearn, requireClass, requireSpell, copySkillToPotency, potencyScalar, transferOwnerFrom
+  -->
 </template>
 
 <script>
-import get from "lodash.get";
+import get from 'lodash.get';
 
-import { clone } from "../helpers";
-import { events } from "../main";
+import { clone } from '../helpers';
+import { events } from '../main';
 
 const defaultRecipe = {
-  item: "",
+  item: '',
   skillGained: 0,
-  maxSkillForGains: 0,
+  requireSkill: 0,
+  maxSkillForGains: 4,
   xpGained: 0,
   ingredients: [],
-  recipeType: ''
+  recipeType: '',
+  category: ''
 };
 
 export default {
-  name: "Recipes",
+  name: 'Recipes',
 
-  props: ["recipes", "items"],
+  props: ['recipes', 'items'],
 
   data: function() {
     return {
-      sortBy: "name",
+      sortBy: 'name',
       sortDesc: false,
-      recipeTypes: ['alchemy', 'metalworking'],
+      recipeTypes: ['alchemy', 'metalworking', 'spellforging'],
       tableFields: [
-        { key: "recipeType", label: "Recipe Type", sortable: true },
-        { key: "item", label: "Item", sortable: true },
-        { key: "ingredients", label: "Ingredients", sortable: true },
-        { key: "actions", label: "Actions", class: "text-right" }
+        { key: 'recipeType', label: 'Recipe Type', sortable: true },
+        { key: 'item', label: 'Item', sortable: true },
+        { key: 'ingredients', label: 'Ingredients', sortable: true },
+        { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
       isEditing: -1,
       recipe: clone(defaultRecipe)
@@ -135,7 +161,7 @@ export default {
 
   methods: {
     isValidRecipe(recipe) {
-      const validKeys = ["item", "skillGained", "xpGained", "recipeType", "maxSkillForGains"];
+      const validKeys = ['item', 'skillGained', 'xpGained', 'recipeType', 'maxSkillForGains'];
       return validKeys.every(x => get(recipe, x)) && recipe.ingredients.filter(Boolean).length >= 2;
     },
 
@@ -145,7 +171,7 @@ export default {
     },
 
     confirm() {
-      events.$emit(`${this.isEditing >= 0 ? "edit" : "add"}:recipe`, {
+      events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:recipe`, {
         recipe: this.recipe,
         index: this.isEditing
       });
@@ -156,18 +182,20 @@ export default {
     },
 
     copy(recipe) {
-      events.$emit("add:recipe", { recipe: clone(recipe) });
+      events.$emit('add:recipe', { recipe: clone(recipe) });
     },
 
     edit(recipe) {
       this.recipe = clone(recipe);
-      this.isEditing = this.recipes.findIndex(x => x === recipe);;
+      this.isEditing = this.recipes.findIndex(x => x === recipe);
       this.openModal();
     },
 
-    remove(recipe) {
-      if (!window.confirm("Are you sure you want to remove this recipe?")) return;
-      events.$emit("remove:recipe", { index: this.recipes.findIndex(x => x === recipe) });
+    async remove(recipe) {
+      const willRemove = await this.$dialog.confirm({ title: 'Remove Recipe?', text: 'Are you sure you want to remove this recipe?' });
+      if(!willRemove) return;
+
+      events.$emit('remove:recipe', { index: this.recipes.findIndex(x => x === recipe) });
     }
   }
 };
