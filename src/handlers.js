@@ -47,7 +47,7 @@ export const updateResources = async () => {
   };
 
   const json = async () => {
-    const jsons = ['holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners'];
+    const jsons = ['effects', 'holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners'];
 
     for await(let json of jsons) {
       const templateUrl = `https://play.rair.land/assets/content/_output/${json}.json`;
