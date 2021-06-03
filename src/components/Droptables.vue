@@ -57,6 +57,18 @@
               <b-form-group label-cols-md="3" label="Chance to Drop (1/x)">
                 <b-form-input type="number" v-model="droptable.maxChance" placeholder="Chance - x" min="0"></b-form-input>
               </b-form-group>
+
+              <div class="row mb-3">
+                <b-form-checkbox
+                  v-model="droptable.noLuckBonus"
+                  class="col-md-9 offset-md-3"
+                >
+                  <span
+                    v-b-tooltip.hover
+                    title="This drop will not factor in LUK, meaning it will always be a 1/x."
+                  >No Luck Bonus</span>
+                </b-form-checkbox>
+              </div>
             </div>
           </div>
         </b-form>
