@@ -60,7 +60,7 @@
                     <b-form-input
                       type="text"
                       v-model="npc.affiliation"
-                      placeholder="The guild/grouping for NPC"
+                      placeholder="The guild/tag for NPC"
                     ></b-form-input>
                   </b-form-group>
 
@@ -81,7 +81,7 @@
                     <b-form-select
                       v-model="npc.baseClass"
                       required
-                      :options="['Mage', 'Thief', 'Healer', 'Warrior']"
+                      :options="['Mage', 'Thief', 'Healer', 'Warrior', 'Traveller']"
                     >
                       <template v-slot:first>
                         <option :value="''">None</option>
@@ -103,6 +103,14 @@
                       required
                       :options="['OnHit', 'Faction', 'Always', 'Never']"
                     ></b-form-select>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="Grouping" class="optional">
+                    <b-form-input
+                      type="text"
+                      v-model="npc.monsterGroup"
+                      placeholder="The guild/tag for NPC"
+                    ></b-form-input>
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Allegiance">
@@ -143,6 +151,25 @@
                         v-b-tooltip.hover
                         title="Creature will not step in the water"
                       >Hydrophobic</span>
+                    </b-form-checkbox>
+                  </div>
+
+                  <div class="row mb-3">
+                    <b-form-checkbox
+                      v-model="npc.noCorpseDrop"
+                      class="col-md-4 offset-md-3"
+                    >
+                      <span v-b-tooltip.hover title="Creature will not drop a corpse">No Corpse</span>
+                    </b-form-checkbox>
+
+                    <b-form-checkbox
+                      v-model="npc.noItemDrop"
+                      class="col-md-5"
+                    >
+                      <span
+                        v-b-tooltip.hover
+                        title="Creature will not drop items"
+                      >No Items</span>
                     </b-form-checkbox>
                   </div>
 
@@ -404,9 +431,7 @@
     TODO:      
     - items (2 column?)
       - sack items [result, chance]
-      - rightHand
-      - leftHand
-      - all other gear slots (armor, robe1, robe2, hands, feet, ring1, ring2, waist, head, neck, ear, wrists)
+      - all other gear slots (armor, robe1, robe2, hands, feet, ring1, ring2, waist, head, neck, ear, wrists, rightHand, leftHand)
         - needs to support weighted choices
     
     - drops section (3 column?)
@@ -465,8 +490,11 @@ const defaultNPC = {
   mp: { min: 0, max: 0 },
   giveXp: { min: 0, max: 0 },
   gold: { min: 0, max: 0 },
+  monsterGroup: '',
   avoidWater: false,
-  aquaticOnly: false
+  aquaticOnly: false,
+  noCorpseDrop: false,
+  noItemDrop: false
 };
 
 export default {
