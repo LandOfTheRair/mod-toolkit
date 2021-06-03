@@ -4,6 +4,7 @@ import * as handlers from './handlers';
 export function setupIPC(ipcMain, sendToUI) {
   ipcMain.on('UPDATE_RESOURCES', async () => {
     try {
+      sendToUI('notify', { type: 'info', text: 'Updating resources...' });
       await handlers.updateResources();
       sendToUI('notify', { type: 'success', text: 'Spritesheets and game data have been updated.' });
     } catch(e) {
@@ -33,5 +34,13 @@ export function setupIPC(ipcMain, sendToUI) {
     if(!name) return;
     
     handlers.editMap(name);
+  });
+  
+  ipcMain.on('JSON', async (e, data) => {
+    const json = data.json;
+    if(!json) return;
+    
+    const jsonData = handlers.loadJSON(json);
+    sendToUI('json', { name: json, data: jsonData });
   });
 }

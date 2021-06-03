@@ -39,7 +39,7 @@ export default {
 
   props: ['maps'],
 
-  data: function() {
+  data() {
     return {
       tableFields: [
         { key: 'name', label: 'Name' },

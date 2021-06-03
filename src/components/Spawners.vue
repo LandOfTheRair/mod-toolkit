@@ -87,6 +87,8 @@
                   placeholder="# max"
                 ></b-form-input>
               </b-form-group>
+              
+              <holiday-selector v-model="spawner.requireHoliday" label="Holiday" @change="spawner.requireHoliday = $event"></holiday-selector>
 
               <b-form-group label-cols-md="3" label="Elite Tick Cap">
                 <b-form-input
@@ -94,16 +96,6 @@
                   v-model="spawner.eliteTickCap"
                   min="0"
                   placeholder="Elite tick cap"
-                ></b-form-input>
-              </b-form-group>
-
-              <b-form-group label-cols-md="3" label="Attribute Add Chance">
-                <b-form-input
-                  type="number"
-                  v-model="spawner.attributeAddChance"
-                  min="0"
-                  max="100"
-                  placeholder="Attribute Add Chance"
                 ></b-form-input>
               </b-form-group>
 
@@ -165,6 +157,16 @@
                   </div>
                 </div>
               </div>
+
+              <b-form-group label-cols-md="3" label="Attribute Add Chance">
+                <b-form-input
+                  type="number"
+                  v-model="spawner.attributeAddChance"
+                  min="0"
+                  max="100"
+                  placeholder="Attribute Add Chance"
+                ></b-form-input>
+              </b-form-group>
 
               <b-form-group label-cols-md="3" label="Strip Radius">
                 <b-form-input
@@ -301,6 +303,8 @@ import get from 'lodash.get';
 import { clone } from '../helpers';
 import { events } from '../main';
 
+import HolidaySelector from './shared/HolidaySelector.vue';
+
 const defaultSpawner = {
   npcIds: [],
   respawnRate: 120,
@@ -313,6 +317,7 @@ const defaultSpawner = {
   stripRadius: 0,
   respectKnowledge: true,
   attributeAddChance: 0,
+  requireHoliday: '',
   _paths: ''
 };
 
@@ -320,6 +325,8 @@ export default {
   name: 'Spawners',
 
   props: ['spawners', 'npcs'],
+
+  components: { HolidaySelector },
 
   data: function() {
     return {
@@ -402,6 +409,7 @@ export default {
       this.spawner.shouldStrip = true;
       this.spawner.isDangerous = true;
       this.spawner.stripRadius = 1;
+      this.spawner.attributeAddChance = 30;
     },
 
     addNPC(npc) {

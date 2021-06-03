@@ -284,6 +284,10 @@ export default {
       window.api.receive('newmap', mapData => {
         events.$emit('add:map', mapData);
       });
+
+      window.api.receive('json', jsonData => {
+        events.$emit(`json:${jsonData.name}`, jsonData.data);
+      });
     },
 
     watchKeybinds() {

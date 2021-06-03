@@ -20,14 +20,17 @@ export const updateResources = async () => {
   }
 
   fs.ensureDirSync(`${baseUrl}/resources`);
-  fs.ensureDirSync(`${baseUrl}/resources/maps/src`);
-  fs.ensureDirSync(`${baseUrl}/resources/maps/src`);
+  
 
+  fs.ensureDirSync(`${baseUrl}/resources/json`);
+
+  fs.ensureDirSync(`${baseUrl}/resources/maps/src`);
+  fs.ensureDirSync(`${baseUrl}/resources/maps/src`);
   fs.ensureDirSync(`${baseUrl}/resources/maps/src/content`);
+
   fs.ensureDirSync(`${baseUrl}/resources/maps/src/content/__assets`);
   fs.ensureDirSync(`${baseUrl}/resources/maps/src/content/__assets/spritesheets`);
   
-  fs.ensureDirSync(`${baseUrl}/resources/maps/src/content`);
   fs.ensureDirSync(`${baseUrl}/resources/maps/src/content/maps`);
   fs.ensureDirSync(`${baseUrl}/resources/maps/src/content/maps/custom`);
 
@@ -40,6 +43,17 @@ export const updateResources = async () => {
       const buffer = await res.buffer();
   
       fs.writeFileSync(`${baseUrl}/resources/maps/src/content/__assets/spritesheets/${sheet}.png`, buffer);
+    }
+  };
+
+  const json = async () => {
+    const jsons = ['holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners'];
+
+    for await(let json of jsons) {
+      const templateUrl = `https://play.rair.land/assets/content/_output/${json}.json`;
+      const templateRes = await fetch(templateUrl);
+      const templateBuffer = await templateRes.buffer();
+      fs.writeFileSync(`${baseUrl}/resources/json/${json}.json`, templateBuffer);
     }
   };
 
@@ -63,6 +77,7 @@ export const updateResources = async () => {
   };
 
   await sheets();
+  await json();
   await template();
   await tiled();
 
@@ -100,4 +115,14 @@ export const editMap = (mapName) => {
   const path = `${baseUrl}/resources/maps/src/content/maps/custom/${mapName}.json`;
 
   childProcess.exec(`${baseUrl}/resources/Tiled/tiled.exe "${path}"`);
+};
+
+export const loadJSON = (json) => {
+  const file = `${baseUrl}/resources/json/${json}.json`;
+
+  if(!fs.existsSync(file)) {
+    throw new Error(`Attempting to load invalid or absent JSON: ${json}`);
+  }
+
+  return fs.readJsonSync(file);
 };

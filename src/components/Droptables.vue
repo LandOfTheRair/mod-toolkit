@@ -69,6 +69,8 @@
                   >No Luck Bonus</span>
                 </b-form-checkbox>
               </div>
+
+              <holiday-selector v-model="droptable.requireHoliday" label="Holiday" @change="droptable.requireHoliday = $event"></holiday-selector>
             </div>
           </div>
         </b-form>
@@ -104,12 +106,15 @@ import get from 'lodash.get';
 import { clone } from '../helpers';
 import { events } from '../main';
 
+import HolidaySelector from './shared/HolidaySelector.vue';
+
 const defaultDroptable = {
   result: '',
   chance: 1,
   maxChance: 0,
   mapName: '',
-  regionName: ''
+  regionName: '',
+  requireHoliday: ''
 };
 
 export default {
@@ -117,7 +122,9 @@ export default {
 
   props: ['droptables', 'maps', 'items'],
 
-  data: function() {
+  components: { HolidaySelector },
+
+  data() {
     return {
       sortBy: 'name',
       sortDesc: false,
