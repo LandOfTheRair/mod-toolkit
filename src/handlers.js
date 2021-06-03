@@ -92,22 +92,25 @@ export const ensureMap = (mapName, mapData) => {
   fs.writeFileSync(path, JSON.stringify(mapData));
 };
 
-export const newMap = (mapName) => {
+export const newMap = (mapName, mapAuthor) => {
   
   const fileName = mapName.replace(/[^a-zA-Z-]/g, '');
+  const templatePath = `${baseUrl}/resources/maps/src/content/maps/custom/Template.json`;
   const path = `${baseUrl}/resources/maps/src/content/maps/custom/${fileName}.json`;
 
   if(fs.existsSync(path)) {
     throw new Error('Map already exists');
   }
 
-  fs.copyFileSync(`${baseUrl}/resources/maps/src/content/maps/custom/Template.json`, path);
+  const json = fs.readJSONSync(templatePath);
+  json.properties.creator = mapAuthor;
+  json.propertytypes.creator = 'string';
+
+  fs.writeJSONSync(path, json);
 
   editMap(fileName);
 
-  const data = fs.readJSONSync(path);
-
-  return data;
+  return json;
 };
 
 export const editMap = (mapName) => {

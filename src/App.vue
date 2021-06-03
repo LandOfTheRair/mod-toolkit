@@ -16,10 +16,21 @@
         v-if="isLoaded"
         variant="outline-primary"
       >
-        <b-dropdown-item @click="getResources()">Update Resources</b-dropdown-item>
+        <b-dropdown-item disabled>Mod Metadata</b-dropdown-item>
         <b-dropdown-item @click="changeName()">Change Mod Name</b-dropdown-item>
+        <b-dropdown-item @click="changeAuthor()">Change Mod Author</b-dropdown-item>
+        <b-dropdown-divider></b-dropdown-divider>
+
+        <b-dropdown-item disabled>Mod I/O</b-dropdown-item>
         <b-dropdown-item @click="exportMod()">Export Mod</b-dropdown-item>
         <b-dropdown-item @click="importMod()">Import Mod</b-dropdown-item>
+        <b-dropdown-divider></b-dropdown-divider>
+
+        <b-dropdown-item disabled>Updates</b-dropdown-item>
+        <b-dropdown-item @click="getResources()">Update Resources</b-dropdown-item>
+        <b-dropdown-divider></b-dropdown-divider>
+
+        <b-dropdown-item disabled>Danger Zone</b-dropdown-item>
         <b-dropdown-item @click="resetMod()">Reset Mod</b-dropdown-item>
       </b-dropdown>
     </b-navbar>
@@ -31,14 +42,15 @@
     </div>
 
     <div class="px-3" v-if="mod && isLoaded">
-      <h3 class="text-center my-3">{{ mod.modkitName || 'Unnamed Modkit' }}</h3>
+      <h3 class="text-center my-3">{{ mod.meta.name || 'Unnamed Modkit' }}</h3>
+      <h6 class="text-center my-2">{{ mod.meta.author || 'Unknown Author' }}</h6>
 
       <div class="mt-3">
         <b-tabs content-class="mt-3" fill class="main-tabs">
           <b-tab active>
             <template v-slot:title>Maps ({{ mod.maps.length }})</template>
 
-            <tab-maps :maps="mod.maps"></tab-maps>
+            <tab-maps :maps="mod.maps" :creator="mod.meta.author || 'Unknown'"></tab-maps>
           </b-tab>
 
           <b-tab>
@@ -103,8 +115,12 @@ import DialogsTab from './components/Dialogs';
 import QuestsTab from './components/Quests';
 
 const defaultData = {
-  modkitName: '',
-  version: 1,
+  meta: {
+    name: '',
+    author: '',
+    version: 1,
+    savedAt: 0
+  },
   npcs: [],
   items: [],
   drops: [],
@@ -148,7 +164,7 @@ export default {
 
     // map
     events.$on('add:map', map => {
-      if (!this.mod.modkitName) this.mod.modkitName = map.name;
+      if (!this.mod.meta.name) this.mod.meta.name = map.name;
 
       const existingMap = this.mod.maps.find(x => x.name === map.name);
       if(existingMap) {
@@ -288,6 +304,11 @@ export default {
       window.api.receive('json', jsonData => {
         events.$emit(`json:${jsonData.name}`, jsonData.data);
       });
+
+      window.api.receive('loadmod', mod => {
+        this.mod = mod;
+        this.persist();
+      });
     },
 
     watchKeybinds() {
@@ -298,19 +319,32 @@ export default {
     },
 
     persist() {
+      this.presave();
       localforage.setItem('mod', JSON.stringify(this.mod));
     },
 
     exportMod() {
-      console.log('export');
+      window.api.send('SAVE_MOD', this.mod);
     },
 
     importMod() {
-      console.log('import');
+      window.api.send('LOAD_MOD');
     },
 
     getResources() {
       window.api.send('UPDATE_RESOURCES');
+    },
+
+    presave() {
+      this.mod.meta.savedAt = Date.now();
+      
+      this.mod.maps.forEach(({ map }) => {
+        map.properties = map.properties || {};
+        map.propertytypes = map.propertytypes || {};
+        
+        map.properties.creator = this.mod.meta.author || 'Unknown';
+        map.propertytypes.creator = 'string';
+      });
     },
 
     async resetMod() {
@@ -342,7 +376,16 @@ export default {
       const newName = await this.$dialog.prompt({ title: 'What would you like to call your mod?', text: 'Use the map or region name' });
       if(!newName) return;
 
-      this.mod.modkitName = newName;
+      this.mod.meta.name = newName;
+
+      this.persist();
+    },
+
+    async changeAuthor() {
+      const newName = await this.$dialog.prompt({ title: 'Who should get credit for this mod?', text: 'Your Rair alias or name' });
+      if(!newName) return;
+
+      this.mod.meta.author = newName;
 
       this.persist();
     },

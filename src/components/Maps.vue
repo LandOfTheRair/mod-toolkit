@@ -37,7 +37,7 @@ import { events } from '../main';
 export default {
   name: 'Maps',
 
-  props: ['maps'],
+  props: ['maps', 'creator'],
 
   data() {
     return {
@@ -53,7 +53,7 @@ export default {
       const newName = await this.$dialog.prompt({ title: 'What would you like to name this map?', text: '' });
       if(!newName) return;
 
-      window.api.send('NEW_MAP', { name: newName });
+      window.api.send('NEW_MAP', { name: newName, creator: this.creator });
     },
 
     editMap(name) {

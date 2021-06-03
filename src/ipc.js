@@ -1,3 +1,5 @@
+import { dialog } from 'electron';
+import fs from 'fs-extra';
 
 import * as handlers from './handlers';
 
@@ -22,7 +24,7 @@ export function setupIPC(ipcMain, sendToUI) {
     if(!name) return;
     
     try {
-      const map = handlers.newMap(name);
+      const map = handlers.newMap(name, data.creator);
       sendToUI('newmap', { name, map });
     } catch(e) {
       sendToUI('notify', { type: 'error', text: 'Could not create that map name.' });
@@ -42,5 +44,38 @@ export function setupIPC(ipcMain, sendToUI) {
     
     const jsonData = handlers.loadJSON(json);
     sendToUI('json', { name: json, data: jsonData });
+  });
+
+  ipcMain.on('SAVE_MOD', (e, data) => {
+    const res = dialog.showSaveDialogSync(null, {
+      title: 'Save Land of the Rair Mod',
+      defaultPath: data.meta.name,
+      filters: [
+        { name: 'Rair Mods', extensions: ['rairmod'] }
+      ]
+    });
+    
+    if(!res) return;
+
+    fs.writeJSONSync(res, data);
+    sendToUI('notify', { type: 'info', text: `Saved ${res}!` });
+  });
+
+  ipcMain.on('LOAD_MOD', () => {
+    const res = dialog.showOpenDialogSync(null, {
+      title: 'Load Land of the Rair Mod',
+      filters: [
+        { name: 'Rair Mods', extensions: ['rairmod'] }
+      ],
+      properties: ['openFile']
+    });
+    
+    if(!res) return;
+
+    const file = res[0];
+    const json = fs.readJSONSync(file);
+
+    sendToUI('loadmod', json);
+    sendToUI('notify', { type: 'info', text: `Loaded ${file}!` });
   });
 }
