@@ -65,7 +65,7 @@
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Skill" class="multi">
-                    <b-form-select v-model="item.type" required>
+                    <b-form-select v-model="item.type" required class="form-control">
                       <option :value="''">Choose item skill type</option>
                       <option v-for="type in itemTypes" :value="type" v-bind:key="type">{{ type }}</option>
                     </b-form-select>
@@ -74,14 +74,26 @@
                       <strong>#2</strong>
                     </div>
 
-                    <b-form-select v-model="item.secondaryType" required>
+                    <b-form-select v-model="item.secondaryType" required class="form-control">
                       <option :value="''">None</option>
                       <option v-for="type in itemTypes" :value="type" v-bind:key="type">{{ type }}</option>
                     </b-form-select>
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Max # Upgrades">
+                  <b-form-group label-cols-md="3" label="Max # Upgrades" class="multi">
                     <b-form-input type="number" v-model="item.maxUpgrades" min="0"></b-form-input>
+
+                    <div 
+                      class="split-label true-center px-2"
+                      v-b-tooltip.hover
+                      title="Quality affects whether the item can be transmuted, and how much it disenchants for. An item with any random stats will override this property.">
+                      <strong>★</strong>
+                    </div>
+
+                    <b-form-select v-model="item.quality" required class="form-control">
+                      <option :value="''">None</option>
+                      <option v-for="type in [0, 1, 2, 3, 4, 5]" :value="type" v-bind:key="type">{{ type }}</option>
+                    </b-form-select>
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Value" class="multi">
@@ -354,7 +366,7 @@
     TODO:
       - traits, effects, requirements
         - trait name/level (allow multiple names as array, and level as min/max)
-        - effect name/potency/chance/duration/canApply/autocast
+        - effect name/potency/chance/duration/canApply/autocast (strike, use, equip, break)
           - tooltip/message/stats if effect == Nourishment
           - tier/ignoreHPBoost
         - requirements (level, skill, profession, quest)
@@ -386,6 +398,7 @@ import { events } from '../main';
 
 const defaultItem = {
   sprite: 0,
+  quality: 0,
   name: '',
   itemClass: '',
   maxUpgrades: 0,
