@@ -10,10 +10,14 @@ contextBridge.exposeInMainWorld(
   'api', 
   {
     send: (event, data) => {
+      console.log('[Send]', event, data);
       ipcRenderer.send(event, data);
     },
     receive: (event, func) => {
-      ipcRenderer.on(event, (ev, ...args) => func(...args));
+      ipcRenderer.on(event, (ev, ...args) => {
+        console.log('[Receive]', event, ...args);
+        func(...args);
+      });
     }
   }
 );

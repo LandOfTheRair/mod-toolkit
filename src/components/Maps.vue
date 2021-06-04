@@ -23,6 +23,10 @@
 
       <template v-slot:cell(name)="data">{{ data.item.name }}</template>
 
+      <template v-slot:cell(width)="data">{{ data.item.map.width }}</template>
+
+      <template v-slot:cell(height)="data">{{ data.item.map.height }}</template>
+
       <template v-slot:cell(actions)="data">
         <b-button class="mr-1" size="sm" variant="info" @click="editMap(data.item.name)">Edit</b-button>
         <b-button size="sm" variant="danger" @click="removeMap(data.index)">Remove</b-button>
@@ -43,6 +47,8 @@ export default {
     return {
       tableFields: [
         { key: 'name', label: 'Name' },
+        { key: 'width', label: 'Width' },
+        { key: 'height', label: 'Height' },
         { key: 'actions', label: 'Actions', class: 'text-right' }
       ]
     };

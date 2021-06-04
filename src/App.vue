@@ -163,15 +163,15 @@ export default {
     window.api.send('READY_CHECK');
 
     // map
-    events.$on('add:map', map => {
-      if (!this.mod.meta.name) this.mod.meta.name = map.name;
+    events.$on('add:map', incomingMap => {
+      if (!this.mod.meta.name) this.mod.meta.name = incomingMap.name;
 
-      const existingMap = this.mod.maps.find(x => x.name === map.name);
-      if(existingMap) {
-        existingMap.map = map.map;
+      const existingMap = this.mod.maps.findIndex(x => x.name === incomingMap.name);
+      if(existingMap !== -1) {
+        this.mod.maps.splice(existingMap, 1, incomingMap);
 
       } else {
-        this.mod.maps.push(map);
+        this.mod.maps.push(incomingMap);
       }
 
       this.persist();

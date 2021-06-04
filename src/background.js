@@ -6,7 +6,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
 import * as handlers from './handlers';
-import { setupIPC } from './ipc';
+import { setupIPC, watchMaps } from './ipc';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -69,7 +69,9 @@ async function createWindow() {
     callback({ path: path.normalize(app.getAppPath() + url) });
   });
 
-  const sendToUI = win.webContents.send.bind(win.webContents);
+  const sendToUI = (d, i) => {
+    win.webContents.send(d, i);
+  };
 
   // check for and load resources if they're not present
   let isReady = false;
@@ -77,6 +79,7 @@ async function createWindow() {
   if(!fs.existsSync(app.getAppPath() + '/.loaded')) {
     sendToUI('notify', { type: 'info', text: 'Loading resources for first time launch...' });
     await handlers.updateResources();
+    watchMaps(sendToUI);
     sendToUI('notify', { type: 'success', text: 'Spritesheets and game data have been installed.' });
     sendToUI('ready');
     isReady = true;
@@ -92,7 +95,7 @@ async function createWindow() {
     sendToUI('ready');
   });
 
-  setupIPC(ipcMain, sendToUI);
+  setupIPC(sendToUI);
 }
 
 // Quit when all windows are closed.

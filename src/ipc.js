@@ -1,13 +1,41 @@
-import { dialog } from 'electron';
+import { app, ipcMain, dialog } from 'electron';
+import path from 'path';
 import fs from 'fs-extra';
+import chokidar from 'chokidar';
 
 import * as handlers from './handlers';
 
-export function setupIPC(ipcMain, sendToUI) {
+const baseUrl = app.getAppPath();
+
+let watcher = null;
+
+export function watchMaps(sendToUI) {
+  if(!fs.existsSync(`${baseUrl}/.loaded`)) return;
+  if(watcher) return;
+
+  watcher = chokidar.watch(`${baseUrl}/resources/maps/src/content/maps/custom/*.json`, {
+    persistent: true
+  });
+
+  const updateMap = (name) => {
+    const map = fs.readJSONSync(`${baseUrl}/resources/maps/src/content/maps/custom/${name}.json`);
+    sendToUI('newmap', { name, map });
+  };
+
+  watcher.on('change', filePath => {
+    const map = path.basename(filePath, '.json');
+    updateMap(map);
+  });
+}
+
+export function setupIPC(sendToUI) {
+  watchMaps(sendToUI);
+
   ipcMain.on('UPDATE_RESOURCES', async () => {
     try {
       sendToUI('notify', { type: 'info', text: 'Updating resources...' });
       await handlers.updateResources();
+      watchMaps(sendToUI);
       sendToUI('notify', { type: 'success', text: 'Spritesheets and game data have been updated.' });
     } catch(e) {
       sendToUI('notify', { type: 'error', text: e.message });

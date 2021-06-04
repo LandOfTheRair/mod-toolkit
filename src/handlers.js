@@ -20,7 +20,6 @@ export const updateResources = async () => {
   }
 
   fs.ensureDirSync(`${baseUrl}/resources`);
-  
 
   fs.ensureDirSync(`${baseUrl}/resources/json`);
 
