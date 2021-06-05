@@ -177,6 +177,15 @@ export default {
       this.persist();
     });
 
+    events.$on('rename:map', (oldName, newName) => {
+      const existingMap = this.mod.maps.find(x => x.name === oldName);
+      if(existingMap) {
+        existingMap.name = newName;
+      }
+
+      this.persist();
+    });
+
     events.$on('remove:map', index => {
       this.mod.maps.splice(index, 1);
       this.persist();
@@ -298,7 +307,12 @@ export default {
       });
 
       window.api.receive('newmap', mapData => {
+        if(mapData.name === 'Template') return;
         events.$emit('add:map', mapData);
+      });
+
+      window.api.receive('renamemap', nameData => {
+        events.$emit('rename:map', nameData.oldName, nameData.newName);
       });
 
       window.api.receive('json', jsonData => {

@@ -119,6 +119,14 @@ export const editMap = (mapName) => {
   childProcess.exec(`${baseUrl}/resources/Tiled/tiled.exe "${path}"`);
 };
 
+export const renameMap = (oldName, newName) => {
+  
+  const oldPath = `${baseUrl}/resources/maps/src/content/maps/custom/${oldName}.json`;
+  const newPath = `${baseUrl}/resources/maps/src/content/maps/custom/${newName}.json`;
+  
+  fs.moveSync(oldPath, newPath);
+};
+
 export const loadJSON = (json) => {
   const file = `${baseUrl}/resources/json/${json}.json`;
 

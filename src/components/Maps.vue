@@ -28,6 +28,7 @@
       <template v-slot:cell(height)="data">{{ data.item.map.height }}</template>
 
       <template v-slot:cell(actions)="data">
+        <b-button class="mr-1" size="sm" variant="info" @click="renameMap(data.item.name)">Rename</b-button>
         <b-button class="mr-1" size="sm" variant="info" @click="editMap(data.item.name)">Edit</b-button>
         <b-button size="sm" variant="danger" @click="removeMap(data.index)">Remove</b-button>
       </template>
@@ -60,6 +61,13 @@ export default {
       if(!newName) return;
 
       window.api.send('NEW_MAP', { name: newName, creator: this.creator });
+    },
+
+    async renameMap(mapName) {
+      const newName = await this.$dialog.prompt({ title: 'What would you like to rename this map to?', text: '' });
+      if(!newName) return;
+
+      window.api.send('RENAME_MAP', { newName, oldName: mapName });
     },
 
     editMap(name) {

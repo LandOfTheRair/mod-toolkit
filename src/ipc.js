@@ -59,6 +59,11 @@ export function setupIPC(sendToUI) {
     }
   });
   
+  ipcMain.on('RENAME_MAP', async (e, data) => {
+    handlers.renameMap(data.oldName, data.newName);
+    sendToUI('renamemap', data);
+  });
+  
   ipcMain.on('EDIT_MAP', async (e, data) => {
     const name = data.name;
     if(!name) return;
