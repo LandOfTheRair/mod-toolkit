@@ -86,7 +86,7 @@
                     <div 
                       class="split-label true-center px-2"
                       v-b-tooltip.hover
-                      title="Quality affects whether the item can be transmuted, and how much it disenchants for. An item with any random stats will override this property.">
+                      title="Quality affects whether the item can be transmuted, and how much it disenchants for. An item with any random stats will override this property. Quality is always shown as -2 of the display value. For example, if you set this to 3, the display value in game will be ★.">
                       <strong>★</strong>
                     </div>
 
@@ -134,6 +134,12 @@
                         v-b-tooltip.hover
                         title="Item will tell the area when it binds to someone"
                       >Tells bind</span>
+                    </b-form-checkbox>
+                  </div>
+
+                  <div class="row mb-3">
+                    <b-form-checkbox v-model="item.destroyOnDrop" class="col-md-6 offset-md-3">
+                      <span v-b-tooltip.hover title="Item will be destroyed when dropped">Destroy on drop</span>
                     </b-form-checkbox>
                   </div>
 
@@ -256,10 +262,6 @@
                         <b-form-input type="number" v-model="item.shots" placeholder="# shots" min="0"></b-form-input>
                       </b-form-group>
 
-                      <b-form-group label-cols-md="3" label="Tier" v-if="attr === 'maxEncrusts'">
-                        <b-form-input type="number" v-model="item.maxEncrusts" placeholder="# encrusts" min="0" max="16"></b-form-input>
-                      </b-form-group>
-
                       <b-form-group label-cols-md="3" label="Book Pages" v-if="attr === 'bookPages'">
                         <b-form-input type="number" v-model="item.bookPages" placeholder="# pages" min="0"></b-form-input>
                       </b-form-group>
@@ -282,9 +284,9 @@
 
                       <b-form-group label-cols-md="3" label="Damage Type" v-if="attr === 'damageClass'">
                         <b-form-select v-model="item.damageClass" required :options="damageClasses">
-                            <template v-slot:first>
-                            <option :value="''">Choose damage type</option>
-                            </template>
+                          <template v-slot:first>
+                          <option :value="''">Choose damage type</option>
+                          </template>
                         </b-form-select>
                       </b-form-group>
 
@@ -316,6 +318,44 @@
                         <span v-b-tooltip.hover title="Weapon is able to shoot arrows">Can shoot</span>
                       </b-form-checkbox>
 
+                      <div v-if="attr === 'succorInfo'">
+
+                        <b-form-group label-cols-md="3" label="Succor Map">
+                          <b-form-input type="text" v-model="item.succorInfo.map" placeholder="Succor Map"></b-form-input>
+                        </b-form-group>
+
+                        <b-form-group label-cols-md="3" label="Succor X">
+                          <b-form-input type="number" v-model="item.succorInfo.x" placeholder="Succor X" min="0"></b-form-input>
+                        </b-form-group>
+
+                        <b-form-group label-cols-md="3" label="Succor Y">
+                          <b-form-input type="number" v-model="item.succorInfo.y" placeholder="Succor Y" min="0"></b-form-input>
+                        </b-form-group>
+                      </div>
+
+                      <div v-if="attr === 'containedItems'">
+                        <b-button
+                          variant="primary"
+                          block
+                          @click="addContainedItem()"
+                        >Add Contained Item</b-button>
+
+                        <div class="row mt-1" v-for="contained in item.containedItems" v-bind:key="contained.result">
+                          <div class="col">
+                            <b-form-group class="left-header">
+                              <b-input-group class="multi">
+                                <b-form-input type="text" v-model="contained.result" placeholder="Item"></b-form-input>
+                                <b-form-input type="number" v-model="contained.chance" min="0" placeholder="Weight"></b-form-input>
+
+                                <b-input-group-append>
+                                  <b-button variant="danger" @click="removeContainedItem(contained)">Del</b-button>
+                                </b-input-group-append>
+                              </b-input-group>
+                            </b-form-group>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -324,7 +364,21 @@
 
             <b-tab title="Traits, Effects & Requirements"></b-tab>
 
-            <b-tab title="Miscellaneous"></b-tab>
+            <b-tab title="Miscellaneous">
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <cosmetic-selector v-model="item.cosmetic.name" label="Cosmetic" @change="item.cosmetic.name = $event"></cosmetic-selector>
+
+                  <div class="row mb-3">
+                    <b-form-checkbox v-model="item.cosmetic.isPermanent" class="col-md-6 offset-md-3">
+                      <span v-b-tooltip.hover title="Cosmetic cannot be removed from item">Permanent Cosmetic</span>
+                    </b-form-checkbox>
+                  </div>
+                </div>
+              </div>
+              
+            </b-tab>
           </b-tabs>
         </b-form>
       </div>
@@ -369,13 +423,7 @@
         - effect name/potency/chance/duration/canApply/autocast (strike, use, equip, break)
           - tooltip/message/stats if effect == Nourishment
           - tier/ignoreHPBoost
-        - requirements (level, skill, profession, quest)
-
-      - misc
-        - succorInfo
-        - containedItems (chance/item)
-        - cosmetic (name/isPermanent)
-        - destroyOnDrop
+        - requirements (level, profession)
   -->
 </template>
 
@@ -396,6 +444,8 @@ import {
 } from '../constants';
 import { events } from '../main';
 
+import CosmeticSelector from './shared/CosmeticSelector.vue';
+
 const defaultItem = {
   sprite: 0,
   quality: 0,
@@ -408,7 +458,10 @@ const defaultItem = {
   stats: {},
   randomStats: {},
   type: 'Martial',
-  secondaryType: ''
+  secondaryType: '',
+  succorInfo: {},
+  cosmetic: { name: '' },
+  containedItems: []
 };
 
 export default {
@@ -416,7 +469,9 @@ export default {
 
   props: ['items'],
 
-  data: function() {
+  components: { CosmeticSelector },
+
+  data() {
     return {
       sortBy: 'name',
       sortDesc: false,
@@ -499,6 +554,14 @@ export default {
       if (!key) return;
       this.$delete(this.item.stats, key);
       this.$delete(this.item.randomStats, key);
+    },
+
+    addContainedItem() {
+      this.item.containedItems.push({ result: `Item ${this.item.containedItems.length + 1}`, chance: 1 });
+    },
+
+    removeContainedItem(contained) {
+      this.$delete(this.item.containedItems.indexOf(contained));
     },
 
     swapBetweenRandomAndStatic(stat) {

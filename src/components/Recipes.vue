@@ -143,7 +143,7 @@ export default {
 
   props: ['recipes', 'items'],
 
-  data: function() {
+  data() {
     return {
       sortBy: 'name',
       sortDesc: false,

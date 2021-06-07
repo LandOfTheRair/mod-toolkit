@@ -502,7 +502,7 @@ export default {
 
   props: ['npcs', 'items'],
 
-  data: function() {
+  data() {
     return {
       sortBy: 'name',
       sortDesc: false,

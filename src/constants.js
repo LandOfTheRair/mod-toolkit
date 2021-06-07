@@ -217,7 +217,8 @@ export const itemTypes = [
 export const typePropSets = {
   Arrow: ['shots', 'tier', 'damageClass'],
   Bottle: ['ounces'],
-  Food: ['ounces'],
+  Box: ['containedItems'],
+  Food: ['ounces', 'succorInfo'],
   Gem: ['maxEncrusts'],
   Book: ['bookPages', 'bookItemFilter', 'bookFindablePages'],
   Trap: ['trapUses'],

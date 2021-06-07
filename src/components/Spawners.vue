@@ -328,7 +328,7 @@ export default {
 
   components: { HolidaySelector },
 
-  data: function() {
+  data() {
     return {
       sortBy: 'name',
       sortDesc: false,
