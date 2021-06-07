@@ -78,7 +78,7 @@ async function createWindow() {
 
   if(!fs.existsSync(app.getAppPath() + '/.loaded')) {
     sendToUI('notify', { type: 'info', text: 'Loading resources for first time launch...' });
-    await handlers.updateResources();
+    await handlers.updateResources(sendToUI);
     watchMaps(sendToUI);
     sendToUI('notify', { type: 'success', text: 'Spritesheets and game data have been installed.' });
     sendToUI('ready');

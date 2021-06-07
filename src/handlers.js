@@ -10,7 +10,7 @@ const baseUrl = app.getAppPath();
 
 let isUpdating = false;
 
-export const updateResources = async () => {
+export const updateResources = async (sendToUI) => {
 
   if(isUpdating) throw new Error('Currently updating, please wait.');
   isUpdating = true;
@@ -18,6 +18,8 @@ export const updateResources = async () => {
   if(fs.existsSync(`${baseUrl}/.loaded`)) {
     fs.rmSync(`${baseUrl}/.loaded`);
   }
+
+  sendToUI('notify', { type: 'info', text: 'Creating directory structure...' });
 
   fs.ensureDirSync(`${baseUrl}/resources`);
 
@@ -37,6 +39,8 @@ export const updateResources = async () => {
     const spritesheets = ['creatures', 'decor', 'items', 'terrain', 'walls'];
   
     for await(let sheet of spritesheets) {
+      sendToUI('notify', { type: 'info', text: `Downloading spritesheet "${sheet}"...` });
+      
       const url = `https://play.rair.land/assets/spritesheets/${sheet}.png`;
       const res = await fetch(url);
       const buffer = await res.buffer();
@@ -46,9 +50,11 @@ export const updateResources = async () => {
   };
 
   const json = async () => {
-    const jsons = ['effects', 'holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners'];
+    const jsons = ['effect-data', 'holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners', 'traits'];
 
     for await(let json of jsons) {
+      sendToUI('notify', { type: 'info', text: `Downloading content "${json}"...` });
+
       const templateUrl = `https://play.rair.land/assets/content/_output/${json}.json`;
       const templateRes = await fetch(templateUrl);
       const templateBuffer = await templateRes.buffer();
@@ -57,6 +63,8 @@ export const updateResources = async () => {
   };
 
   const template = async () => {
+    sendToUI('notify', { type: 'info', text: 'Downloading template...' });
+
     const templateUrl = 'https://server.rair.land/editor/map?map=Template';
     const templateRes = await fetch(templateUrl);
     const templateBuffer = await templateRes.buffer();
@@ -64,6 +72,8 @@ export const updateResources = async () => {
   };
 
   const tiled = async () => {
+    sendToUI('notify', { type: 'info', text: 'Downloading Tiled...' });
+
     const tiledUrl = 'https://rair.land/Tiled.zip';
     const tiledRes = await fetch(tiledUrl);
     const tiledBuffer = await tiledRes.buffer();

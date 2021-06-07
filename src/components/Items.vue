@@ -362,7 +362,126 @@
               </div>
             </b-tab>
 
-            <b-tab title="Traits, Effects & Requirements"></b-tab>
+            <b-tab title="Traits, Effects & Requirements">
+              
+              <div class="row">
+                <div class="col-md-4">
+                  <trait-selector v-model="item.trait.name" label="Trait" @change="item.trait.name = $event"></trait-selector>
+
+                  <b-form-group label-cols-md="3" label="Trait Level">
+                    <b-form-input type="number" v-model="item.trait.level" min="0" max="5"></b-form-input>
+                  </b-form-group>
+                </div>
+
+                <div class="col-md-4">
+                  <effect-selector v-model="item.useEffect.name" label="Use Effect" @change="item.useEffect.name = $event"></effect-selector>
+
+                  <div v-if="item.useEffect.name">
+                    <b-form-group label-cols-md="3" label="Use Potency">
+                      <b-form-input type="number" v-model="item.useEffect.potency" min="0"></b-form-input>
+                    </b-form-group>
+
+                    <b-form-group label-cols-md="3" label="Use Duration">
+                      <b-form-input type="number" v-model="item.useEffect.duration" min="0"></b-form-input>
+                    </b-form-group>
+
+                    <b-form-checkbox v-model="item.useEffect.canApply" class="col-md-9 offset-md-3">
+                      <span v-b-tooltip.hover title="This effect can be applied from this item to weapons, using the Thief Apply skill">Can Apply Use Effect</span>
+                    </b-form-checkbox>
+                  </div>
+
+                  <div class="mt-3" v-if="item.useEffect.name === 'Nourishment'">
+                    <b-form-group label-cols-md="3" label="Nourish Tooltip">
+                      <b-form-input type="text" v-model="item.useEffect.extra.tooltip" placeholder="Nourish Tooltip"></b-form-input>
+                    </b-form-group>
+
+                    <b-form-group label-cols-md="3" label="Nourish Message">
+                      <b-form-input type="text" v-model="item.useEffect.extra.message" placeholder="Nourish Message"></b-form-input>
+                    </b-form-group>
+                    
+                    <b-input-group>
+                      <b-form-select v-model="currentAddNourishStat" required :options="allStats">
+                        <template v-slot:first>
+                          <option :value="''">Add Stat</option>
+                        </template>
+                      </b-form-select>
+
+                      <b-input-group-append>
+                        <b-button
+                          variant="primary"
+                          :disabled="!currentAddNourishStat"
+                          @click="addNourishStat(currentAddNourishStat)"
+                        >Add</b-button>
+                      </b-input-group-append>
+                    </b-input-group>
+
+                    <div class="row mt-1" v-for="(value, stat) in item.useEffect.extra.statChanges" v-bind:key="stat">
+                      <div class="col">
+                        <b-form-group class="left-header">
+                          <template v-slot:label>
+                            <span>{{ stat }}</span>
+                          </template>
+                          <b-input-group>
+                            <b-form-input type="number" v-model="item.useEffect.extra.statChanges[stat]"></b-form-input>
+
+                            <b-input-group-append>
+                              <b-button variant="danger" @click="removeNourishStat(stat)">Del</b-button>
+                            </b-input-group-append>
+                          </b-input-group>
+                        </b-form-group>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <effect-selector v-model="item.strikeEffect.name" label="Strike Effect" @change="item.strikeEffect.name = $event"></effect-selector>
+
+                  <div v-if="item.strikeEffect.name">
+                    <b-form-group label-cols-md="3" label="Strike Potency">
+                      <b-form-input type="number" v-model="item.strikeEffect.potency" min="0"></b-form-input>
+                    </b-form-group>
+
+                    <b-form-group label-cols-md="3" label="Strike Duration">
+                      <b-form-input type="number" v-model="item.strikeEffect.duration" min="0"></b-form-input>
+                    </b-form-group>
+
+                    <b-form-group label-cols-md="3" label="Strike Chance">
+                      <b-form-input type="number" v-model="item.strikeEffect.chance" min="0" max="100"></b-form-input>
+                    </b-form-group>
+                  </div>
+
+                  <hr>
+
+                  <effect-selector v-model="item.equipEffect.name" label="Equip Effect" @change="item.equipEffect.name = $event"></effect-selector>
+
+                  <div v-if="item.equipEffect.name">
+                    <b-form-group label-cols-md="3" label="Equip Potency">
+                      <b-form-input type="number" v-model="item.equipEffect.potency" min="0"></b-form-input>
+                    </b-form-group>
+                  </div>
+
+                  <hr>
+
+                  <effect-selector v-model="item.breakEffect.name" label="Break Effect" @change="item.breakEffect.name = $event"></effect-selector>
+
+                  <div v-if="item.breakEffect.name">
+                    <b-form-group label-cols-md="3" label="Break Potency">
+                      <b-form-input type="number" v-model="item.breakEffect.potency" min="0"></b-form-input>
+                    </b-form-group>
+                  </div>
+
+                </div>
+
+                <div class="col-md-4">
+                  <class-selector v-model="item.requirements.baseClass" label="Required Class" @change="item.requirements.baseClass = $event"></class-selector>
+
+                  <b-form-group label-cols-md="3" label="Required Level">
+                    <b-form-input type="number" v-model="item.requirements.level" min="0"></b-form-input>
+                  </b-form-group>
+                </div>
+              </div>
+            </b-tab>
 
             <b-tab title="Miscellaneous">
               
@@ -415,16 +534,6 @@
       </template>
     </b-table>
   </div>
-
-  <!--
-    TODO:
-      - traits, effects, requirements
-        - trait name/level (allow multiple names as array, and level as min/max)
-        - effect name/potency/chance/duration/canApply/autocast (strike, use, equip, break)
-          - tooltip/message/stats if effect == Nourishment
-          - tier/ignoreHPBoost
-        - requirements (level, profession)
-  -->
 </template>
 
 <script>
@@ -445,6 +554,9 @@ import {
 import { events } from '../main';
 
 import CosmeticSelector from './shared/CosmeticSelector.vue';
+import ClassSelector from './shared/ClassSelector.vue';
+import TraitSelector from './shared/TraitSelector.vue';
+import EffectSelector from './shared/EffectSelector.vue';
 
 const defaultItem = {
   sprite: 0,
@@ -461,7 +573,13 @@ const defaultItem = {
   secondaryType: '',
   succorInfo: {},
   cosmetic: { name: '' },
-  containedItems: []
+  containedItems: [],
+  trait: { name: '', level: 0 },
+  useEffect: { name: '', potency: 0, duration: 0, extra: { statChanges: {}, tooltip: '', message: '' } },
+  strikeEffect: { name: '', potency: 0, duration: 0, chance: 0 },
+  breakEffect: { name: '', potency: 0, duration: 0 },
+  equipEffect: { name: '', potency: 0, duration: 0 },
+  requirements: { baseClass: '', level: 0 }
 };
 
 export default {
@@ -469,7 +587,7 @@ export default {
 
   props: ['items'],
 
-  components: { CosmeticSelector },
+  components: { CosmeticSelector, ClassSelector, TraitSelector, EffectSelector },
 
   data() {
     return {
@@ -492,6 +610,7 @@ export default {
         { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
       currentAddStat: '',
+      currentAddNourishStat: '',
       isEditing: -1,
       linkStats: true,
       allStats: [...coreStats.map(x => x.stat), ...extraStats.map(x => x.stat)],
@@ -543,6 +662,18 @@ export default {
       if(!willRemove) return;
 
       events.$emit('remove:item', { index: this.items.findIndex(x => x === item) });
+    },
+
+    addNourishStat(key) {
+      console.log(key, this.item.useEffect.extra.statChanges);
+      if(!key || this.item.useEffect.extra.statChanges[key]) return;
+      this.$set(this.item.useEffect.extra.statChanges, key, 0);
+    },
+
+    removeNourishStat(key) {
+      if (!key) return;
+      this.$delete(this.item.useEffect.extra.statChanges, key);
+      this.$delete(this.item.useEffect.extra.statChanges, key);
     },
 
     addStat(key) {

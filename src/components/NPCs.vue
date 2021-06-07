@@ -77,17 +77,7 @@
                     ></b-form-input>
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Class">
-                    <b-form-select
-                      v-model="npc.baseClass"
-                      required
-                      :options="['Mage', 'Thief', 'Healer', 'Warrior', 'Traveller']"
-                    >
-                      <template v-slot:first>
-                        <option :value="''">None</option>
-                      </template>
-                    </b-form-select>
-                  </b-form-group>
+                  <class-selector v-model="npc.baseClass" label="Class" @change="npc.baseClass = $event"></class-selector>
 
                   <b-form-group label-cols-md="3" label="Alignment">
                     <b-form-select
@@ -461,6 +451,8 @@ import { clone, objectPosition } from '../helpers';
 import { coreStats, extraStats } from '../constants';
 import { events } from '../main';
 
+import ClassSelector from './shared/ClassSelector.vue';
+
 const defaultNPC = {
   sprite: 0,
   npcId: '',
@@ -501,6 +493,8 @@ export default {
   name: 'NPCs',
 
   props: ['npcs', 'items'],
+
+  components: { ClassSelector },
 
   data() {
     return {

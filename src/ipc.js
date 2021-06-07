@@ -34,7 +34,7 @@ export function setupIPC(sendToUI) {
   ipcMain.on('UPDATE_RESOURCES', async () => {
     try {
       sendToUI('notify', { type: 'info', text: 'Updating resources...' });
-      await handlers.updateResources();
+      await handlers.updateResources(sendToUI);
       watchMaps(sendToUI);
       sendToUI('notify', { type: 'success', text: 'Spritesheets and game data have been updated.' });
     } catch(e) {
