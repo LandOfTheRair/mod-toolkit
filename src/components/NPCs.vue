@@ -602,13 +602,30 @@ export default {
 
       this.npc.hp.max = this.npc.hp.min = Math.max(
         100,
-        Math.floor(8947.208 * level - 79505.7)
+        Math.floor(9947.208 * level - 79505.7)
       );
+
+      if(['Warrior', 'Thief'].includes(this.npc.baseClass)) {
+        this.npc.mp.max = this.npc.mp.min = 100;
+      }
+
+      if(['Mage', 'Healer'].includes(this.npc.baseClass)) {
+        this.npc.mp.max = this.npc.mp.min = Math.max(
+          100,
+          Math.floor(1947.208 * level - 19505.7)
+        );
+      }
+
+      if(!this.npc.baseClass || this.npc.baseClass === 'Traveller') {
+        this.npc.mp.max = this.npc.mp.min = 0;
+      }
+
       this.npc.giveXp.max = this.npc.giveXp.min = Math.max(
         10,
-        Math.floor(6247.873 * level - 51978.42)
+        Math.floor(3247.873 * level - 41978.42)
       );
-      this.npc.gold.max = this.npc.gold.min = 500 * level;
+
+      this.npc.gold.max = this.npc.gold.min = 300 * level;
     }
   }
 };
