@@ -665,7 +665,6 @@ export default {
     },
 
     addNourishStat(key) {
-      console.log(key, this.item.useEffect.extra.statChanges);
       if(!key || this.item.useEffect.extra.statChanges[key]) return;
       this.$set(this.item.useEffect.extra.statChanges, key, 0);
     },
