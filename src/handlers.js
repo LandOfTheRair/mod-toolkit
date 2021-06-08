@@ -50,7 +50,7 @@ export const updateResources = async (sendToUI) => {
   };
 
   const json = async () => {
-    const jsons = ['effect-data', 'holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners', 'traits'];
+    const jsons = ['effect-data', 'holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners', 'spells', 'traits'];
 
     for await(let json of jsons) {
       sendToUI('notify', { type: 'info', text: `Downloading content "${json}"...` });

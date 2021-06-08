@@ -28,7 +28,7 @@
       <div class="d-block p-1">
         <b-form>
           <div class="row mt-3">
-            <div class="col-6">
+            <div class="col-4">
               <b-form-group label-cols-md="3" label="Tradeskill">
                 <b-form-select v-model="recipe.recipeType" required>
                   <option :value="''">Choose tradeskill</option>
@@ -55,7 +55,7 @@
                   placeholder="Min Skill"
                 ></b-form-input>
                 <div class="split-label true-center">
-                  <strong>Max Skill</strong>
+                  <strong>Max</strong>
                 </div>
                 <b-form-input
                   type="number"
@@ -65,25 +65,55 @@
                 ></b-form-input>
               </b-form-group>
 
-              <b-form-group label-cols-md="3" label="Skill earned">
-                <b-form-input type="number" v-model="recipe.skillGained" required placeholder="Skill earned" min="0"></b-form-input>
+              <b-form-group label-cols-md="3" label="Skill+" class="multi">
+                <b-form-input type="number" v-model="recipe.skillGained" required placeholder="Skill Earned" min="0"></b-form-input>
+                <div class="split-label true-center">
+                  <strong>XP+</strong>
+                </div>
+                <b-form-input type="number" v-model="recipe.xpGained" required placeholder="XP Earned" min="0"></b-form-input>
               </b-form-group>
 
-              <b-form-group label-cols-md="3" label="XP earned">
-                <b-form-input type="number" v-model="recipe.xpGained" required placeholder="XP earned" min="0"></b-form-input>
+              <class-selector v-model="recipe.requireClass" label="Required Class" @change="recipe.requireClass = $event"></class-selector>
+
+              <spell-selector v-model="recipe.requireSpell" label="Required Spell" @change="recipe.requireSpell = $event"></spell-selector>
+
+              <div class="row mb-3">
+                <b-form-checkbox v-model="recipe.requireLearn" class="col-md-4 offset-md-3">
+                  <span v-b-tooltip.hover title="Recipe must be learned from a recipe book">Must Learn</span>
+                </b-form-checkbox>
+
+                <b-form-checkbox v-model="recipe.copySkillToPotency" class="col-md-5">
+                  <span v-b-tooltip.hover title="Potency of the resulting item useEffect is scaled by your tradeskill">Skill → Potency</span>
+                </b-form-checkbox>
+              </div>
+
+              <b-form-group label-cols-md="3" label="Potency Scalar" v-if="recipe.copySkillToPotency">
+                <b-form-input type="number" v-model="recipe.potencyScalar" required placeholder="Potency Scalar" min="0"></b-form-input>
               </b-form-group>
+
+              <item-selector v-model="recipe.transferOwnerFrom" label="Transfer Owner" @change="recipe.transferOwnerFrom = $event"></item-selector>
             </div>
 
-            <div class="col-5">
-              <b-form-group label-cols-md="3" v-for="n in 8" v-bind:key="n">
-                  <template v-slot:label>
-                    Ingredient #{{ n }}
-                  </template>
-                <b-form-select v-model="recipe.ingredients[n - 1]" required>
-                  <option :value="null">Choose ingredient #{{ n }}</option>
-                  <option v-for="item in items" :value="item.name" v-bind:key="item.name">{{ item.name }}</option>
-                </b-form-select>
-              </b-form-group>
+            <div class="col-4">
+              <item-selector v-for="n in 8" v-bind:key="n" v-model="recipe.ingredients[n - 1]" :label="'Ing. #' + n" @change="recipe.ingredients[n - 1] = $event" :modItems="items"></item-selector>
+            </div>
+
+            <div class="col-4">
+              <div v-for="n in 4" v-bind:key="n">
+                <div v-if="recipe.ozIngredients[n - 1]">
+                  <b-form-group label-cols-md="3" :label="'#' + n + ' Item Filter'">
+                    <b-form-input type="text" v-model="recipe.ozIngredients[n - 1].filter" required placeholder="Item Filter"></b-form-input>
+                  </b-form-group>
+                  
+                  <item-selector v-model="recipe.ozIngredients[n - 1].display" :label="'#' + n + ' Visual'" @change="recipe.ingredients[n - 1].display = $event" :modItems="items"></item-selector>
+
+                  <b-form-group label-cols-md="3" :label="'#' + n + ' Ounces'">
+                    <b-form-input type="number" v-model="recipe.ozIngredients[n - 1].ounces" required placeholder="Ounces Required" min="0"></b-form-input>
+                  </b-form-group>
+
+                  <hr v-if="n !==4">
+                </div>
+              </div>
             </div>
           </div>
         </b-form>
@@ -113,12 +143,6 @@
       </template>
     </b-table>
   </div>
-
-  <!-- 
-    TODO:
-      oz ingredients,
-      requireLearn, requireClass, requireSpell, copySkillToPotency, potencyScalar, transferOwnerFrom
-  -->
 </template>
 
 <script>
@@ -127,6 +151,10 @@ import get from 'lodash.get';
 import { clone } from '../helpers';
 import { events } from '../main';
 
+import ItemSelector from './shared/ItemSelector.vue';
+import SpellSelector from './shared/SpellSelector.vue';
+import ClassSelector from './shared/ClassSelector.vue';
+
 const defaultRecipe = {
   item: '',
   skillGained: 0,
@@ -134,14 +162,23 @@ const defaultRecipe = {
   maxSkillForGains: 4,
   xpGained: 0,
   ingredients: [],
+  ozIngredients: [],
   recipeType: '',
-  category: ''
+  category: '',
+  requireClass: '',
+  requireLearn: false,
+  requireSpell: '',
+  copySkillToPotency: false,
+  potencyScalar: 0,
+  transferOwnerFrom: ''
 };
 
 export default {
   name: 'Recipes',
 
   props: ['recipes', 'items'],
+
+  components: { ItemSelector, ClassSelector, SpellSelector },
 
   data() {
     return {
@@ -155,24 +192,43 @@ export default {
         { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
       isEditing: -1,
-      recipe: clone(defaultRecipe)
+      recipe: this.preRecipe(clone(defaultRecipe))
     };
   },
 
   methods: {
+    preRecipe(recipe) {
+      for(let i = 0; i < 8; i++) {
+        recipe.ingredients[i] = recipe.ingredients[i] || '';
+      }
+
+      for(let i = 0; i < 4; i++) {
+        recipe.ozIngredients[i] = recipe.ozIngredients[i] || { filter: '', ounces: 0, display: '' };
+      }
+
+      return recipe;
+    },
+
+    postRecipe(recipe) {
+      recipe.ingredients = recipe.ingredients.filter(Boolean);
+      recipe.ozIngredients = recipe.ozIngredients.filter(x => x.ounces > 0);
+
+      return recipe;
+    },
+
     isValidRecipe(recipe) {
       const validKeys = ['item', 'skillGained', 'xpGained', 'recipeType', 'maxSkillForGains'];
       return validKeys.every(x => get(recipe, x)) && recipe.ingredients.filter(Boolean).length >= 2;
     },
 
     reset() {
-      this.recipe = clone(defaultRecipe);
+      this.recipe = this.preRecipe(clone(defaultRecipe));
       this.isEditing = -1;
     },
 
     confirm() {
       events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:recipe`, {
-        recipe: this.recipe,
+        recipe: this.postRecipe(this.recipe),
         index: this.isEditing
       });
     },
@@ -186,7 +242,7 @@ export default {
     },
 
     edit(recipe) {
-      this.recipe = clone(recipe);
+      this.recipe = this.preRecipe(clone(recipe));
       this.isEditing = this.recipes.findIndex(x => x === recipe);
       this.openModal();
     },
