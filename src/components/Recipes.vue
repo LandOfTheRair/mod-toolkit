@@ -99,7 +99,7 @@
             </div>
 
             <div class="col-4">
-              <div v-for="n in 4" v-bind:key="n">
+              <div v-for="n in 2" v-bind:key="n">
                 <div v-if="recipe.ozIngredients[n - 1]">
                   <b-form-group label-cols-md="3" :label="'#' + n + ' Item Filter'">
                     <b-form-input type="text" v-model="recipe.ozIngredients[n - 1].filter" required placeholder="Item Filter"></b-form-input>
@@ -111,7 +111,7 @@
                     <b-form-input type="number" v-model="recipe.ozIngredients[n - 1].ounces" required placeholder="Ounces Required" min="0"></b-form-input>
                   </b-form-group>
 
-                  <hr v-if="n !==4">
+                  <hr v-if="n !== 2">
                 </div>
               </div>
             </div>
