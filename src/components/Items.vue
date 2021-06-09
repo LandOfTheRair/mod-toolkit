@@ -32,7 +32,7 @@
                       <img
                         src="file://./resources/maps/src/content/__assets/spritesheets/items.png"
                         class="sprite"
-                        v-bind:style="{ 'object-position': objectPosition(item.sprite, 32) }"
+                        :style="{ 'object-position': objectPosition(item.sprite, 32) }"
                       >
                     </div>
 
@@ -53,12 +53,12 @@
                       <optgroup
                         v-for="group in itemGroups"
                         :label="group.group"
-                        v-bind:key="group.group"
+                        :key="group.group"
                       >
                         <option
                           v-for="type in group.keys"
                           :value="type"
-                          v-bind:key="type"
+                          :key="type"
                         >{{ type }}</option>
                       </optgroup>
                     </b-form-select>
@@ -67,7 +67,7 @@
                   <b-form-group label-cols-md="3" label="Skill" class="multi">
                     <b-form-select v-model="item.type" required class="form-control">
                       <option :value="''">Choose item skill type</option>
-                      <option v-for="type in itemTypes" :value="type" v-bind:key="type">{{ type }}</option>
+                      <option v-for="type in itemTypes" :value="type" :key="type">{{ type }}</option>
                     </b-form-select>
 
                     <div class="split-label true-center px-2">
@@ -76,7 +76,7 @@
 
                     <b-form-select v-model="item.secondaryType" required class="form-control">
                       <option :value="''">None</option>
-                      <option v-for="type in itemTypes" :value="type" v-bind:key="type">{{ type }}</option>
+                      <option v-for="type in itemTypes" :value="type" :key="type">{{ type }}</option>
                     </b-form-select>
                   </b-form-group>
 
@@ -92,7 +92,7 @@
 
                     <b-form-select v-model="item.quality" required class="form-control">
                       <option :value="''">None</option>
-                      <option v-for="type in [0, 1, 2, 3, 4, 5]" :value="type" v-bind:key="type">{{ type }}</option>
+                      <option v-for="type in [0, 1, 2, 3, 4, 5]" :value="type" :key="type">{{ type }}</option>
                     </b-form-select>
                   </b-form-group>
 
@@ -194,7 +194,7 @@
                     </div>
                   </div>
 
-                  <div class="row mt-1" v-for="(value, stat) in item.stats" v-bind:key="stat">
+                  <div class="row mt-1" v-for="(value, stat) in item.stats" :key="stat">
                     <div class="col">
                       <b-form-group class="left-header">
                         <template v-slot:label>
@@ -217,7 +217,7 @@
                     </div>
                   </div>
 
-                  <div class="row mt-1" v-for="(value, stat) in item.randomStats" v-bind:key="stat">
+                  <div class="row mt-1" v-for="(value, stat) in item.randomStats" :key="stat">
                     <div class="col">
                       <b-form-group class="left-header">
                         <template v-slot:label>
@@ -247,7 +247,7 @@
                   <div
                     class="row mt-1"
                     v-for="attr in typePropSets[currentSelectedItemClass]"
-                    v-bind:key="attr">
+                    :key="attr">
                     <div class="col">
 
                       <b-form-group label-cols-md="3" label="Ounces" v-if="attr === 'ounces'">
@@ -340,7 +340,7 @@
                           @click="addContainedItem()"
                         >Add Contained Item</b-button>
 
-                        <div class="row mt-1" v-for="contained in item.containedItems" v-bind:key="contained.result">
+                        <div class="row mt-1" v-for="contained in item.containedItems" :key="contained.result">
                           <div class="col">
                             <b-form-group class="left-header">
                               <b-input-group class="multi">
@@ -415,7 +415,7 @@
                       </b-input-group-append>
                     </b-input-group>
 
-                    <div class="row mt-1" v-for="(value, stat) in item.useEffect.extra.statChanges" v-bind:key="stat">
+                    <div class="row mt-1" v-for="(value, stat) in item.useEffect.extra.statChanges" :key="stat">
                       <div class="col">
                         <b-form-group class="left-header">
                           <template v-slot:label>
@@ -520,7 +520,7 @@
           <img
             src="file://./resources/maps/src/content/__assets/spritesheets/items.png"
             class="sprite"
-            v-bind:style="{ 'object-position': objectPosition(data.item.sprite, 32) }"
+            :style="{ 'object-position': objectPosition(data.item.sprite, 32) }"
           >
         </div>
       </template>

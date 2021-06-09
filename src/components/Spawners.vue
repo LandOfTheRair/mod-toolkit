@@ -251,7 +251,7 @@
                 </div>
               </div>
 
-              <div class="row mt-1" v-for="(npc, index) in spawner.npcIds" v-bind:key="index">
+              <div class="row mt-1" v-for="(npc, index) in spawner.npcIds" :key="index">
                 <div class="col-6">
                   <b-form-input type="text" v-model="npc.name" placeholder="NPC ID"></b-form-input>
                 </div>
@@ -285,7 +285,7 @@
       <template v-slot:cell(isDangerous)="data">{{ data.item.isDangerous ? 'Yes' : 'No' }}</template>
 
       <template v-slot:cell(npcIds)="data">
-        <div v-for="(item, index) in data.item.npcIds" v-bind:key="index">{{ item.name }}</div>
+        <div v-for="(item, index) in data.item.npcIds" :key="index">{{ item.name }}</div>
       </template>
 
       <template v-slot:cell(actions)="data">

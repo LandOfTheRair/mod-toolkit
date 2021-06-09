@@ -32,7 +32,7 @@
                       <img
                         src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
                         class="sprite"
-                        v-bind:style="{ 'object-position': objectPosition(npc.sprite, 40) }"
+                        :style="{ 'object-position': objectPosition(npc.sprite, 40) }"
                       >
                     </div>
 
@@ -345,7 +345,7 @@
                     </div>
                   </div>
                   
-                  <div class="row mt-1" v-for="(value, stat) in npc.otherStats" v-bind:key="stat">
+                  <div class="row mt-1" v-for="(value, stat) in npc.otherStats" :key="stat">
                     <div class="col">
                       <b-form-group :label="stat" class="left-header">
                         <b-input-group>
@@ -371,7 +371,47 @@
 
             <b-tab title="Drops"></b-tab>
 
-            <b-tab title="Triggers" disabled></b-tab>
+            <b-tab title="Triggers">
+              <div class="row">
+                <div class="col-6">
+                  <b-button class="mb-3" variant="info" block @click="addCombatMessage()">Add Combat Message</b-button>
+
+                  <b-form-group label-cols-md="3" label="Message" v-for="(message, index) in npc.triggers.combat.messages" :key="index">
+                    <b-input-group>
+                      <b-form-input type="text" v-model="npc.triggers.combat.messages[index]" placeholder="Message"></b-form-input>
+
+                      <b-input-group-append>
+                        <b-button variant="danger" @click="removeCombatMessage(index)">Del</b-button>
+                      </b-input-group-append>
+                    </b-input-group>
+                  </b-form-group>
+                </div>
+
+                <div class="col-6">
+                  <b-form-group label-cols-md="3" label="Spawn Message">
+                    <b-form-input type="text" v-model="npc.triggers.spawn.messages[0]" placeholder="Spawn Message"></b-form-input>
+                  </b-form-group>
+
+                  <s-f-x-selector v-model="npc.triggers.spawn.sfx.name" label="Spawn SFX" @change="npc.triggers.spawn.sfx.name = $event"></s-f-x-selector>
+
+                  <b-form-group label-cols-md="3" label="Spawn SFX%">
+                    <b-form-input type="number" v-model="npc.triggers.spawn.sfx.maxChance" placeholder="x/100" min="0" max="100"></b-form-input>
+                  </b-form-group>
+
+                  <hr>
+
+                  <b-form-group label-cols-md="3" label="Leash Message">
+                    <b-form-input type="text" v-model="npc.triggers.leash.messages[0]" placeholder="Leash Message"></b-form-input>
+                  </b-form-group>
+
+                  <s-f-x-selector v-model="npc.triggers.leash.sfx.name" label="Leash SFX" @change="npc.triggers.leash.sfx.name = $event"></s-f-x-selector>
+
+                  <b-form-group label-cols-md="3" label="Leash SFX%">
+                    <b-form-input type="number" v-model="npc.triggers.leash.sfx.maxChance" placeholder="x/100" min="0" max="100"></b-form-input>
+                  </b-form-group>
+                </div>
+              </div>
+            </b-tab>
           </b-tabs>
         </b-form>
       </div>
@@ -392,7 +432,7 @@
           <img
             src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
             class="sprite"
-            v-bind:style="{ 'object-position': objectPosition(data.item.sprite, 40) }"
+            :style="{ 'object-position': objectPosition(data.item.sprite, 40) }"
           >
         </div>
       </template>
@@ -434,11 +474,6 @@
       - traits
       - usableSkills (sorted by priority. allow for adding a number for custom priority)
       - baseEffects
-
-    - behaviorTriggers (3 column?)
-      - combatMessages
-      - spawnMessage/leashMessage
-      - sfx/sfxMaxChance
   -->
 </template>
 
@@ -450,6 +485,7 @@ import { coreStats, extraStats } from '../constants';
 import { events } from '../main';
 
 import ClassSelector from './shared/ClassSelector.vue';
+import SFXSelector from './shared/SFXSelector.vue';
 
 const defaultNPC = {
   sprite: 0,
@@ -484,7 +520,26 @@ const defaultNPC = {
   avoidWater: false,
   aquaticOnly: false,
   noCorpseDrop: false,
-  noItemDrop: false
+  noItemDrop: false,
+  triggers: {
+    leash: {
+      messages: [''],
+      sfx: {
+        name: '',
+        maxChance: 0
+      }
+    },
+    spawn: {
+      messages: [''],
+      sfx: {
+        name: '',
+        maxChance: 0
+      }
+    },
+    combat: {
+      messages: []
+    }
+  }
 };
 
 export default {
@@ -492,7 +547,7 @@ export default {
 
   props: ['npcs', 'items'],
 
-  components: { ClassSelector },
+  components: { ClassSelector, SFXSelector },
 
   data() {
     return {
@@ -618,6 +673,14 @@ export default {
       );
 
       this.npc.gold.max = this.npc.gold.min = 300 * level;
+    },
+
+    addCombatMessage() {
+      this.npc.triggers.combat.messages.push('');
+    },
+
+    removeCombatMessage(index) {
+      this.$delete(this.npc.triggers.combat.messages, index);
     }
   }
 };

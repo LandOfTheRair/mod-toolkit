@@ -7,19 +7,19 @@
     >
         <option :value="''">None</option>
 
-        <optgroup label="My Items" v-bind:key="'My Items'">
+        <optgroup label="My Items" :key="'My Items'">
           <option
             v-for="item in modItems"
             :value="item.name"
-            v-bind:key="item.name"
+            :key="item.name"
           >{{ item.name }}</option>
         </optgroup>
 
-        <optgroup label="Core Items" v-bind:key="'Core Items'">
+        <optgroup label="Core Items" :key="'Core Items'">
           <option
             v-for="item in baseItems"
             :value="item"
-            v-bind:key="item"
+            :key="item"
           >{{ item }}</option>
         </optgroup>
     </b-form-select>

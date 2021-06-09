@@ -36,21 +36,21 @@
               <b-form-group label-cols-md="3" label="Map">
                 <b-form-select v-model="droptable.mapName" required @change.native="droptable.regionName = ''">
                   <option :value="''">Choose map (unselects region)</option>
-                  <option v-for="map in mapNames" :value="map" v-bind:key="map">{{ map }}</option>
+                  <option v-for="map in mapNames" :value="map" :key="map">{{ map }}</option>
                 </b-form-select>
               </b-form-group>
 
               <b-form-group label-cols-md="3" label="Region">
                 <b-form-select v-model="droptable.regionName" required @change.native="droptable.mapName = ''">
                   <option :value="''">Choose region (unselects map)</option>
-                  <option v-for="region in regionNames" :value="region" v-bind:key="region">{{ region }}</option>
+                  <option v-for="region in regionNames" :value="region" :key="region">{{ region }}</option>
                 </b-form-select>
               </b-form-group>
 
               <b-form-group label-cols-md="3" label="Item">
                 <b-form-select v-model="droptable.result" required>
                   <option :value="''">Choose item</option>
-                  <option v-for="item in items" :value="item.name" v-bind:key="item.name">{{ item.name }}</option>
+                  <option v-for="item in items" :value="item.name" :key="item.name">{{ item.name }}</option>
                 </b-form-select>
               </b-form-group>
 

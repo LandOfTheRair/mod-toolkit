@@ -32,14 +32,14 @@
               <b-form-group label-cols-md="3" label="Tradeskill">
                 <b-form-select v-model="recipe.recipeType" required>
                   <option :value="''">Choose tradeskill</option>
-                  <option v-for="ts in recipeTypes" :value="ts" v-bind:key="ts">{{ ts }}</option>
+                  <option v-for="ts in recipeTypes" :value="ts" :key="ts">{{ ts }}</option>
                 </b-form-select>
               </b-form-group>
 
               <b-form-group label-cols-md="3" label="Item">
                 <b-form-select v-model="recipe.item" required>
                   <option :value="''">Choose result item</option>
-                  <option v-for="item in items" :value="item.name" v-bind:key="item.name">{{ item.name }}</option>
+                  <option v-for="item in items" :value="item.name" :key="item.name">{{ item.name }}</option>
                 </b-form-select>
               </b-form-group>
 
@@ -95,11 +95,11 @@
             </div>
 
             <div class="col-4">
-              <item-selector v-for="n in 8" v-bind:key="n" v-model="recipe.ingredients[n - 1]" :label="'Ing. #' + n" @change="recipe.ingredients[n - 1] = $event" :modItems="items"></item-selector>
+              <item-selector v-for="n in 8" :key="n" v-model="recipe.ingredients[n - 1]" :label="'Ing. #' + n" @change="recipe.ingredients[n - 1] = $event" :modItems="items"></item-selector>
             </div>
 
             <div class="col-4">
-              <div v-for="n in 2" v-bind:key="n">
+              <div v-for="n in 2" :key="n">
                 <div v-if="recipe.ozIngredients[n - 1]">
                   <b-form-group label-cols-md="3" :label="'#' + n + ' Item Filter'">
                     <b-form-input type="text" v-model="recipe.ozIngredients[n - 1].filter" required placeholder="Item Filter"></b-form-input>
@@ -133,7 +133,7 @@
       </template>
 
       <template v-slot:cell(ingredients)="data">
-        <div v-for="(item, index) in data.item.ingredients" v-bind:key="index">{{ item }}</div>
+        <div v-for="(item, index) in data.item.ingredients" :key="index">{{ item }}</div>
       </template>
 
       <template v-slot:cell(actions)="data">
