@@ -369,7 +369,78 @@
 
             <b-tab title="Gear"></b-tab>
 
-            <b-tab title="Drops"></b-tab>
+            <b-tab title="Drops">
+              <div class="row">
+                <div class="col-4">
+                  <b-button class="mb-3" variant="info" block @click="addDrop()">Add Drop</b-button>
+
+                  <div class="row" v-for="(drop, index) of npc.drops" :key="index">
+                    <div class="col-6">
+                      <item-selector v-model="drop.result" label="Item" @change="drop.result = $event"></item-selector>
+                    </div>
+
+                    <div class="col-4">
+                      <b-form-input type="number" v-model="drop.chance" placeholder="1/x" min="-1"></b-form-input>
+                    </div>
+
+                    <div class="col-2">
+                      <b-button variant="danger" @click="removeDrop(index)">Del</b-button>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-4">
+                  <b-button class="mb-3" variant="info" block @click="addCopyDrop()">Add Copy Drop</b-button>
+
+                  <div class="row" v-for="(cdrop, index) of npc.copyDrops" :key="index">
+                    <div class="col-10">
+                      <slot-selector v-model="cdrop.result" label="Copy Slot" @change="cdrop.result = $event"></slot-selector>
+                    </div>
+
+                    <div class="col-2">
+                      <b-button variant="danger" @click="removeCopyDrop(index)">Del</b-button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <item-selector v-model="npc.tansFor" label="Tans For" @change="npc.tansFor = $event"></item-selector>
+
+                  <b-form-group label-cols-md="3" label="Tan Skill Required">
+                    <b-form-input type="number" v-model="npc.tanSkillRequired" required placeholder="Tan Skill Required" min="0"></b-form-input>
+                  </b-form-group>
+                  
+
+                  <b-button class="mb-3" variant="info" block @click="addDropPoolItem()">Add Drop Pool Item</b-button>
+
+                  <b-form-group label-cols-md="3" label="Min" class="multi">
+                    <b-form-input type="number" v-model="npc.dropPool.choose.min" placeholder="Drop Pool Min" min="0"></b-form-input>
+
+                    <div class="split-label true-center">
+                      <strong>Max</strong>
+                    </div>
+
+                    <b-form-input
+                      type="number"
+                      v-model="npc.dropPool.choose.max"
+                      min="0"
+                      placeholder="Drop Pool Max"
+                    ></b-form-input>
+                  </b-form-group>
+
+                  <div class="row" v-for="(drop, index) of npc.dropPool.items" :key="index">
+                    <div class="col-8">
+                      <item-selector v-model="npc.dropPool.items[index]" label="Item" @change="npc.dropPool.items[index] = $event"></item-selector>
+                    </div>
+
+                    <div class="col-4">
+                      <b-button variant="danger" @click="removeDropPoolItem(index)">Del</b-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </b-tab>
 
             <b-tab title="Triggers">
               <div class="row">
@@ -463,12 +534,6 @@
       - sack items [result, chance]
       - all other gear slots (armor, robe1, robe2, hands, feet, ring1, ring2, waist, head, neck, ear, wrists, rightHand, leftHand)
         - needs to support weighted choices
-    
-    - drops section (3 column?)
-      - drops
-      - copyDrops
-      - dropPool
-      - tansFor/tanSkillRequired
 
     - skills & attributes (3 column?)
       - traits
@@ -486,6 +551,8 @@ import { events } from '../main';
 
 import ClassSelector from './shared/ClassSelector.vue';
 import SFXSelector from './shared/SFXSelector.vue';
+import ItemSelector from './shared/ItemSelector.vue';
+import SlotSelector from './shared/SlotSelector.vue';
 
 const defaultNPC = {
   sprite: 0,
@@ -521,6 +588,17 @@ const defaultNPC = {
   aquaticOnly: false,
   noCorpseDrop: false,
   noItemDrop: false,
+  drops: [],
+  copyDrops: [],
+  dropPool: {
+    choose: {
+      min: 0,
+      max: 0,
+    },
+    items: []
+  },
+  tansFor: '',
+  tanSkillRequired: 0,
   triggers: {
     leash: {
       messages: [''],
@@ -547,7 +625,7 @@ export default {
 
   props: ['npcs', 'items'],
 
-  components: { ClassSelector, SFXSelector },
+  components: { ClassSelector, SFXSelector, ItemSelector, SlotSelector },
 
   data() {
     return {
@@ -681,7 +759,31 @@ export default {
 
     removeCombatMessage(index) {
       this.$delete(this.npc.triggers.combat.messages, index);
-    }
+    },
+    
+    addDrop() {
+      this.npc.drops.push({ result: '', chance: -1 });
+    },
+
+    removeDrop(index) {
+      this.$delete(this.npc.drops, index);
+    },
+
+    addCopyDrop() {
+      this.npc.copyDrops.push({ result: '', chance: -1 });
+    },
+
+    removeCopyDrop(index) {
+      this.$delete(this.npc.copyDrops, index);
+    },
+
+    addDropPoolItem() {
+      this.npc.dropPool.items.push('');
+    },
+
+    removeDropPoolItem(index) {
+      this.$delete(this.npc.dropPool.items, index);
+    },
   }
 };
 </script>

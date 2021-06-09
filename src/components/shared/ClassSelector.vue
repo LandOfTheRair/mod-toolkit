@@ -17,7 +17,7 @@
 export default {
   name: 'ClassSelector',
 
-  props: ['value', 'label'],
+  props: ['value', 'label']
 };
 </script>
 
