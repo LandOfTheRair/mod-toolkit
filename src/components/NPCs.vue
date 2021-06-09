@@ -439,8 +439,6 @@
       - combatMessages
       - spawnMessage/leashMessage
       - sfx/sfxMaxChance
-
-    - add warning icons if the items (equip, drop, dropPool, tansFor) are not present in the current modpack
   -->
 </template>
 
