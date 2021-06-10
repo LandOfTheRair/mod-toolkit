@@ -367,7 +367,49 @@
 
             <b-tab title="Skills & Attributes"></b-tab>
 
-            <b-tab title="Gear"></b-tab>
+            <b-tab title="Gear">
+              <div class="row">
+                <div class="col-6">
+                  <b-button class="mb-3" variant="info" block @click="addSackItem()">Add Sack Item</b-button>
+
+                  <div class="row" v-for="(sitem, index) of npc.items.sack" :key="index">
+                    <div class="col-6">
+                      <item-selector v-model="sitem.result" label="Item" @change="sitem.result = $event"></item-selector>
+                    </div>
+
+                    <div class="col-4">
+                      <b-form-input type="number" v-model="sitem.chance" placeholder="1/x" min="-1"></b-form-input>
+                    </div>
+
+                    <div class="col-2">
+                      <b-button variant="danger" @click="removeSackItem(index)">Del</b-button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="row" v-for="(val, slot) of npc.items.equipment" :key="slot">
+                    <div class="col-12">
+                      <b-button class="mb-3" variant="info" block @click="addEquipmentItem(slot)">Add {{ slot }} Item</b-button>
+
+                      <div class="row" v-for="(sitem, index) of npc.items.equipment[slot]" :key="index">
+                        <div class="col-6">
+                          <item-selector v-model="sitem.result" label="Item" @change="sitem.result = $event"></item-selector>
+                        </div>
+
+                        <div class="col-4">
+                          <b-form-input type="number" v-model="sitem.chance" placeholder="1/x" min="1"></b-form-input>
+                        </div>
+
+                        <div class="col-2">
+                          <b-button variant="danger" @click="removeEquipmentItem(slot, index)">Del</b-button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </b-tab>
 
             <b-tab title="Drops">
               <div class="row">
@@ -529,12 +571,7 @@
   </div>
 
   <!--
-    TODO:      
-    - items (2 column?)
-      - sack items [result, chance]
-      - all other gear slots (armor, robe1, robe2, hands, feet, ring1, ring2, waist, head, neck, ear, wrists, rightHand, leftHand)
-        - needs to support weighted choices
-
+    TODO:   
     - skills & attributes (3 column?)
       - traits
       - usableSkills (sorted by priority. allow for adding a number for custom priority)
@@ -616,6 +653,28 @@ const defaultNPC = {
     },
     combat: {
       messages: []
+    }
+  },
+  items: {
+    sack: [],
+    equipment: {
+      rightHand: [],
+      leftHand: [],
+      head: [],
+      neck: [],
+      ear: [],
+      waist: [],
+      wrists: [],
+      ring1: [],
+      ring2: [],
+      hands: [],
+      feet: [],
+      armor: [],
+      robe1: [],
+      robe2: [],
+      trinket: [],
+      potion: [],
+      ammo: []
     }
   }
 };
@@ -784,6 +843,28 @@ export default {
     removeDropPoolItem(index) {
       this.$delete(this.npc.dropPool.items, index);
     },
+
+    addSackItem() {
+      this.npc.items.sack.push({
+        result: '',
+        chance: -1
+      });
+    },
+
+    removeSackItem(index) {
+      this.$delete(this.npc.items.sack, index);
+    },
+
+    addEquipmentItem(slot) {
+      this.npc.items.equipment[slot].push({
+        result: '',
+        chance: 1
+      });
+    },
+
+    removeEquipmentItem(slot, index) {
+      this.$delete(this.npc.items.equipment[slot], index);
+    }
   }
 };
 </script>
