@@ -365,7 +365,84 @@
               </div>
             </b-tab>
 
-            <b-tab title="Skills & Attributes"></b-tab>
+            <b-tab title="Skills & Attributes">
+              <div class="row">
+                <div class="col-4">
+
+                  <div class="row">
+                    <div class="col-8">
+                      <trait-selector v-model="currentTrait" label="Trait" @change="currentTrait = $event"></trait-selector>
+                    </div>
+
+                    <div class="col-4">
+                      <b-button
+                        variant="primary"
+                        :disabled="!currentTrait || npc.traitLevels[currentTrait] > 0"
+                        @click="addTrait(currentTrait)"
+                      >Add</b-button>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3" v-for="(level, trait) of npc.traitLevels" :key="trait">
+                    <div class="col-4">
+                      <strong>{{ trait }}</strong>
+                    </div>
+
+                    <div class="col-4">
+                      <b-form-input type="number" v-model="npc.traitLevels[trait]" placeholder="Lv." min="1"></b-form-input>
+                    </div>
+
+                    <div class="col-4">
+                      <b-button variant="danger" @click="removeTrait(trait)">Del</b-button>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-4">
+                  
+                  <b-button class="mb-3" variant="info" block @click="addUsableSkill()">Add Spell</b-button>
+
+                  <div class="row" v-for="(skill, index) of npc.usableSkills" :key="index">
+                    <div class="col-6">
+                      <spell-selector v-model="skill.result" label="Spell" @change="skill.result = $event"></spell-selector>
+                    </div>
+
+                    <div class="col-4">
+                      <b-form-input type="number" v-model="skill.chance" placeholder="X" min="1"></b-form-input>
+                    </div>
+
+                    <div class="col-2">
+                      <b-button variant="danger" @click="removeUsableSkill(index)">Del</b-button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  
+                  <b-button class="mb-3" variant="info" block @click="addBaseEffect()">Add Base Effect</b-button>
+
+                  <div class="row" v-for="(effect, index) of npc.baseEffects" :key="index">
+                    <div class="col-9">
+                      <effect-selector v-model="effect.name" label="Effect" @change="effect.name = $event"></effect-selector>
+                    </div>
+
+                    <div class="col-2">
+                      <b-button variant="danger" @click="removeBaseEffect(index)">Del</b-button>
+                    </div>
+
+                    <div class="col-7 offset-1" v-if="effect.name === 'Attribute'">
+                      <damage-type-selector v-model="effect.extra.damageType" label="Type" @change="effect.extra.damageType = $event"></damage-type-selector>
+                    </div>
+
+                    <div class="col-3" v-if="effect.name === 'Attribute'">
+                      <b-form-input type="number" v-model="effect.extra.potency" placeholder="%" min="0"></b-form-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </b-tab>
 
             <b-tab title="Gear">
               <div class="row">
@@ -373,11 +450,11 @@
                   <b-button class="mb-3" variant="info" block @click="addSackItem()">Add Sack Item</b-button>
 
                   <div class="row" v-for="(sitem, index) of npc.items.sack" :key="index">
-                    <div class="col-6">
+                    <div class="col-7">
                       <item-selector v-model="sitem.result" label="Item" @change="sitem.result = $event"></item-selector>
                     </div>
 
-                    <div class="col-4">
+                    <div class="col-3">
                       <b-form-input type="number" v-model="sitem.chance" placeholder="1/x" min="-1"></b-form-input>
                     </div>
 
@@ -393,11 +470,11 @@
                       <b-button class="mb-3" variant="info" block @click="addEquipmentItem(slot)">Add {{ slot }} Item</b-button>
 
                       <div class="row" v-for="(sitem, index) of npc.items.equipment[slot]" :key="index">
-                        <div class="col-6">
+                        <div class="col-7">
                           <item-selector v-model="sitem.result" label="Item" @change="sitem.result = $event"></item-selector>
                         </div>
 
-                        <div class="col-4">
+                        <div class="col-3">
                           <b-form-input type="number" v-model="sitem.chance" placeholder="1/x" min="1"></b-form-input>
                         </div>
 
@@ -569,14 +646,6 @@
       </template>
     </b-table>
   </div>
-
-  <!--
-    TODO:   
-    - skills & attributes (3 column?)
-      - traits
-      - usableSkills (sorted by priority. allow for adding a number for custom priority)
-      - baseEffects
-  -->
 </template>
 
 <script>
@@ -590,6 +659,10 @@ import ClassSelector from './shared/ClassSelector.vue';
 import SFXSelector from './shared/SFXSelector.vue';
 import ItemSelector from './shared/ItemSelector.vue';
 import SlotSelector from './shared/SlotSelector.vue';
+import TraitSelector from './shared/TraitSelector.vue';
+import SpellSelector from './shared/SpellSelector.vue';
+import EffectSelector from './shared/EffectSelector.vue';
+import DamageTypeSelector from './shared/DamageTypeSelector.vue';
 
 const defaultNPC = {
   sprite: 0,
@@ -625,6 +698,9 @@ const defaultNPC = {
   aquaticOnly: false,
   noCorpseDrop: false,
   noItemDrop: false,
+  traitLevels: {},
+  usableSkills: [],
+  baseEffects: [],
   drops: [],
   copyDrops: [],
   dropPool: {
@@ -684,7 +760,7 @@ export default {
 
   props: ['npcs', 'items'],
 
-  components: { ClassSelector, SFXSelector, ItemSelector, SlotSelector },
+  components: { ClassSelector, SFXSelector, ItemSelector, SlotSelector, TraitSelector, SpellSelector, EffectSelector, DamageTypeSelector },
 
   data() {
     return {
@@ -702,6 +778,7 @@ export default {
       ],
       isEditing: -1,
       linkStats: true,
+      currentTrait: '',
       currentExtraStat: '',
       extraStats: extraStats.map(x => x.stat),
       npc: clone(defaultNPC)
@@ -864,7 +941,41 @@ export default {
 
     removeEquipmentItem(slot, index) {
       this.$delete(this.npc.items.equipment[slot], index);
-    }
+    },
+
+    addTrait(trait) {
+      this.$set(this.npc.traitLevels, trait, 1);
+    },
+
+    removeTrait(trait) {
+      this.$delete(this.npc.traitLevels, trait);
+    },
+
+    addUsableSkill() {
+      this.npc.usableSkills.push({
+        result: '',
+        chance: 1
+      });
+    },
+
+    removeUsableSkill(index) {
+      this.$delete(this.npc.usableSkills, index);
+    },
+
+    addBaseEffect() {
+      this.npc.baseEffects.push({
+        name: '',
+        endsAt: -1,
+        extra: {
+          damageType: '',
+          potency: 1
+        }
+      });
+    },
+
+    removeBaseEffect(index) {
+      this.$delete(this.npc.baseEffects, index);
+    },
   }
 };
 </script>
