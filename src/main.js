@@ -1,6 +1,5 @@
 
 // TODO: dialog editor
-// TODO: quest editor
 // TODO: warn when items are not used by any creature, drop table, recipe
 // TODO: validate map properties (region, maxskill, maxlevel, etc)
 // TODO: with map, check spawner names / spawners

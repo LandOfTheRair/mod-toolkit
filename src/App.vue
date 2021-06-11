@@ -83,16 +83,16 @@
             <tab-spawners :spawners="mod.spawners" :npcs="mod.npcs"></tab-spawners>
           </b-tab>
 
-          <b-tab disabled>
-            <template v-slot:title>Dialogs</template>
+          <b-tab>
+            <template v-slot:title>Quests ({{ mod.quests.length }})</template>
 
-            <tab-dialogs :dialogs="mod.dialogs"></tab-dialogs>
+            <tab-quests :quests="mod.quests" :npcs="mod.npcs" :items="mod.items"></tab-quests>
           </b-tab>
 
           <b-tab disabled>
-            <template v-slot:title>Quests</template>
+            <template v-slot:title>Dialogs ({{ mod.dialogs.length }})</template>
 
-            <tab-quests :quests="mod.quests"></tab-quests>
+            <tab-dialogs :dialogs="mod.dialogs"></tab-dialogs>
           </b-tab>
         </b-tabs>
       </div>
@@ -126,7 +126,9 @@ const defaultData = {
   drops: [],
   spawners: [],
   recipes: [],
-  maps: []
+  maps: [],
+  quests: [],
+  dialogs: []
 };
 
 export default {
@@ -285,6 +287,26 @@ export default {
 
     events.$on('remove:spawner', ({ index }) => {
       this.mod.spawners.splice(index, 1);
+      this.persist();
+    });
+    
+    // quest
+    events.$on('add:quest', ({ quest }) => {
+      if(this.mod.quests.find(x => x.name === quest.name)) quest.name = `${quest.name} (copy)`;
+
+      this.mod.quests.push(quest);
+      this.persist();
+    });
+
+    events.$on('edit:quest', ({ quest, index }) => {
+      if(this.mod.quests.find(x => x.name === quest.name)) quest.name = `${quest.name} (copy)`;
+
+      this.$set(this.mod.quests, index, quest);
+      this.persist();
+    });
+
+    events.$on('remove:quest', ({ index }) => {
+      this.mod.quests.splice(index, 1);
       this.persist();
     });
   },

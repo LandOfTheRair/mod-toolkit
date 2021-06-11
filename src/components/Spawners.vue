@@ -341,12 +341,6 @@ export default {
     };
   },
 
-  computed: {
-    npcNames() {
-      return this.npcs.map(npc => npc.npcId);
-    }
-  },
-
   methods: {
     isValidSpawner(spawner) {
       const validKeys = ['npcIds', 'tag'];

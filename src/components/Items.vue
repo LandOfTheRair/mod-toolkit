@@ -176,21 +176,20 @@
                 <div class="col-md-4">
                   <div class="row">
                     <div class="col-md-12">
-                      <b-input-group>
-                        <b-form-select v-model="currentAddStat" required :options="allStats">
-                          <template v-slot:first>
-                            <option :value="''">Add Stat</option>
-                          </template>
-                        </b-form-select>
+                    
+                      <div class="row">
+                        <div class="col-8">
+                          <stat-selector v-model="currentAddStat" @change="currentAddStat = $event"></stat-selector>
+                        </div>
 
-                        <b-input-group-append>
+                        <div class="col-4 text-right">
                           <b-button
                             variant="primary"
                             :disabled="!currentAddStat"
                             @click="addStat(currentAddStat)"
                           >Add</b-button>
-                        </b-input-group-append>
-                      </b-input-group>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -399,21 +398,19 @@
                       <b-form-input type="text" v-model="item.useEffect.extra.message" placeholder="Nourish Message"></b-form-input>
                     </b-form-group>
                     
-                    <b-input-group>
-                      <b-form-select v-model="currentAddNourishStat" required :options="allStats">
-                        <template v-slot:first>
-                          <option :value="''">Add Stat</option>
-                        </template>
-                      </b-form-select>
+                    <div class="row">
+                      <div class="col-8">
+                        <stat-selector v-model="currentAddNourishStat" @change="currentAddNourishStat = $event"></stat-selector>
+                      </div>
 
-                      <b-input-group-append>
+                      <div class="col-4 text-right">
                         <b-button
                           variant="primary"
                           :disabled="!currentAddNourishStat"
                           @click="addNourishStat(currentAddNourishStat)"
                         >Add</b-button>
-                      </b-input-group-append>
-                    </b-input-group>
+                      </div>
+                    </div>
 
                     <div class="row mt-1" v-for="(value, stat) in item.useEffect.extra.statChanges" :key="stat">
                       <div class="col">
@@ -557,6 +554,7 @@ import CosmeticSelector from './shared/CosmeticSelector.vue';
 import ClassSelector from './shared/ClassSelector.vue';
 import TraitSelector from './shared/TraitSelector.vue';
 import EffectSelector from './shared/EffectSelector.vue';
+import StatSelector from './shared/StatSelector.vue';
 
 const defaultItem = {
   sprite: 0,
@@ -587,7 +585,7 @@ export default {
 
   props: ['items'],
 
-  components: { CosmeticSelector, ClassSelector, TraitSelector, EffectSelector },
+  components: { CosmeticSelector, ClassSelector, TraitSelector, EffectSelector, StatSelector },
 
   data() {
     return {
