@@ -236,18 +236,13 @@
 
             <div class="col-4">
               <div class="row">
-                <div class="col-md-12">
-                  <b-input-group>
-                    <b-form-select v-model="currentAddNPC" required :options="npcNames">
-                      <template v-slot:first>
-                        <option :value="''">Custom NPC</option>
-                      </template>
-                    </b-form-select>
+                <div class="col-8">
 
-                    <b-input-group-append>
-                      <b-button variant="primary" @click="addNPC(currentAddNPC)">Add</b-button>
-                    </b-input-group-append>
-                  </b-input-group>
+                  <n-p-c-selector v-model="currentAddNPC" label="Chosen NPC" @change="currentAddNPC = $event" :modNPCs="npcs"></n-p-c-selector>
+                </div>
+
+                <div class="col-3">
+                  <b-button variant="primary" @click="addNPC(currentAddNPC)">Add</b-button>
                 </div>
               </div>
 
@@ -304,6 +299,7 @@ import { clone } from '../helpers';
 import { events } from '../main';
 
 import HolidaySelector from './shared/HolidaySelector.vue';
+import NPCSelector from './shared/NPCSelector.vue';
 
 const defaultSpawner = {
   npcIds: [],
@@ -326,7 +322,7 @@ export default {
 
   props: ['spawners', 'npcs'],
 
-  components: { HolidaySelector },
+  components: { HolidaySelector, NPCSelector },
 
   data() {
     return {

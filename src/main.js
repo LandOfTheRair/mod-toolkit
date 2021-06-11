@@ -7,8 +7,7 @@
 // TODO: with map, check lair names against monsters
 // TODO: with map, check npc names / dialogs
 // TODO: audit tool that prints abnormal settings (item.destroyOnDrop, item.requirements, stats.actionSpeed, etc)
-// TODO: npc sprite should be an array
-// TODO: make sure all items and npcs have unique names
+// TODO: make sure all entries have unique names
 // TODO: when updating item name, update npc gear as well
 // TODO: when updating npc id, update spawner npcId list
 // TODO: remove size from selector components; put size on the implementer
