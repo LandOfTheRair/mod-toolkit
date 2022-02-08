@@ -248,7 +248,7 @@
 
               <div class="row mt-1" v-for="(npc, index) in spawner.npcIds" :key="index">
                 <div class="col-6">
-                  <b-form-input type="text" v-model="npc.result" placeholder="NPC ID"></b-form-input>
+                  <n-p-c-selector v-model="npc.result" label="NPC" @change="npc.result = $event" :modNPCs="npcs"></n-p-c-selector>
                 </div>
                 <div class="col-3">
                   <b-form-input type="number" v-model="npc.chance" placeholder="Weight"></b-form-input>
