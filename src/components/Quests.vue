@@ -194,7 +194,7 @@
       </div>
     </b-modal>
 
-    <div class="mb-3 row">
+    <div class="mb-3 row" v-if="quests.length > 0">
       <div class="col-6">
         <b-form-input v-model="filter" placeholder="Search quests..."></b-form-input>
       </div>

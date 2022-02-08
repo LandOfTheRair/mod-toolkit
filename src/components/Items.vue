@@ -500,7 +500,7 @@
       </div>
     </b-modal>
 
-    <div class="mb-3 row">
+    <div class="mb-3 row" v-if="items.length > 0">
       <div class="col-6">
         <b-form-input v-model="filter" placeholder="Search items..."></b-form-input>
       </div>

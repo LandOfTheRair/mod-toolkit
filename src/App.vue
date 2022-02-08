@@ -89,10 +89,10 @@
             <tab-quests :quests="mod.quests" :npcs="mod.npcs" :items="mod.items"></tab-quests>
           </b-tab>
 
-          <b-tab disabled>
-            <template v-slot:title>Dialogs ({{ mod.dialogs.length }})</template>
+          <b-tab>
+            <template v-slot:title>NPC Scripts ({{ mod.dialogs.length }})</template>
 
-            <tab-dialogs :dialogs="mod.dialogs"></tab-dialogs>
+            <tab-dialogs :dialogs="mod.dialogs" :npcs="mod.npcs"></tab-dialogs>
           </b-tab>
         </b-tabs>
       </div>

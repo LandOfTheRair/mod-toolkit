@@ -15,7 +15,7 @@
       <b-button class="mb-1" variant="primary" @click="$refs.mapUpload.click()">Import some</b-button> <b-button variant="primary" @click="createMap()">Create new</b-button>
     </div>
 
-    <div class="mb-3 row">
+    <div class="mb-3 row" v-if="maps.length > 0">
       <div class="col-6">
         <b-form-input v-model="filter" placeholder="Search maps..."></b-form-input>
       </div>
