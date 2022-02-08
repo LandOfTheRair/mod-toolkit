@@ -155,6 +155,26 @@ export const renameMap = (oldName, newName) => {
   fs.moveSync(oldPath, newPath);
 };
 
+export const editMapSpawnerNames = (oldName, newName) => {
+  fs.readdirSync(`${baseUrl}/resources/maps/src/content/maps/custom`).forEach(file => {
+    const path = `${baseUrl}/resources/maps/src/content/maps/custom/${file}`;
+    const json = fs.readJSONSync(path);
+
+    let didWrite = false;
+  
+    json.layers[10].objects.forEach(spawner => {
+      if(spawner.name !== oldName) return;
+
+      spawner.name = newName;
+      didWrite = true;
+    });
+  
+    if(didWrite) {
+      fs.writeJSONSync(path, json);
+    }
+  });
+};
+
 export const loadJSON = (json) => {
   const file = `${baseUrl}/resources/json/${json}.json`;
 

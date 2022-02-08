@@ -281,6 +281,11 @@ export default {
     });
 
     events.$on('edit:spawner', ({ spawner, index }) => {
+      const oldName = this.mod.spawners[index].tag;
+      const newName = spawner.tag;
+
+      this.updateSpawnersAcrossMod(oldName, newName);
+
       this.$set(this.mod.spawners, index, spawner);
       this.persist();
     });
@@ -388,6 +393,10 @@ export default {
 
       this.mod = Object.assign({}, defaultData);
       this.persist();
+    },
+
+    updateSpawnersAcrossMod(oldName, newName) {
+      window.api.send('EDIT_MAP_SPAWNER', { oldName, newName });
     },
 
     updateItemsAcrossMod(oldName, newName) {

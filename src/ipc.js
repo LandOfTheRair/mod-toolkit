@@ -71,6 +71,13 @@ export function setupIPC(sendToUI) {
     handlers.editMap(name);
   });
   
+  ipcMain.on('EDIT_MAP_SPAWNER', async (e, data) => {
+    const { oldName, newName } = data;
+    if(!oldName || !newName) return;
+    
+    handlers.editMapSpawnerNames(oldName, newName);
+  });
+  
   ipcMain.on('JSON', async (e, data) => {
     const json = data.json;
     if(!json) return;
