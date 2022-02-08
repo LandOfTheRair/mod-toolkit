@@ -194,6 +194,10 @@
       </div>
     </b-modal>
 
+    <div class="mb-3">
+      <b-form-input v-model="filter" placeholder="Search quests..."></b-form-input>
+    </div>
+
     <b-table
       v-if="quests.length"
       small
@@ -202,6 +206,7 @@
       :fields="tableFields"
       :items="quests"
       :sticky-header="globalTableHeight"
+      :filter="filter"
     >
       <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
@@ -283,6 +288,7 @@ export default {
   data() {
     return {
       globalTableHeight,
+      filter: '',
       sortBy: 'name',
       sortDesc: false,
       tableFields: [
