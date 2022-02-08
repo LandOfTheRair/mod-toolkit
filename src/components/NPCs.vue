@@ -788,6 +788,8 @@ export default {
     objectPosition,
 
     isValidNPC(npc) {
+      if(this.npcs.some((check, i) => i !== this.isEditing && npc.npcId === check.npcId)) return false;
+
       const validKeys = [
         'npcId',
         'hp.min',

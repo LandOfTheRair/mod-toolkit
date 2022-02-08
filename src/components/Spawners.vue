@@ -343,6 +343,8 @@ export default {
 
   methods: {
     isValidSpawner(spawner) {
+      if(this.spawners.some((check, i) => i !== this.isEditing && spawner.tag === check.tag)) return false;
+
       const validKeys = ['npcIds', 'tag'];
       return validKeys.every(x => get(spawner, x));
     },

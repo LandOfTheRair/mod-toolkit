@@ -67,6 +67,11 @@ export default {
       const newName = await this.$dialog.prompt({ title: 'What would you like to rename this map to?', text: '' });
       if(!newName) return;
 
+      if(this.maps.some(map => map.name === newName)) {
+        this.$dialog.error({ title: 'Error', text: 'A map with that name already exists.' });
+        return;
+      }
+
       window.api.send('RENAME_MAP', { newName, oldName: mapName });
     },
 

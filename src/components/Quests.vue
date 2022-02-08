@@ -298,6 +298,8 @@ export default {
 
   methods: {
     isValidQuest(quest) {
+      if(this.quests.some((check, i) => i !== this.isEditing && quest.name === check.name)) return false;
+
       const validKeys = ['name', 'desc', 'giver'];
       return validKeys.every(x => get(quest, x));
     },

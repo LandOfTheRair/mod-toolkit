@@ -620,6 +620,8 @@ export default {
     objectPosition,
 
     isValidItem(item) {
+      if(this.items.some((check, i) => i !== this.isEditing && item.name === check.name)) return false;
+
       const validKeys = ['name', 'itemClass', 'desc', 'value', 'type'];
       return validKeys.every(x => get(item, x));
     },
