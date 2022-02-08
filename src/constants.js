@@ -14,7 +14,6 @@ export const coreStats = sortBy([
 ], 'stat');
 
 export const extraStats = sortBy([
-  { stat: 'move', help: 'Adds additional movement (cap of 4)' },
   { stat: 'hp', help: 'Adds bonus HP' },
   { stat: 'hpregen', help: 'Adds bonus HP regen' },
   { stat: 'mp', help: 'Adds bonus MP for magical classes' },
@@ -39,9 +38,9 @@ export const extraStats = sortBy([
     stat: 'perception',
     help: 'Adds additional perception to detect hidden enemies'
   },
-  { stat: 'physicalDamageBoost', help: 'Adds raw physical damage' },
-  { stat: 'magicalDamageBoost', help: 'Adds raw magical damage' },
-  { stat: 'healingBoost', help: 'Adds raw healing power boost' },
+  { stat: 'physicalDamageBoostPercent', help: 'Adds raw physical damage (%)' },
+  { stat: 'magicalDamageBoostPercent', help: 'Adds raw magical damage (%)' },
+  { stat: 'healingBoostPercent', help: 'Adds raw healing power boost (%)' },
   { stat: 'necroticBoostPercent', help: 'Adds raw necrotic damage (%)' },
   { stat: 'energyBoostPercent', help: 'Adds raw energy damage (%)' },
   { stat: 'diseaseBoostPercent', help: 'Adds raw disease damage (%)' },
@@ -71,6 +70,8 @@ export const extraStats = sortBy([
   { stat: 'fireResist', help: 'Resist a raw amount of fire damage' },
   { stat: 'iceResist', help: 'Resist a raw amount of ice damage' },
   { stat: 'poisonResist', help: 'Resist a raw amount of poison damage' },
+  { stat: 'diseaseResist', help: 'Resist a raw amount of disease damage' },
+  { stat: 'move', help: 'Adds additional movement (cap of 4)' },
   {
     stat: 'actionSpeed',
     help: 'Add additional actions per round (similar to Haste)'
@@ -81,6 +82,7 @@ export const extraStats = sortBy([
   { stat: 'skillBonusPercent', help: 'Multiply gained skill by a raw multiplier' },
   { stat: 'spellCriticalPercent', help: 'Increase the chances of getting a critical spell strike' },
   { stat: 'savingThrow', help: 'Increase the chances of negating some spells' },
+  
   { stat: 'maceBonus', help: 'Increase the mace skill of the target' },
   { stat: 'axeBonus', help: 'Increase the axe skill of the target' },
   { stat: 'daggerBonus', help: 'Increase the dagger skill of the target' },

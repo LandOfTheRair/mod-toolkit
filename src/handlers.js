@@ -41,11 +41,15 @@ export const updateResources = async (sendToUI) => {
     for await(let sheet of spritesheets) {
       sendToUI('notify', { type: 'info', text: `Downloading spritesheet "${sheet}"...` });
       
-      const url = `https://play.rair.land/assets/spritesheets/${sheet}.png`;
-      const res = await fetch(url);
-      const buffer = await res.buffer();
-  
-      fs.writeFileSync(`${baseUrl}/resources/maps/src/content/__assets/spritesheets/${sheet}.png`, buffer);
+      try {
+        const url = `https://play.rair.land/assets/spritesheets/${sheet}.png`;
+        const res = await fetch(url);
+        const buffer = await res.buffer();
+    
+        fs.writeFileSync(`${baseUrl}/resources/maps/src/content/__assets/spritesheets/${sheet}.png`, buffer);
+      } catch {
+        isUpdating = false;
+      }
     }
   };
 
@@ -54,35 +58,49 @@ export const updateResources = async (sendToUI) => {
 
     for await(let json of jsons) {
       sendToUI('notify', { type: 'info', text: `Downloading content "${json}"...` });
+      
+      try {
+        const templateUrl = `https://play.rair.land/assets/content/_output/${json}.json`;
+        const templateRes = await fetch(templateUrl);
+        const templateBuffer = await templateRes.buffer();
 
-      const templateUrl = `https://play.rair.land/assets/content/_output/${json}.json`;
-      const templateRes = await fetch(templateUrl);
-      const templateBuffer = await templateRes.buffer();
-      fs.writeFileSync(`${baseUrl}/resources/json/${json}.json`, templateBuffer);
+        fs.writeFileSync(`${baseUrl}/resources/json/${json}.json`, templateBuffer);
+      } catch {
+        isUpdating = false;
+      }
     }
   };
 
   const template = async () => {
     sendToUI('notify', { type: 'info', text: 'Downloading template...' });
 
-    const templateUrl = 'https://server.rair.land/editor/map?map=Template';
-    const templateRes = await fetch(templateUrl);
-    const templateBuffer = await templateRes.buffer();
-    fs.writeFileSync(`${baseUrl}/resources/maps/src/content/maps/custom/Template.json`, templateBuffer);
+    try {
+      const templateUrl = 'https://server.rair.land/editor/map?map=Template';
+      const templateRes = await fetch(templateUrl);
+      const templateBuffer = await templateRes.buffer();
+
+      fs.writeFileSync(`${baseUrl}/resources/maps/src/content/maps/custom/Template.json`, templateBuffer);
+    } catch {
+      isUpdating = false;
+    }
   };
 
   const tiled = async () => {
     sendToUI('notify', { type: 'info', text: 'Downloading Tiled...' });
 
-    const tiledUrl = 'https://rair.land/Tiled.zip';
-    const tiledRes = await fetch(tiledUrl);
-    const tiledBuffer = await tiledRes.buffer();
-    fs.writeFileSync(`${baseUrl}/resources/Tiled.zip`, tiledBuffer);
+    try {
+      const tiledUrl = 'https://rair.land/Tiled.zip';
+      const tiledRes = await fetch(tiledUrl);
+      const tiledBuffer = await tiledRes.buffer();
+      fs.writeFileSync(`${baseUrl}/resources/Tiled.zip`, tiledBuffer);
 
-    const adm = new admZip(`${baseUrl}/resources/Tiled.zip`);
-    adm.extractAllTo(`${baseUrl}/resources`);
+      const adm = new admZip(`${baseUrl}/resources/Tiled.zip`);
+      adm.extractAllTo(`${baseUrl}/resources`);
 
-    fs.rmSync(`${baseUrl}/resources/Tiled.zip`);
+      fs.rmSync(`${baseUrl}/resources/Tiled.zip`);
+    } catch {
+      isUpdating = false;
+    }
   };
 
   await sheets();
