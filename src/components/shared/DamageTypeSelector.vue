@@ -4,7 +4,7 @@
       :value="value"
       @change="$emit('change', $event)"
       required
-      :options="['physical', 'blunt', 'sharp', 'magical', 'necrotic', 'energy', 'disease', 'poison', 'water', 'fire', 'ice', 'heal', 'gm', 'sonic']"
+      :options="['physical', 'blunt', 'sharp', 'magical', 'necrotic', 'energy', 'disease', 'poison', 'water', 'fire', 'ice', 'heal', 'gm', 'sonic', 'turkey']"
     >
       <template v-slot:first>
         <option :value="''">None</option>
