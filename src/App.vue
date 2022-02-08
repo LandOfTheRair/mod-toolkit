@@ -204,8 +204,6 @@ export default {
     });
 
     events.$on('edit:npc', ({ npc, index }) => {
-      if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (copy)`;
-
       const oldNPCId = this.mod.npcs[index].npcId;
 
       this.updateNPCIdAcrossMod(oldNPCId, npc.npcId);
@@ -228,14 +226,12 @@ export default {
     });
 
     events.$on('edit:item', ({ item, index }) => {
-      if(this.mod.items.find(x => x.name === item.name)) item.name = `${item.name} (copy)`;
-
       const oldName = this.mod.items[index].name;
       const newName = item.name;
 
-      this.$set(this.mod.items, index, item);
-
       this.updateItemsAcrossMod(oldName, newName);
+
+      this.$set(this.mod.items, index, item);
       this.persist();
     });
 
@@ -285,8 +281,6 @@ export default {
     });
 
     events.$on('edit:spawner', ({ spawner, index }) => {
-      if(this.mod.spawners.find(x => x.tag === spawner.tag)) spawner.tag = `${spawner.tag} (copy)`;
-
       this.$set(this.mod.spawners, index, spawner);
       this.persist();
     });
@@ -305,8 +299,6 @@ export default {
     });
 
     events.$on('edit:quest', ({ quest, index }) => {
-      if(this.mod.quests.find(x => x.name === quest.name)) quest.name = `${quest.name} (copy)`;
-
       this.$set(this.mod.quests, index, quest);
       this.persist();
     });
@@ -412,6 +404,38 @@ export default {
 
           recipe.ingredients[index] = newName;
         });
+      });
+
+      this.mod.npcs.forEach(npc => {
+        npc.items.sack.forEach(item => {
+          if(item.result !== oldName) return;
+
+          item.result = newName;
+        });
+
+        Object.keys(npc.items.equipment).forEach(slot => {
+          npc.items.equipment[slot].forEach(item => {
+            if(item.result !== oldName) return;
+
+            item.result = newName;
+          });
+          
+        });
+
+        if(npc.tansFor === oldName) npc.tansFor = newName;
+
+        npc.drops.forEach(item => {
+          if(item.result !== oldName) return;
+
+          item.result = newName;
+        });
+        
+        npc.dropPool.items = npc.dropPool.items.map(item => {
+          if(item !== oldName) return item;
+
+          return newName;
+        });
+
       });
     },
 

@@ -451,7 +451,7 @@
 
                   <div class="row" v-for="(sitem, index) of npc.items.sack" :key="index">
                     <div class="col-7">
-                      <item-selector v-model="sitem.result" label="Item" @change="sitem.result = $event"></item-selector>
+                      <item-selector v-model="sitem.result" :modItems="items" label="Item" @change="sitem.result = $event"></item-selector>
                     </div>
 
                     <div class="col-3">
@@ -471,7 +471,7 @@
 
                       <div class="row" v-for="(sitem, index) of npc.items.equipment[slot]" :key="index">
                         <div class="col-7">
-                          <item-selector v-model="sitem.result" label="Item" @change="sitem.result = $event"></item-selector>
+                          <item-selector v-model="sitem.result" :modItems="items" label="Item" @change="sitem.result = $event"></item-selector>
                         </div>
 
                         <div class="col-3">
@@ -495,7 +495,7 @@
 
                   <div class="row" v-for="(drop, index) of npc.drops" :key="index">
                     <div class="col-6">
-                      <item-selector v-model="drop.result" label="Item" @change="drop.result = $event"></item-selector>
+                      <item-selector v-model="drop.result" :modItems="items" label="Item" @change="drop.result = $event"></item-selector>
                     </div>
 
                     <div class="col-4">
@@ -524,7 +524,7 @@
                 </div>
 
                 <div class="col-4">
-                  <item-selector v-model="npc.tansFor" label="Tans For" @change="npc.tansFor = $event"></item-selector>
+                  <item-selector v-model="npc.tansFor" :modItems="items" label="Tans For" @change="npc.tansFor = $event"></item-selector>
 
                   <b-form-group label-cols-md="3" label="Tan Skill Required">
                     <b-form-input type="number" v-model="npc.tanSkillRequired" required placeholder="Tan Skill Required" min="0"></b-form-input>
@@ -550,7 +550,7 @@
 
                   <div class="row" v-for="(drop, index) of npc.dropPool.items" :key="index">
                     <div class="col-8">
-                      <item-selector v-model="npc.dropPool.items[index]" label="Item" @change="npc.dropPool.items[index] = $event"></item-selector>
+                      <item-selector v-model="npc.dropPool.items[index]" :modItems="items" label="Item" @change="npc.dropPool.items[index] = $event"></item-selector>
                     </div>
 
                     <div class="col-4">
@@ -674,8 +674,6 @@ const defaultNPC = {
   baseClass: '',
   affiliation: '',
   alignment: 'Neutral',
-  rightHand: '',
-  leftHand: '',
   stats: {
     str: 0,
     dex: 0,
@@ -733,6 +731,7 @@ const defaultNPC = {
   },
   items: {
     sack: [],
+    belt: [],
     equipment: {
       rightHand: [],
       leftHand: [],
