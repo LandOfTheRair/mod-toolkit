@@ -324,6 +324,8 @@ export default {
   methods: {
     watchIPC() {
 
+      window.api.reset();
+
       window.api.receive('ready', () => {
         this.isLoaded = true;
       });

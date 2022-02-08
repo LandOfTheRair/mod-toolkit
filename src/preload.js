@@ -4,7 +4,7 @@ const {
   ipcRenderer
 } = require('electron');
 
-const functions = {};
+let functions = {};
 let jsonCache = {};
 
 // Expose protected methods that allow the renderer process to use
@@ -12,6 +12,13 @@ let jsonCache = {};
 contextBridge.exposeInMainWorld(
   'api', 
   {
+    reset: () => {
+      Object.keys(functions).forEach(key => {
+        ipcRenderer.removeAllListeners(key);
+        delete functions[key];
+      });
+    },
+
     send: (event, data) => {
 
       // clear cache on resource update
@@ -29,19 +36,22 @@ contextBridge.exposeInMainWorld(
       console.log('[Send]', event, data);
       ipcRenderer.send(event, data);
     },
+
     receive: (event, func) => {
 
       // cache functions
       functions[event] = func;
 
-      ipcRenderer.on(event, (ev, ...args) => {
+      const callFunc = (ev, ...args) => {
         console.log('[Receive]', event, ...args);
 
         // cache json if we get it
         if(event === 'json') jsonCache[args[0].name] = args[0].data;
 
         func(...args);
-      });
+      };
+
+      ipcRenderer.on(event, callFunc);
     }
   }
 );
