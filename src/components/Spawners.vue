@@ -238,7 +238,7 @@
               <div class="row">
                 <div class="col-8">
 
-                  <n-p-c-selector v-model="currentAddNPC" label="Chosen NPC" @change="currentAddNPC = $event" :modNPCs="npcs"></n-p-c-selector>
+                  <npc-selector v-model="currentAddNPC" label="Chosen NPC" @change="currentAddNPC = $event" :modNPCs="npcs"></npc-selector>
                 </div>
 
                 <div class="col-3">
@@ -248,7 +248,7 @@
 
               <div class="row mt-1" v-for="(npc, index) in spawner.npcIds" :key="index">
                 <div class="col-6">
-                  <n-p-c-selector v-model="npc.result" label="NPC" @change="npc.result = $event" :modNPCs="npcs"></n-p-c-selector>
+                  <npc-selector v-model="npc.result" label="NPC" @change="npc.result = $event" :modNPCs="npcs"></npc-selector>
                 </div>
                 <div class="col-3">
                   <b-form-input type="number" v-model="npc.chance" placeholder="Weight"></b-form-input>
@@ -330,7 +330,7 @@ export default {
 
   props: ['spawners', 'npcs'],
 
-  components: { HolidaySelector, NPCSelector },
+  components: { HolidaySelector, 'npc-selector': NPCSelector },
 
   data() {
     return {

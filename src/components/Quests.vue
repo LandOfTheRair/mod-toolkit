@@ -100,7 +100,7 @@
 
                 <div class="row" v-for="(npc, index) in quest.requirements.npcIds" :key="index">
                   <div class="col-9">
-                    <n-p-c-selector v-model="quest.requirements.npcIds[index]" label="NPC" @change="quest.requirements.npcIds[index] = $event" :modNPCs="npcs"></n-p-c-selector>
+                    <npc-selector v-model="quest.requirements.npcIds[index]" label="NPC" @change="quest.requirements.npcIds[index] = $event" :modNPCs="npcs"></npc-selector>
                   </div>
 
                   <div class="col-3">
@@ -283,7 +283,7 @@ export default {
 
   props: ['quests', 'npcs', 'items'],
 
-  components: { NPCSelector, ItemSelector, StatSelector },
+  components: { 'npc-selector': NPCSelector, ItemSelector, StatSelector },
 
   data() {
     return {
