@@ -15,7 +15,32 @@
       <b-button class="mb-1" variant="primary" @click="$refs.mapUpload.click()">Import some</b-button> <b-button variant="primary" @click="createMap()">Create new</b-button>
     </div>
 
-    <b-table v-if="maps.length" small :fields="tableFields" :items="maps">
+    <div class="mb-3 row">
+      <div class="col-6">
+        <b-form-input v-model="filter" placeholder="Search maps..."></b-form-input>
+      </div>
+
+      <div class="col-6">
+        <b-pagination
+          class="float-right"
+          v-model="currentPage"
+          :total-rows="totalRows"
+          :per-page="perPage"
+        ></b-pagination>
+      </div>
+    </div>
+
+    <b-table 
+      v-if="maps.length" 
+      small 
+      :fields="tableFields" 
+      :items="maps"
+      :sticky-header="globalTableHeight"
+      :filter="filter"
+      :per-page="perPage"
+      :current-page="currentPage"
+      @filtered="onFiltered"
+    >
       <template v-slot:head(actions)>
         <b-button class="mr-1" size="sm" variant="success" @click="$refs.mapUpload.click()">Import</b-button>
         <b-button size="sm" variant="success" @click="createMap()">New</b-button>
@@ -39,6 +64,8 @@
 <script>
 import { events } from '../main';
 
+import { globalTableHeight } from '../constants';
+
 export default {
   name: 'Maps',
 
@@ -46,6 +73,11 @@ export default {
 
   data() {
     return {
+      globalTableHeight,
+      currentPage: 1,
+      perPage: 10,
+      totalRows: 0,
+      filter: '',
       tableFields: [
         { key: 'name', label: 'Name' },
         { key: 'width', label: 'Width' },
@@ -55,7 +87,17 @@ export default {
     };
   },
 
+  created() {
+    this.onFiltered(this.recipes);
+  },
+
   methods: {
+    onFiltered(filteredItems) {
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+      this.items.count = filteredItems.length;
+    },
+    
     async createMap() {
       const newName = await this.$dialog.prompt({ title: 'What would you like to name this map?', text: '' });
       if(!newName) return;
