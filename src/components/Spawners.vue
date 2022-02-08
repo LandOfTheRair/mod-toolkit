@@ -248,7 +248,7 @@
 
               <div class="row mt-1" v-for="(npc, index) in spawner.npcIds" :key="index">
                 <div class="col-6">
-                  <b-form-input type="text" v-model="npc.name" placeholder="NPC ID"></b-form-input>
+                  <b-form-input type="text" v-model="npc.result" placeholder="NPC ID"></b-form-input>
                 </div>
                 <div class="col-3">
                   <b-form-input type="number" v-model="npc.chance" placeholder="Weight"></b-form-input>
@@ -280,7 +280,7 @@
       <template v-slot:cell(isDangerous)="data">{{ data.item.isDangerous ? 'Yes' : 'No' }}</template>
 
       <template v-slot:cell(npcIds)="data">
-        <div v-for="(item, index) in data.item.npcIds" :key="index">{{ item.name }}</div>
+        <div v-for="(item, index) in data.item.npcIds" :key="index">{{ item.result }}</div>
       </template>
 
       <template v-slot:cell(actions)="data">
@@ -404,7 +404,7 @@ export default {
 
     addNPC(npc) {
       this.spawner.npcIds = this.spawner.npcIds || [];
-      this.spawner.npcIds.push({ name: npc, chance: 1 });
+      this.spawner.npcIds.push({ result: npc, chance: 1 });
     },
 
     removeNPC(index) {

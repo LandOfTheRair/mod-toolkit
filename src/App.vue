@@ -185,6 +185,8 @@ export default {
         existingMap.name = newName;
       }
 
+      this.updateMapNameAcrossMod(oldName, newName);
+
       this.persist();
     });
 
@@ -203,6 +205,10 @@ export default {
 
     events.$on('edit:npc', ({ npc, index }) => {
       if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (copy)`;
+
+      const oldNPCId = this.mod.npcs[index].npcId;
+
+      this.updateNPCIdAcrossMod(oldNPCId, npc.npcId);
 
       this.$set(this.mod.npcs, index, npc);
       this.persist();
@@ -406,6 +412,34 @@ export default {
 
           recipe.ingredients[index] = newName;
         });
+      });
+    },
+
+    updateNPCIdAcrossMod(oldId, newId) {
+      this.mod.spawners.forEach(spawner => {
+        spawner.npcIds = spawner.npcIds.map(entry => {
+          if(entry.result !== oldId) return entry;
+
+          return { ...entry, result: newId };
+        });
+      });
+
+      this.mod.quests.forEach(quest => {
+        if(quest.requirements && quest.requirements.npcIds && !quest.requirements.npcIds.includes(oldId)) return;
+
+        quest.requirements.npcIds = quest.requirements.npcIds.map(entry => {
+          if(entry !== oldId) return entry;
+
+          return newId;
+        });
+      });
+    },
+
+    updateMapNameAcrossMod(oldName, newName) {
+      this.mod.drops.forEach(droptable => {
+        if(droptable.mapName !== oldName) return;
+
+        droptable.mapName = newName;
       });
     },
 
