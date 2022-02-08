@@ -519,7 +519,7 @@ html {
 .main-tabs .tab-content {
   height: calc(100vh - 56px - 33px - 38px - 1rem - 1rem - 42px - 2rem);
   max-height: calc(100vh - 56px - 33px - 38px - 1rem - 1rem - 42px - 2rem);
-  overflow-y: auto;
+  overflow-y: none;
 }
 
 .true-center {

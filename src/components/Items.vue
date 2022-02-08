@@ -507,6 +507,7 @@
       :sort-desc.sync="sortDesc"
       :fields="tableFields"
       :items="items"
+      :sticky-header="globalTableHeight"
     >
       <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
@@ -546,7 +547,8 @@ import {
   damageClasses,
   typePropSets,
   typePropDefaults,
-  itemTypes
+  itemTypes,
+  globalTableHeight
 } from '../constants';
 import { events } from '../main';
 
@@ -589,6 +591,7 @@ export default {
 
   data() {
     return {
+      globalTableHeight,
       sortBy: 'name',
       sortDesc: false,
       itemGroups: [

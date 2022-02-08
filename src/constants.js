@@ -1,6 +1,8 @@
 
 const sortBy = require('lodash.sortby');
 
+export const globalTableHeight = 'calc(100vh - 56px - 33px - 38px - 1rem - 1rem - 42px - 2rem - 100px)';
+
 export const coreStats = sortBy([
   { stat: 'str', help: 'Core Stat - used for attack damage' },
   { stat: 'dex', help: 'Core Stat - used for attack to-hit' },

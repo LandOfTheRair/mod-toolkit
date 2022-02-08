@@ -127,6 +127,7 @@
       :sort-desc.sync="sortDesc"
       :fields="tableFields"
       :items="recipes"
+      :sticky-header="globalTableHeight"
     >
       <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
@@ -150,6 +151,8 @@ import get from 'lodash.get';
 
 import { clone } from '../helpers';
 import { events } from '../main';
+
+import { globalTableHeight } from '../constants';
 
 import ItemSelector from './shared/ItemSelector.vue';
 import SpellSelector from './shared/SpellSelector.vue';
@@ -182,6 +185,7 @@ export default {
 
   data() {
     return {
+      globalTableHeight,
       sortBy: 'name',
       sortDesc: false,
       recipeTypes: ['alchemy', 'metalworking', 'spellforging'],

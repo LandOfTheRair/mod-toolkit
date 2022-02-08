@@ -612,7 +612,9 @@
              :sort-by.sync="sortBy"
              :sort-desc.sync="sortDesc" 
              :fields="tableFields" 
-             :items="npcs">
+             :items="npcs"
+             :sticky-header="globalTableHeight"
+    >
       <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
       </template>
@@ -652,7 +654,7 @@
 import get from 'lodash.get';
 
 import { clone, objectPosition } from '../helpers';
-import { coreStats, extraStats } from '../constants';
+import { coreStats, extraStats, globalTableHeight } from '../constants';
 import { events } from '../main';
 
 import ClassSelector from './shared/ClassSelector.vue';
@@ -763,6 +765,7 @@ export default {
 
   data() {
     return {
+      globalTableHeight,
       sortBy: 'name',
       sortDesc: false,
       tableFields: [

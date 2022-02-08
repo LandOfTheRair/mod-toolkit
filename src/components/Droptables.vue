@@ -84,6 +84,7 @@
       :sort-desc.sync="sortDesc"
       :fields="tableFields"
       :items="droptables"
+      :sticky-header="globalTableHeight"
     >
       <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
@@ -106,6 +107,8 @@ import get from 'lodash.get';
 import { clone } from '../helpers';
 import { events } from '../main';
 
+import { globalTableHeight } from '../constants';
+
 import HolidaySelector from './shared/HolidaySelector.vue';
 
 const defaultDroptable = {
@@ -126,6 +129,7 @@ export default {
 
   data() {
     return {
+      globalTableHeight,
       sortBy: 'name',
       sortDesc: false,
       tableFields: [
