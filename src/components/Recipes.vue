@@ -120,8 +120,19 @@
       </div>
     </b-modal>
 
-    <div class="mb-3">
-      <b-form-input v-model="filter" placeholder="Search recipes..."></b-form-input>
+    <div class="mb-3 row">
+      <div class="col-6">
+        <b-form-input v-model="filter" placeholder="Search recipes..."></b-form-input>
+      </div>
+
+      <div class="col-6">
+        <b-pagination
+          class="float-right"
+          v-model="currentPage"
+          :total-rows="totalRows"
+          :per-page="perPage"
+        ></b-pagination>
+      </div>
     </div>
 
     <b-table
@@ -133,6 +144,9 @@
       :items="recipes"
       :sticky-header="globalTableHeight"
       :filter="filter"
+      :per-page="perPage"
+      :current-page="currentPage"
+      @filtered="onFiltered"
     >
       <template v-slot:head(actions)>
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
@@ -191,6 +205,9 @@ export default {
   data() {
     return {
       globalTableHeight,
+      currentPage: 1,
+      perPage: 10,
+      totalRows: 0,
       filter: '',
       sortBy: 'name',
       sortDesc: false,
@@ -206,7 +223,17 @@ export default {
     };
   },
 
+  created() {
+    this.onFiltered(this.recipes);
+  },
+
   methods: {
+    onFiltered(filteredItems) {
+      this.totalRows = filteredItems.length;
+      this.currentPage = 1;
+      this.items.count = filteredItems.length;
+    },
+
     preRecipe(recipe) {
       for(let i = 0; i < 8; i++) {
         recipe.ingredients[i] = recipe.ingredients[i] || '';
