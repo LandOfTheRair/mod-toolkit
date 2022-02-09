@@ -643,7 +643,7 @@ export default {
   },
 
   created() {
-    this.onFiltered(this.recipes);
+    this.onFiltered(this.items);
   },
 
   methods: {

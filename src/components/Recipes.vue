@@ -231,7 +231,7 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
-      this.items.count = filteredItems.length;
+      this.recipes.count = filteredItems.length;
     },
 
     preRecipe(recipe) {

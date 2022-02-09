@@ -92,7 +92,7 @@
           <b-tab>
             <template v-slot:title>NPC Scripts ({{ mod.dialogs.length }})</template>
 
-            <tab-dialogs :dialogs="mod.dialogs" :npcs="mod.npcs"></tab-dialogs>
+            <tab-dialogs :dialogs="mod.dialogs" :npcs="mod.npcs" :maps="mod.maps"></tab-dialogs>
           </b-tab>
         </b-tabs>
       </div>
@@ -310,6 +310,24 @@ export default {
 
     events.$on('remove:quest', ({ index }) => {
       this.mod.quests.splice(index, 1);
+      this.persist();
+    });
+    
+    // npc script
+    events.$on('add:dialog', ({ dialog }) => {
+      if(this.mod.dialogs.find(x => x.name === dialog.name)) dialog.name = `${dialog.name} (copy)`;
+
+      this.mod.dialogs.push(dialog);
+      this.persist();
+    });
+
+    events.$on('edit:dialog', ({ dialog, index }) => {
+      this.$set(this.mod.dialogs, index, dialog);
+      this.persist();
+    });
+
+    events.$on('remove:dialog', ({ index }) => {
+      this.mod.dialogs.splice(index, 1);
       this.persist();
     });
   },

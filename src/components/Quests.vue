@@ -324,14 +324,14 @@ export default {
   },
 
   created() {
-    this.onFiltered(this.recipes);
+    this.onFiltered(this.quests);
   },
 
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
-      this.items.count = filteredItems.length;
+      this.quests.count = filteredItems.length;
     },
     
     isValidQuest(quest) {

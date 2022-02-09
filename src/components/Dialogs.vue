@@ -23,10 +23,136 @@
       @cancel="reset()"
       @close="reset()"
       @ok="confirm()"
-      :ok-disabled="!isValidNPCScript(script)"
+      :ok-disabled="!isValidNPCScript(dialog)"
     >
       <div class="d-block p-1">
         <b-form>
+          <b-tabs content-class="mt-3" fill>
+            <b-tab title="Core Stats">
+              <div class="row">
+                <div class="col-md-4">
+
+                  <b-form-group label-cols-md="3" label="NPC Tag">
+                    <b-form-input
+                      type="text"
+                      v-model="dialog.tag"
+                      placeholder="The NPC tag from the map"
+                    ></b-form-input>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="Name" class="optional">
+                    <b-form-input
+                      type="text"
+                      v-model="dialog.name"
+                      placeholder="The NPC name (if not specified in the map)"
+                    ></b-form-input>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="Affiliation" class="optional">
+                    <b-form-input
+                      type="text"
+                      v-model="dialog.affiliation"
+                      placeholder="The guild/tag for NPC"
+                    ></b-form-input>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="HP" class="multi">
+                    <b-form-input
+                      type="number"
+                      v-model="dialog.hp.min"
+                      min="0"
+                      @change.native="updateKeyMaxIfNotPresent($event, 'hp')"
+                    ></b-form-input>
+                    <div class="split-label true-center">To</div>
+                    <b-form-input type="number" v-model="dialog.hp.max" min="0"></b-form-input>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="MP" class="multi">
+                    <b-form-input
+                      type="number"
+                      v-model="dialog.mp.min"
+                      min="0"
+                      @change.native="updateKeyMaxIfNotPresent($event, 'mp')"
+                    ></b-form-input>
+                    <div class="split-label true-center">To</div>
+                    <b-form-input type="number" v-model="dialog.mp.max" min="0"></b-form-input>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="Hostility">
+                    <b-form-select
+                      v-model="dialog.hostility"
+                      required
+                      :options="['OnHit', 'Faction', 'Always', 'Never']"
+                    ></b-form-select>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="Allegiance">
+                    <b-form-select
+                      v-model="dialog.allegiance"
+                      required
+                      :options="['Enemy', 'Adventurers', 'Pirates', 'Royalty', 'Townsfolk', 'Underground', 'Wilderness', 'NaturalResource']"
+                    ></b-form-select>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="Alignment">
+                    <b-form-select
+                      v-model="dialog.alignment"
+                      required
+                      :options="['Good', 'Neutral', 'Evil']"
+                    ></b-form-select>
+                  </b-form-group>
+
+                </div>
+
+                <div class="col-md-4">
+                  <b-button class="mb-3" variant="info" block @click="addUsableSkill()">Add Spell</b-button>
+
+                  <div class="row" v-for="(skill, index) of dialog.usableSkills" :key="index">
+                    <div class="col-6">
+                      <spell-selector v-model="skill.result" label="Spell" @change="skill.result = $event"></spell-selector>
+                    </div>
+
+                    <div class="col-4">
+                      <b-form-input type="number" v-model="skill.chance" placeholder="X" min="1"></b-form-input>
+                    </div>
+
+                    <div class="col-2">
+                      <b-button variant="danger" @click="removeUsableSkill(index)">Del</b-button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="row" v-for="(val, slot) of dialog.items.equipment" :key="slot">
+                    <div class="col-12">
+                      <b-button class="mb-3" variant="info" block @click="addEquipmentItem(slot)">Add {{ slot }} Item</b-button>
+
+                      <div class="row" v-for="(sitem, index) of dialog.items.equipment[slot]" :key="index">
+                        <div class="col-7">
+                          <item-selector v-model="sitem.result" :modItems="items" label="Item" @change="sitem.result = $event"></item-selector>
+                        </div>
+
+                        <div class="col-3">
+                          <b-form-input type="number" v-model="sitem.chance" placeholder="1/x" min="1"></b-form-input>
+                        </div>
+
+                        <div class="col-2">
+                          <b-button variant="danger" @click="removeEquipmentItem(slot, index)">Del</b-button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </b-tab>
+
+            <b-tab title="Dialog">
+              <div class="row">
+              </div>
+            </b-tab>
+
+          </b-tabs>
         </b-form>
       </div>
     </b-modal>
@@ -84,14 +210,56 @@ import { clone } from '../helpers';
 
 import { globalTableHeight } from '../constants';
 
-const defaultScript = {
+import ItemSelector from './shared/ItemSelector.vue';
+import SpellSelector from './shared/SpellSelector.vue';
 
+const defaultScript = {
+  tag: '',
+  name: '',
+  affiliation: '',
+  hostility: 'Never',
+  allegiance: 'Adventurers',
+  alignment: 'Neutral',
+  level: 0,
+  hp: {
+    min: 100000,
+    max: 100000,
+  },
+  mp: {
+    min: 10000,
+    max: 10000,
+  },
+  usableSkills: [],
+  items: {
+    equipment: {
+      rightHand: [],
+      leftHand: [],
+      head: [],
+      neck: [],
+      ear: [],
+      waist: [],
+      wrists: [],
+      ring1: [],
+      ring2: [],
+      hands: [],
+      feet: [],
+      armor: [],
+      robe1: [],
+      robe2: [],
+      trinket: [],
+      potion: [],
+      ammo: []
+    }
+  },
+  dialog: {}
 };
 
 export default {
   name: 'Dialogs',
 
-  props: ['dialogs', 'npcs'],
+  props: ['dialogs', 'npcs', 'maps'],
+
+  components: { ItemSelector, SpellSelector },
 
   data() {
     return {
@@ -103,7 +271,13 @@ export default {
       sortBy: 'name',
       sortDesc: false,
       tableFields: [
-        { key: 'tag', label: 'NPC Id Tag', sortable: true },
+        { key: 'tag', label: 'Id Tag', sortable: true },
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'level', label: 'Level', sortable: true },
+        { key: 'affiliation', label: 'Affiliation', sortable: true },
+        { key: 'hostility', label: 'Hostility', sortable: true },
+        { key: 'allegiance', label: 'Allegiance', sortable: true },
+        { key: 'alignment', label: 'Alignment', sortable: true },
         { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
       isEditing: -1,
@@ -112,29 +286,34 @@ export default {
   },
 
   created() {
-    this.onFiltered(this.recipes);
+    this.onFiltered(this.dialogs);
   },
 
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
-      this.items.count = filteredItems.length;
+      this.dialogs.count = filteredItems.length;
     },
 
-    isValidNPCScript(script) {
+    updateKeyMaxIfNotPresent($event, key) {
+      if (this.dialog[key].max > this.dialog[key].min) return;
+      this.dialog[key].max = this.dialog[key].min;
+    },
+
+    isValidNPCScript(dialog) {
       const validKeys = ['tag'];
-      return validKeys.every(x => get(script, x));
+      return validKeys.every(x => get(dialog, x));
     },
 
     reset() {
-      this.recipe = clone(defaultScript);
+      this.dialog = clone(defaultScript);
       this.isEditing = -1;
     },
 
     confirm() {
       events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:dialog`, {
-        recipe: this.dialog,
+        dialog: this.dialog,
         index: this.isEditing
       });
     },
@@ -158,7 +337,29 @@ export default {
       if(!willRemove) return;
 
       events.$emit('remove:dialog', { index: this.dialogs.findIndex(x => x === dialog) });
-    }
+    },
+
+    addEquipmentItem(slot) {
+      this.dialog.items.equipment[slot].push({
+        result: '',
+        chance: 1
+      });
+    },
+
+    removeEquipmentItem(slot, index) {
+      this.$delete(this.dialog.items.equipment[slot], index);
+    },
+
+    addUsableSkill() {
+      this.dialog.usableSkills.push({
+        result: '',
+        chance: 1
+      });
+    },
+
+    removeUsableSkill(index) {
+      this.$delete(this.dialog.usableSkills, index);
+    },
   }
 };
 </script>

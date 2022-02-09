@@ -168,7 +168,7 @@ export default {
   },
 
   created() {
-    this.onFiltered(this.recipes);
+    this.onFiltered(this.droptables);
   },
 
   computed: {
@@ -190,7 +190,7 @@ export default {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
-      this.items.count = filteredItems.length;
+      this.droptables.count = filteredItems.length;
     },
     
     isValidDroptable(droptable) {

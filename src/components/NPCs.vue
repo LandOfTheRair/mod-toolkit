@@ -812,14 +812,14 @@ export default {
   },
 
   created() {
-    this.onFiltered(this.recipes);
+    this.onFiltered(this.npcs);
   },
 
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
-      this.items.count = filteredItems.length;
+      this.npcs.count = filteredItems.length;
     },
     
     objectPosition,
