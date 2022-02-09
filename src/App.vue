@@ -92,7 +92,7 @@
           <b-tab>
             <template v-slot:title>NPC Scripts ({{ mod.dialogs.length }})</template>
 
-            <tab-dialogs :dialogs="mod.dialogs" :npcs="mod.npcs" :maps="mod.maps"></tab-dialogs>
+            <tab-dialogs :dialogs="mod.dialogs" :npcs="mod.npcs" :maps="mod.maps" :items="mod.items"></tab-dialogs>
           </b-tab>
         </b-tabs>
       </div>
@@ -668,4 +668,37 @@ table td {
   opacity: 0.7;
   text-align: center;
 }
+</style>
+
+<style>
+  .code-editor {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    border: 1px solid #000;
+    font-family: Fira Code, Fira Mono, Consolas, Menlo, Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 5px;
+  }
+
+  .code-editor.prism-editor-wrapper .prism-editor__container .prism-editor__editor {
+    color: #f8f8f2;
+    background: none;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+    font-family: Fira Code, Fira Mono, Consolas, Menlo, Courier, monospace;
+    font-size: 1em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+    tab-size: 4;
+    hyphens: none;
+  }
+
+  /* optional class for removing the outline */
+  .prism-editor__textarea:focus {
+    outline: none;
+  }
 </style>

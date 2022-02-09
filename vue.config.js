@@ -6,18 +6,19 @@ module.exports = {
    electronBuilder: {
      preload: 'src/preload.js',
      chainWebpackMainProcess(config) {
-       config.module
-         .rule('node')
-         .test(/\.node$/)
-         .use('native-ext-loader')
-         .loader('native-ext-loader')
-         .options(
-           process.env.NODE_ENV === 'development'
-             ? {
-               rewritePath: path.resolve(__dirname, 'native'),
-             }
-             : {}
-         );
+
+        config.module
+          .rule('node')
+          .test(/\.node$/)
+          .use('native-ext-loader')
+          .loader('native-ext-loader')
+          .options(
+            process.env.NODE_ENV === 'development'
+              ? {
+                rewritePath: path.resolve(__dirname, 'native'),
+              }
+              : {}
+          );
      }
    }
   }

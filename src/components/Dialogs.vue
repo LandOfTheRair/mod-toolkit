@@ -147,8 +147,32 @@
               </div>
             </b-tab>
 
+            <b-tab title="Behaviors">
+              <div class="row">
+                <div class="col">
+                  <prism-editor class="code-editor" v-model="npcBehaviors" :highlight="highlighter" line-numbers></prism-editor>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="feedback" :class="{ 'has-error': npcBehaviorsFeedback }">{{ npcBehaviorsFeedback || 'No errors.' }}</div>
+                </div>
+              </div>
+
+            </b-tab>
+
             <b-tab title="Dialog">
               <div class="row">
+                <div class="col">
+                  <prism-editor class="code-editor" v-model="npcDialog" :highlight="highlighter" line-numbers></prism-editor>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="feedback" :class="{ 'has-error': npcDialogFeedback }">{{ npcDialogFeedback || 'No errors.' }}</div>
+                </div>
               </div>
             </b-tab>
 
@@ -189,8 +213,12 @@
         <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
       </template>
 
-      <template v-slot:cell(ingredients)="data">
-        <div v-for="(item, index) in data.item.ingredients" :key="index">{{ item }}</div>
+      <template v-slot:cell(behaviors)="data">
+        {{ data.item.behaviors.length }}
+      </template>
+
+      <template v-slot:cell(dialog)="data">
+        {{ numDialogs(data.item) }}
       </template>
 
       <template v-slot:cell(actions)="data">
@@ -204,6 +232,11 @@
 
 <script>
 import { get } from 'lodash';
+import yaml from 'js-yaml';
+import { PrismEditor } from 'vue-prism-editor';
+
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-yaml';
 
 import { events } from '../main';
 import { clone } from '../helpers';
@@ -212,6 +245,7 @@ import { globalTableHeight } from '../constants';
 
 import ItemSelector from './shared/ItemSelector.vue';
 import SpellSelector from './shared/SpellSelector.vue';
+
 
 const defaultScript = {
   tag: '',
@@ -251,15 +285,18 @@ const defaultScript = {
       ammo: []
     }
   },
-  dialog: {}
+  dialog: {
+    keyword: {}
+  },
+  behaviors: []
 };
 
 export default {
   name: 'Dialogs',
 
-  props: ['dialogs', 'npcs', 'maps'],
+  props: ['dialogs', 'npcs', 'maps', 'items'],
 
-  components: { ItemSelector, SpellSelector },
+  components: { PrismEditor, ItemSelector, SpellSelector },
 
   data() {
     return {
@@ -268,6 +305,8 @@ export default {
       perPage: 10,
       totalRows: 0,
       filter: '',
+      npcBehaviors: '',
+      npcDialog: '',
       sortBy: 'name',
       sortDesc: false,
       tableFields: [
@@ -278,6 +317,8 @@ export default {
         { key: 'hostility', label: 'Hostility', sortable: true },
         { key: 'allegiance', label: 'Allegiance', sortable: true },
         { key: 'alignment', label: 'Alignment', sortable: true },
+        { key: 'behaviors', label: '# Behaviors', sortable: true },
+        { key: 'dialog', label: '# Dialogs', sortable: true },
         { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
       isEditing: -1,
@@ -287,6 +328,28 @@ export default {
 
   created() {
     this.onFiltered(this.dialogs);
+  },
+
+  computed: {
+    npcDialogFeedback() {
+      try {
+        yaml.load(this.npcDialog);
+        return '';
+
+      } catch (e) {
+        return e.message;
+      }
+    },
+
+    npcBehaviorsFeedback() {
+      try {
+        yaml.load(this.npcBehaviors);
+        return '';
+
+      } catch (e) {
+        return e.message;
+      }
+    }
   },
 
   methods: {
@@ -302,8 +365,19 @@ export default {
     },
 
     isValidNPCScript(dialog) {
-      const validKeys = ['tag'];
+      try {
+        yaml.load(this.npcDialog);
+        yaml.load(this.npcBehaviors);
+      } catch {
+        return false;
+      }
+
+      const validKeys = ['tag', 'hp.max', 'hp.min', 'hostility', 'allegiance', 'alignment'];
       return validKeys.every(x => get(dialog, x));
+    },
+
+    numDialogs(dialog) {
+      return Object.keys(dialog.dialog).length;
     },
 
     reset() {
@@ -312,6 +386,9 @@ export default {
     },
 
     confirm() {
+      this.dialog.behaviors = yaml.load(this.npcBehaviors);
+      this.dialog.dialog = yaml.load(this.npcDialog);
+
       events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:dialog`, {
         dialog: this.dialog,
         index: this.isEditing
@@ -319,6 +396,8 @@ export default {
     },
 
     openModal() {
+      this.npcBehaviors = yaml.dump(this.dialog.behaviors || []);
+      this.npcDialog = yaml.dump(this.dialog.dialog || { keyword: {} });
       this.$refs.modal.show();
     },
 
@@ -328,7 +407,7 @@ export default {
 
     edit(dialog) {
       this.dialog = clone(dialog);
-      this.isEditing = this.recipes.findIndex(x => x === dialog);
+      this.isEditing = this.dialogs.findIndex(x => x === dialog);
       this.openModal();
     },
 
@@ -360,9 +439,25 @@ export default {
     removeUsableSkill(index) {
       this.$delete(this.dialog.usableSkills, index);
     },
+
+    highlighter(code) {
+      return highlight(code, languages.yaml);
+    }
   }
 };
 </script>
 
 <style scoped>
+.code-editor {
+  max-height: calc(100vh - 10vh - 20vh);
+}
+
+.feedback {
+  text-align: center;
+}
+
+.feedback.has-error {
+  color: red;
+  font-weight: bold;
+}
 </style>
