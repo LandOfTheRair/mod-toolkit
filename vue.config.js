@@ -6,17 +6,18 @@ module.exports = {
    electronBuilder: {
      preload: 'src/preload.js',
 
-     appId: 'modding.rair.land',
-     win: {
-      target: [
-        'nsis'
-      ],
-      icon: './public/favicon.ico',
-      requestedExecutionLevel: 'requireAdministrator'
-     },
-
      builderOptions: {
-       publish: []
+       publish: [],
+       productName: 'LotR Modding Tools',
+
+       appId: 'modding.rair.land',
+       win: {
+        target: [
+          'nsis'
+        ],
+        icon: './public/favicon.png',
+        requestedExecutionLevel: 'requireAdministrator'
+       },
      },
 
      chainWebpackMainProcess(config) {
