@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-2016]
+        os: [windows-latest]
         node-version: [15.x]
 
     steps:
@@ -26,3 +26,5 @@ jobs:
     - run: npm run lint
 
     - run: npm run electron:build
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
