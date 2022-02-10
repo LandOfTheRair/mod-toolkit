@@ -38,7 +38,6 @@ export default {
 
       maps.forEach(map => {
         map.map.layers[9].objects.forEach(npc => {
-          console.log(npc);
           npcNames.add(npc.properties.tag);
         });
       });
