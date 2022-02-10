@@ -3,25 +3,24 @@ const path = require('path');
 
 module.exports = {
   pluginOptions: {
-   electronBuilder: {
-     preload: 'src/preload.js',
+    electronBuilder: {
+      preload: 'src/preload.js',
 
-     builderOptions: {
-       publish: [],
-       productName: 'LotR Modding Tools',
+      builderOptions: {
+        productName: 'LotR Modding Tools',
 
-       appId: 'modding.rair.land',
-       win: {
-        target: [
-          'nsis'
-        ],
-        icon: './public/favicon.png',
-        requestedExecutionLevel: 'requireAdministrator'
-       },
-     },
+        appId: 'modding.rair.land',
+        win: {
+          publish: [],
+          target: [
+            'nsis'
+          ],
+          icon: './public/favicon.png',
+          requestedExecutionLevel: 'requireAdministrator'
+        },
+      },
 
-     chainWebpackMainProcess(config) {
-
+      chainWebpackMainProcess(config) {
         config.module
           .rule('node')
           .test(/\.node$/)
@@ -29,12 +28,12 @@ module.exports = {
           .loader('native-ext-loader')
           .options(
             process.env.NODE_ENV === 'development'
-              ? {
-                rewritePath: path.resolve(__dirname, 'native'),
-              }
-              : {}
+            ? {
+            rewritePath: path.resolve(__dirname, 'native'),
+            }
+            : {}
           );
-     }
-   }
+      }
+    }
   }
  };
