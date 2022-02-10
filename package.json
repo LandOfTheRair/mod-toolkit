@@ -2,6 +2,7 @@
   "name": "mod-toolkit",
   "author": "Kyle Kemp <kyle@seiyria.com>",
   "description": "Modding tools for Land of the Rair.",
+  "homepage": "https://rair.land",
   "version": "0.1.0",
   "private": true,
   "scripts": {
