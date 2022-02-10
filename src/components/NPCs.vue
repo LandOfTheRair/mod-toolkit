@@ -582,7 +582,7 @@
                     <b-form-input type="text" v-model="npc.triggers.spawn.messages[0]" placeholder="Spawn Message"></b-form-input>
                   </b-form-group>
 
-                  <s-f-x-selector v-model="npc.triggers.spawn.sfx.name" label="Spawn SFX" @change="npc.triggers.spawn.sfx.name = $event"></s-f-x-selector>
+                  <sfx-selector v-model="npc.triggers.spawn.sfx.name" label="Spawn SFX" @change="npc.triggers.spawn.sfx.name = $event"></sfx-selector>
 
                   <b-form-group label-cols-md="3" label="Spawn SFX%">
                     <b-form-input type="number" v-model="npc.triggers.spawn.sfx.maxChance" placeholder="x/100" min="0" max="100"></b-form-input>
@@ -594,7 +594,7 @@
                     <b-form-input type="text" v-model="npc.triggers.leash.messages[0]" placeholder="Leash Message"></b-form-input>
                   </b-form-group>
 
-                  <s-f-x-selector v-model="npc.triggers.leash.sfx.name" label="Leash SFX" @change="npc.triggers.leash.sfx.name = $event"></s-f-x-selector>
+                  <sfx-selector v-model="npc.triggers.leash.sfx.name" label="Leash SFX" @change="npc.triggers.leash.sfx.name = $event"></sfx-selector>
 
                   <b-form-group label-cols-md="3" label="Leash SFX%">
                     <b-form-input type="number" v-model="npc.triggers.leash.sfx.maxChance" placeholder="x/100" min="0" max="100"></b-form-input>
@@ -781,7 +781,7 @@ export default {
 
   props: ['npcs', 'items'],
 
-  components: { ClassSelector, SFXSelector, ItemSelector, SlotSelector, TraitSelector, SpellSelector, EffectSelector, DamageTypeSelector },
+  components: { ClassSelector, 'sfx-selector': SFXSelector, ItemSelector, SlotSelector, TraitSelector, SpellSelector, EffectSelector, DamageTypeSelector },
 
   data() {
     return {
