@@ -163,9 +163,9 @@ export const editMapSpawnerNames = (oldName, newName) => {
     let didWrite = false;
   
     json.layers[10].objects.forEach(spawner => {
-      if(spawner.name !== oldName) return;
+      if(spawner.tag !== oldName) return;
 
-      spawner.name = newName;
+      spawner.tag = newName;
       didWrite = true;
     });
   

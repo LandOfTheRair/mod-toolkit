@@ -24,6 +24,7 @@
         <b-dropdown-item disabled>Mod I/O</b-dropdown-item>
         <b-dropdown-item @click="exportMod()">Export Mod</b-dropdown-item>
         <b-dropdown-item @click="importMod()">Import Mod</b-dropdown-item>
+        <mod-validator :mod="mod"></mod-validator>
         <b-dropdown-divider></b-dropdown-divider>
 
         <b-dropdown-item disabled>Updates</b-dropdown-item>
@@ -105,6 +106,8 @@ import localforage from 'localforage';
 
 import { events } from './main';
 
+import ModValidator from './components/simple/ModValidator.vue';
+
 import MapsTab from './components/Maps';
 import NPCsTab from './components/NPCs';
 import ItemsTab from './components/Items';
@@ -135,6 +138,7 @@ export default {
   name: 'App',
 
   components: {
+    ModValidator,
     tabMaps: MapsTab,
     tabNpcs: NPCsTab,
     tabItems: ItemsTab,
@@ -315,7 +319,7 @@ export default {
     
     // npc script
     events.$on('add:dialog', ({ dialog }) => {
-      if(this.mod.dialogs.find(x => x.name === dialog.name)) dialog.name = `${dialog.name} (copy)`;
+      if(this.mod.dialogs.find(x => x.tag === dialog.tag)) dialog.tag = `${dialog.name} (copy)`;
 
       this.mod.dialogs.push(dialog);
       this.persist();
