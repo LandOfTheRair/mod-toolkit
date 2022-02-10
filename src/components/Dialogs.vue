@@ -32,13 +32,7 @@
               <div class="row">
                 <div class="col-md-4">
 
-                  <b-form-group label-cols-md="3" label="NPC Tag">
-                    <b-form-input
-                      type="text"
-                      v-model="dialog.tag"
-                      placeholder="The NPC tag from the map"
-                    ></b-form-input>
-                  </b-form-group>
+                  <map-npc-selector v-model="dialog.tag" label="Map NPC Tag" @change="dialog.tag = $event" :maps="maps"></map-npc-selector>
 
                   <b-form-group label-cols-md="3" label="Name" class="optional">
                     <b-form-input
@@ -245,7 +239,7 @@ import { globalTableHeight } from '../constants';
 
 import ItemSelector from './shared/ItemSelector.vue';
 import SpellSelector from './shared/SpellSelector.vue';
-
+import MapNPCSelector from './shared/MapNPCSelector.vue';
 
 const defaultScript = {
   tag: '',
@@ -296,7 +290,7 @@ export default {
 
   props: ['dialogs', 'npcs', 'maps', 'items'],
 
-  components: { PrismEditor, ItemSelector, SpellSelector },
+  components: { PrismEditor, 'map-npc-selector': MapNPCSelector, ItemSelector, SpellSelector },
 
   data() {
     return {
