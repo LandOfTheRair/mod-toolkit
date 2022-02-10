@@ -5,6 +5,20 @@ module.exports = {
   pluginOptions: {
    electronBuilder: {
      preload: 'src/preload.js',
+
+     appId: 'modding.rair.land',
+     win: {
+      target: [
+        'nsis'
+      ],
+      icon: './public/favicon.ico',
+      requestedExecutionLevel: 'requireAdministrator'
+     },
+
+     builderOptions: {
+       publish: []
+     },
+
      chainWebpackMainProcess(config) {
 
         config.module
