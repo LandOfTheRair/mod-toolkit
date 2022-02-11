@@ -27,6 +27,10 @@
         <mod-validator :mod="mod"></mod-validator>
         <b-dropdown-divider></b-dropdown-divider>
 
+        <b-dropdown-item disabled>Mod Testing</b-dropdown-item>
+        <b-dropdown-item @click="downloadMongo()">Install MongoDB...</b-dropdown-item>
+        <b-dropdown-divider></b-dropdown-divider>
+
         <b-dropdown-item disabled>Updates</b-dropdown-item>
         <b-dropdown-item @click="getResources()">Update Resources</b-dropdown-item>
         <b-dropdown-divider></b-dropdown-divider>
@@ -393,6 +397,10 @@ export default {
 
     importMod() {
       window.api.send('LOAD_MOD');
+    },
+
+    downloadMongo() {
+      window.api.send('DOWNLOAD_MONGO');
     },
 
     getResources() {

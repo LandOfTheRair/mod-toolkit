@@ -113,6 +113,34 @@ export const updateResources = async (sendToUI) => {
   isUpdating = false;
 };
 
+export const downloadMongo = async (sendToUI) => {
+  sendToUI('notify', { type: 'info', text: 'Downloading MongoDB (~300mb)...' });
+
+  try {
+
+    if(fs.existsSync(`${baseUrl}/resources/mongodb`)) {
+      fs.rmSync(`${baseUrl}/resources/mongodb`);
+    }
+    
+    const mongoUrl = 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-5.0.6.zip';
+    const mongoRes = await fetch(mongoUrl);
+    const mongoBuffer = await mongoRes.buffer();
+    fs.writeFileSync(`${baseUrl}/resources/MongoDB.zip`, mongoBuffer);
+
+    const adm = new admZip(`${baseUrl}/resources/MongoDB.zip`);
+    adm.extractAllTo(`${baseUrl}/resources`);
+
+    fs.rmSync(`${baseUrl}/resources/MongoDB.zip`);
+
+    fs.renameSync(`${baseUrl}/resources/mongodb-win32-x86_64-windows-5.0.6`, `${baseUrl}/resources/mongodb`);
+    fs.ensureDirSync(`${baseUrl}/resources/mongodb/data`);
+    fs.ensureDirSync(`${baseUrl}/resources/mongodb/data/db`);
+  } catch(e) {
+    console.log(e);
+    sendToUI('notify', { type: 'error', text: 'MongoDB download failed!' });
+  }
+};
+
 export const ensureMap = (mapName, mapData) => {
   
   const path = `${baseUrl}/resources/maps/src/content/maps/custom/${mapName}.json`;

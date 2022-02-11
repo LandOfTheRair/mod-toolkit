@@ -118,4 +118,9 @@ export function setupIPC(sendToUI) {
     sendToUI('loadmod', json);
     sendToUI('notify', { type: 'info', text: `Loaded ${file}!` });
   });
+
+  ipcMain.on('DOWNLOAD_MONGO', async () => {
+    await handlers.downloadMongo(sendToUI);
+    sendToUI('notify', { type: 'info', text: 'Finished downloading MongoDB!' });
+  });
 }

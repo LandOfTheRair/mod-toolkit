@@ -33,6 +33,8 @@ async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     ...opts,
+    minWidth: 1300,
+    minHeight: 900,
     webPreferences: {
       
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -48,6 +50,11 @@ async function createWindow() {
   win.setMenu(null);
   
   win.once('ready-to-show', win.show);
+
+  win.webContents.on('new-window', (e, url) => {
+    e.preventDefault();
+    require('electron').shell.openExternal(url);
+  });
 
   win.on('close', () => {
     config.set('winBounds', win.getBounds());
