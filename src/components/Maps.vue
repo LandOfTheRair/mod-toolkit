@@ -146,7 +146,7 @@ export default {
     },
 
     async removeMap(index) {
-      const willRemove = await this.$dialog.confirm({ title: 'Remove Map?', text: 'Are you sure you want to remove this map?' });
+      const willRemove = await this.$dialog.confirm({ title: 'Remove Map?', text: 'Are you sure you want to remove this map? It will NOT be deleted, only removed from this mod.' });
       if(!willRemove) return;
 
       events.$emit('remove:map', index);
