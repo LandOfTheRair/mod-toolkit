@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import chokidar from 'chokidar';
 
 import * as handlers from './handlers';
+import { testMod, killMod } from './testmod';
 
 const baseUrl = app.getAppPath();
 
@@ -122,5 +123,20 @@ export function setupIPC(sendToUI) {
   ipcMain.on('DOWNLOAD_MONGO', async () => {
     await handlers.downloadMongo(sendToUI);
     sendToUI('notify', { type: 'info', text: 'Finished downloading MongoDB!' });
+  });
+
+  ipcMain.on('DOWNLOAD_RAIR', async () => {
+    await handlers.downloadRair(sendToUI);
+    sendToUI('notify', { type: 'info', text: 'Finished downloading LotR Server!' });
+  });
+
+  ipcMain.on('TEST_MOD', async (e, data) => {
+    sendToUI('notify', { type: 'info', text: 'Testing mod...' });
+    testMod(sendToUI, data);
+  });
+
+  ipcMain.on('KILL_MOD', async () => {
+    sendToUI('notify', { type: 'info', text: 'Killing LotR/MongoDB...' });
+    killMod(sendToUI);
   });
 }

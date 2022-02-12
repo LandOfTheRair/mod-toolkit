@@ -29,6 +29,8 @@
 
         <b-dropdown-item disabled>Mod Testing</b-dropdown-item>
         <b-dropdown-item @click="downloadMongo()">Install MongoDB...</b-dropdown-item>
+        <b-dropdown-item @click="downloadRair()">Install Rair Server...</b-dropdown-item>
+        <mod-tester></mod-tester>
         <b-dropdown-divider></b-dropdown-divider>
 
         <b-dropdown-item disabled>Updates</b-dropdown-item>
@@ -111,6 +113,7 @@ import localforage from 'localforage';
 import { events } from './main';
 
 import ModValidator from './components/simple/ModValidator.vue';
+import ModTester from './components/simple/ModTester.vue';
 
 import MapsTab from './components/Maps';
 import NPCsTab from './components/NPCs';
@@ -143,6 +146,7 @@ export default {
 
   components: {
     ModValidator,
+    ModTester,
     tabMaps: MapsTab,
     tabNpcs: NPCsTab,
     tabItems: ItemsTab,
@@ -401,6 +405,10 @@ export default {
 
     downloadMongo() {
       window.api.send('DOWNLOAD_MONGO');
+    },
+
+    downloadRair() {
+      window.api.send('DOWNLOAD_RAIR');
     },
 
     getResources() {

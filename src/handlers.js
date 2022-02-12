@@ -141,6 +141,32 @@ export const downloadMongo = async (sendToUI) => {
   }
 };
 
+export const downloadRair = async (sendToUI) => {
+  sendToUI('notify', { type: 'info', text: 'Downloading LotR Server (~70mb)...' });
+
+  try {
+
+    if(fs.existsSync(`${baseUrl}/resources/rair`)) {
+      fs.rmSync(`${baseUrl}/resources/rair`);
+    }
+
+    fs.mkdirSync(`${baseUrl}/resources/rair`);
+
+    const releaseUrl = 'https://api.github.com/repos/LandOfTheRair/landoftherair/releases/latest';
+    const releaseRes = await fetch(releaseUrl);
+    const releaseData = await releaseRes.json();
+    
+    const serverUrl = releaseData.assets.find(x => x.name === 'lotr-server.exe').browser_download_url;
+    const serverRes = await fetch(serverUrl);
+    const serverBuffer = await serverRes.buffer();
+    fs.writeFileSync(`${baseUrl}/resources/rair/lotr-server.exe`, serverBuffer);
+
+  } catch(e) {
+    console.log(e);
+    sendToUI('notify', { type: 'error', text: 'LotR Server download failed!' });
+  }
+};
+
 export const ensureMap = (mapName, mapData) => {
   
   const path = `${baseUrl}/resources/maps/src/content/maps/custom/${mapName}.json`;
