@@ -98,7 +98,7 @@ export function setupIPC(sendToUI) {
     
     if(!res) return;
 
-    fs.writeJSONSync(res, data);
+    fs.writeJSONSync(res, data, { spaces: 2});
     sendToUI('notify', { type: 'info', text: `Saved ${res}!` });
   });
 

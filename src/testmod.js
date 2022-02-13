@@ -26,9 +26,9 @@ export const killMod = (sendToUI) => {
   try { 
     childProcess.exec('taskkill /F /IM mongod.exe'); 
     mongoProcess = null;
-    sendToUI('notify', { type: 'info', text: 'Killed MongoDB!' });
+    if(sendToUI) sendToUI('notify', { type: 'info', text: 'Killed MongoDB!' });
   } catch (e) {
-    sendToUI('notify', { type: 'error', text: `Could not kill MongoDB: ${e}` });
+    if(sendToUI) sendToUI('notify', { type: 'error', text: `Could not kill MongoDB: ${e}` });
   }
 };
 
