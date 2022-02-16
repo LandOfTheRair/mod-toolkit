@@ -22,8 +22,9 @@
         <b-dropdown-divider></b-dropdown-divider>
 
         <b-dropdown-item disabled>Mod I/O</b-dropdown-item>
-        <b-dropdown-item @click="exportMod()">Export Mod</b-dropdown-item>
-        <b-dropdown-item @click="importMod()">Import Mod</b-dropdown-item>
+        <b-dropdown-item @click="importMod()">Load Mod</b-dropdown-item>
+        <b-dropdown-item @click="exportMod()">Save Mod</b-dropdown-item>
+        <b-dropdown-item @click="exportMod(true)">Export Mod</b-dropdown-item>
         <mod-validator :mod="mod"></mod-validator>
         <b-dropdown-divider></b-dropdown-divider>
 
@@ -138,7 +139,7 @@ const defaultData = {
   recipes: [],
   maps: [],
   quests: [],
-  dialogs: []
+  dialogs: [],
 };
 
 export default {
@@ -395,8 +396,8 @@ export default {
       localforage.setItem('mod', JSON.stringify(this.mod));
     },
 
-    exportMod() {
-      window.api.send('SAVE_MOD', this.mod);
+    exportMod(shouldExport = false) {
+      window.api.send('SAVE_MOD', { shouldExport, mapData: this.mod });
     },
 
     importMod() {

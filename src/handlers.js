@@ -5,6 +5,7 @@ const childProcess = require('child_process');
 const fs = require('fs-extra');
 const { default: fetch } = require('node-fetch');
 const admZip = require('adm-zip');
+const dlgit = require('download-github-repo');
 
 const baseUrl = app.getAppPath();
 
@@ -34,6 +35,8 @@ export const updateResources = async (sendToUI) => {
   
   fs.ensureDirSync(`${baseUrl}/resources/maps/src/content/maps`);
   fs.ensureDirSync(`${baseUrl}/resources/maps/src/content/maps/custom`);
+
+  fs.rmdirSync(`${baseUrl}/resources/content`, { recursive: true });
 
   const sheets = async () => {
     const spritesheets = ['creatures', 'decor', 'items', 'terrain', 'walls'];
@@ -103,10 +106,16 @@ export const updateResources = async (sendToUI) => {
     }
   };
 
+  const validators = async () => {
+    sendToUI('notify', { type: 'info', text: 'Downloading validators...' });
+    dlgit('LandOfTheRair/Content', `${baseUrl}/resources/content`, async () => {});
+  };
+
   await sheets();
   await json();
   await template();
   await tiled();
+  await validators();
 
   fs.writeFileSync(`${baseUrl}/.loaded`, '');
 
@@ -237,4 +246,30 @@ export const loadJSON = (json) => {
   }
 
   return fs.readJsonSync(file);
+};
+
+export const formatMod = (mod) => {
+
+  // whatever
+  // eslint-disable-next-line no-undef
+  const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
+
+  const { fillInProperties: droptableValidator } = requireFunc('./resources/content/_transformers/props/droptable');
+  const { fillInProperties: itemValidator } = requireFunc('./resources/content/_transformers/props/item');
+  const { fillInProperties: npcScriptValidator } = requireFunc('./resources/content/_transformers/props/npc-scripts');
+  const { fillInProperties: npcValidator } = requireFunc('./resources/content/_transformers/props/npc');
+  const { fillInProperties: questValidator } = requireFunc('./resources/content/_transformers/props/quest');
+  const { fillInProperties: recipeValidator } = requireFunc('./resources/content/_transformers/props/recipe');
+  const { fillInProperties: spawnerValidator } = requireFunc('./resources/content/_transformers/props/spawner');
+
+  mod.drops.forEach(dt => droptableValidator(dt));
+
+  mod.items.forEach(dt => itemValidator(dt));
+  mod.dialogs.forEach(dt => npcScriptValidator(dt));
+  mod.npcs.forEach(dt => npcValidator(dt));
+  mod.quests.forEach(dt => questValidator(dt));
+  mod.recipes.forEach(dt => recipeValidator(dt));
+  mod.spawners.forEach(dt => spawnerValidator(dt));
+
+  return mod;
 };

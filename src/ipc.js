@@ -87,10 +87,16 @@ export function setupIPC(sendToUI) {
     sendToUI('json', { name: json, data: jsonData });
   });
 
-  ipcMain.on('SAVE_MOD', (e, data) => {
+  ipcMain.on('SAVE_MOD', (e, { mapData, shouldExport }) => {
+
+    if(shouldExport && !fs.existsSync(`${baseUrl}/resources/rair`)) {
+      sendToUI('notify', { type: 'error', text: 'Mod cannot be formatted for saving!' });
+      return;
+    }
+
     const res = dialog.showSaveDialogSync(null, {
       title: 'Save Land of the Rair Mod',
-      defaultPath: data.meta.name,
+      defaultPath: mapData.meta.name,
       filters: [
         { name: 'Rair Mods', extensions: ['rairmod'] }
       ]
@@ -98,7 +104,9 @@ export function setupIPC(sendToUI) {
     
     if(!res) return;
 
-    fs.writeJSONSync(res, data, { spaces: 2});
+    const fullMod = shouldExport ? handlers.formatMod(mapData) : mapData;
+
+    fs.writeJSONSync(res, fullMod, { spaces: 2 });
     sendToUI('notify', { type: 'info', text: `Saved ${res}!` });
   });
 
