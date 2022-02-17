@@ -273,6 +273,8 @@ export default {
 
     // recipe
     events.$on('add:recipe', ({ recipe }) => {
+      if(this.mod.recipes.find(x => x.name === recipe.name)) recipe.name = `${recipe.name} (copy)`;
+
       this.mod.recipes.push(recipe);
       this.persist();
     });

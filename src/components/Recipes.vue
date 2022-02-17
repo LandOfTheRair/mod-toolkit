@@ -29,17 +29,22 @@
         <b-form>
           <div class="row mt-3">
             <div class="col-4">
-              <b-form-group label-cols-md="3" label="Tradeskill">
-                <b-form-select v-model="recipe.recipeType" required>
-                  <option :value="''">Choose tradeskill</option>
-                  <option v-for="ts in recipeTypes" :value="ts" :key="ts">{{ ts }}</option>
-                </b-form-select>
+
+              <b-form-group label-cols-md="3" label="Name">
+                <b-form-input type="text" v-model="recipe.name" required placeholder="Display name for the recipe"></b-form-input>
               </b-form-group>
 
               <b-form-group label-cols-md="3" label="Item">
                 <b-form-select v-model="recipe.item" required>
                   <option :value="''">Choose result item</option>
                   <option v-for="item in items" :value="item.name" :key="item.name">{{ item.name }}</option>
+                </b-form-select>
+              </b-form-group>
+
+              <b-form-group label-cols-md="3" label="Tradeskill">
+                <b-form-select v-model="recipe.recipeType" required>
+                  <option :value="''">Choose tradeskill</option>
+                  <option v-for="ts in recipeTypes" :value="ts" :key="ts">{{ ts }}</option>
                 </b-form-select>
               </b-form-group>
 
@@ -178,6 +183,7 @@ import SpellSelector from './shared/SpellSelector.vue';
 import ClassSelector from './shared/ClassSelector.vue';
 
 const defaultRecipe = {
+  name: '',
   item: '',
   skillGained: 0,
   requireSkill: 0,
@@ -213,8 +219,9 @@ export default {
       sortDesc: false,
       recipeTypes: ['alchemy', 'metalworking', 'spellforging'],
       tableFields: [
-        { key: 'recipeType', label: 'Recipe Type', sortable: true },
+        { key: 'name', label: 'Name', sortable: true },
         { key: 'item', label: 'Item', sortable: true },
+        { key: 'recipeType', label: 'Recipe Type', sortable: true },
         { key: 'ingredients', label: 'Ingredients', sortable: true },
         { key: 'actions', label: 'Actions', class: 'text-right' }
       ],
@@ -254,6 +261,8 @@ export default {
     },
 
     isValidRecipe(recipe) {
+      if(this.recipes.some((check, i) => i !== this.isEditing && recipe.name === check.name)) return false;
+
       const validKeys = ['item', 'skillGained', 'xpGained', 'recipeType', 'maxSkillForGains'];
       return validKeys.every(x => get(recipe, x)) && recipe.ingredients.filter(Boolean).length >= 2;
     },
@@ -276,6 +285,7 @@ export default {
 
     copy(recipe) {
       events.$emit('add:recipe', { recipe: clone(recipe) });
+      this.onFiltered(this.recipes);
     },
 
     edit(recipe) {
@@ -289,6 +299,7 @@ export default {
       if(!willRemove) return;
 
       events.$emit('remove:recipe', { index: this.recipes.findIndex(x => x === recipe) });
+      this.onFiltered(this.recipes);
     }
   }
 };
