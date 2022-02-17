@@ -266,3 +266,11 @@ export const validationMessagesForMod = (mod) => {
 
   return validations;
 };
+
+export const numErrorsForMod = (mod) => {
+  const validationMessages = validationMessagesForMod(mod);
+
+  const numErrors = validationMessages.filter(vdn => vdn.type === 'error').length;
+
+  return numErrors;
+};

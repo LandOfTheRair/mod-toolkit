@@ -31,7 +31,7 @@
         <b-dropdown-item disabled>Mod Testing</b-dropdown-item>
         <b-dropdown-item @click="downloadMongo()">Install MongoDB...</b-dropdown-item>
         <b-dropdown-item @click="downloadRair()">Install Rair Server...</b-dropdown-item>
-        <mod-tester></mod-tester>
+        <mod-tester :mod="mod"></mod-tester>
         <b-dropdown-divider></b-dropdown-divider>
 
         <b-dropdown-item disabled>Updates</b-dropdown-item>
@@ -112,6 +112,8 @@
 import localforage from 'localforage';
 
 import { events } from './main';
+
+import { numErrorsForMod } from './helpers';
 
 import ModValidator from './components/simple/ModValidator.vue';
 import ModTester from './components/simple/ModTester.vue';
@@ -397,6 +399,16 @@ export default {
     },
 
     exportMod(shouldExport = false) {
+      if(shouldExport) {
+
+        const numErrors = numErrorsForMod(this.mod);
+        
+        if(numErrors > 0) {
+          this.$dialog.notify.error(`Your mod has ${numErrors} error(s). Check Menu > Validate Map for more info.`);
+          return;
+        }
+      }
+
       window.api.send('SAVE_MOD', { shouldExport, mapData: this.mod });
     },
 

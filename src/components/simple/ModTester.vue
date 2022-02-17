@@ -96,9 +96,15 @@
           </div>
         </div>
 
+        <div class="row my-3" v-if="numErrors > 0">
+          <div class="col-12 text-danger text-center">
+            Your mod has {{ numErrors }} error(s). Check Menu > Validate Mod for more info.
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-8">
-            <b-button block variant="primary" @click="testMod()" :disabled="!validOtherProps || !validTestProps">Test Mod!</b-button>
+            <b-button block variant="primary" @click="testMod()" :disabled="!validOtherProps || !validTestProps || numErrors > 0">Test Mod!</b-button>
           </div>
           <div class="col-4">
             <b-button block variant="danger" @click="killMod()">Kill LotR/MongoDB</b-button>
@@ -117,10 +123,12 @@ import { PrismEditor } from 'vue-prism-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 
+import { numErrorsForMod } from '../../helpers';
+
 export default {
   name: 'ModTester',
 
-  props: [],
+  props: ['mod'],
 
   components: { PrismEditor },
 
@@ -142,6 +150,11 @@ export default {
   },
 
   computed: {
+    numErrors() {
+      if(!this.mod) return 0;
+      return numErrorsForMod(this.mod);
+    },
+
     validTestProps() {
       return this.settings.level > 0 && this.settings.map && this.settings.x > 0 && this.settings.y > 0;
     },
