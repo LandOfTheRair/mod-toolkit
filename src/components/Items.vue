@@ -672,6 +672,7 @@ export default {
         item: this.item,
         index: this.isEditing
       });
+      this.onFiltered(this.items);
     },
 
     openModal() {
@@ -683,6 +684,7 @@ export default {
       cloneItem.name = cloneItem.name + ' (Copy)';
 
       events.$emit('add:item', { item: cloneItem });
+      this.onFiltered(this.items);
     },
 
     edit(item) {
@@ -698,6 +700,7 @@ export default {
       if(!willRemove) return;
 
       events.$emit('remove:item', { index: this.items.findIndex(x => x === item) });
+      this.onFiltered(this.items);
     },
 
     addNourishStat(key) {

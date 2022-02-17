@@ -387,6 +387,7 @@ export default {
         dialog: this.dialog,
         index: this.isEditing
       });
+      this.onFiltered(this.dialogs);
     },
 
     openModal() {
@@ -397,6 +398,7 @@ export default {
 
     copy(dialog) {
       events.$emit('add:dialog', { dialog: clone(dialog) });
+      this.onFiltered(this.dialogs);
     },
 
     edit(dialog) {
@@ -410,6 +412,7 @@ export default {
       if(!willRemove) return;
 
       events.$emit('remove:dialog', { index: this.dialogs.findIndex(x => x === dialog) });
+      this.onFiltered(this.dialogs);
     },
 
     addEquipmentItem(slot) {

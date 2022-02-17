@@ -401,6 +401,7 @@ export default {
         spawner: this.spawner,
         index: this.isEditing
       });
+      this.onFiltered(this.spawners);
     },
 
     openModal() {
@@ -409,6 +410,7 @@ export default {
 
     copy(spawner) {
       events.$emit('add:spawner', { spawner: clone(spawner) });
+      this.onFiltered(this.spawners);
     },
 
     edit(spawner) {
@@ -427,6 +429,7 @@ export default {
       events.$emit('remove:spawner', {
         index: this.spawners.findIndex(x => x === spawner)
       });
+      this.onFiltered(this.spawners);
     },
 
     makeLair() {

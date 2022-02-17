@@ -351,6 +351,7 @@ export default {
         quest: this.quest,
         index: this.isEditing
       });
+      this.onFiltered(this.quests);
     },
 
     openModal() {
@@ -359,6 +360,7 @@ export default {
 
     copy(quest) {
       events.$emit('add:quest', { quest: clone(quest) });
+      this.onFiltered(this.quests);
     },
 
     edit(quest) {
@@ -374,6 +376,7 @@ export default {
       events.$emit('remove:quest', {
         index: this.quests.findIndex(x => x === quest)
       });
+      this.onFiltered(this.quests);
     },
 
     makeSureDailyRepeatableSet(flag) {

@@ -277,6 +277,7 @@ export default {
         recipe: this.postRecipe(this.recipe),
         index: this.isEditing
       });
+      this.onFiltered(this.recipes);
     },
 
     openModal() {

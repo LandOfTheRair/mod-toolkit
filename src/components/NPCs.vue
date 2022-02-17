@@ -846,6 +846,7 @@ export default {
 
     confirm() {
       events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:npc`, { npc: this.npc, index: this.isEditing });
+      this.onFiltered(this.npcs);
     },
 
     openModal() {
@@ -854,6 +855,7 @@ export default {
 
     copy(npc) {
       events.$emit('add:npc', { npc: clone(npc) });
+      this.onFiltered(this.npcs);
     },
 
     edit(npc) {
@@ -867,6 +869,7 @@ export default {
       if(!willRemove) return;
 
       events.$emit('remove:npc', { index: this.npcs.findIndex(x => x === npc) });
+      this.onFiltered(this.npcs);
     },
 
     updateKeyMaxIfNotPresent($event, key) {

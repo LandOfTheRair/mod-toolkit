@@ -208,6 +208,7 @@ export default {
         droptable: this.droptable,
         index: this.isEditing
       });
+      this.onFiltered(this.droptables);
     },
 
     openModal() {
@@ -216,6 +217,7 @@ export default {
 
     copy(droptable) {
       events.$emit('add:droptable', { droptable: clone(droptable) });
+      this.onFiltered(this.droptables);
     },
 
     edit(droptable) {
@@ -229,6 +231,7 @@ export default {
       if(!willRemove) return;
 
       events.$emit('remove:droptable', { index: this.droptables.findIndex(x => x === droptable) });
+      this.onFiltered(this.droptables);
     }
   }
 };
