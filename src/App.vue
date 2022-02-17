@@ -518,7 +518,7 @@ export default {
     },
 
     async changeName() {
-      const newName = await this.$dialog.prompt({ title: 'What would you like to call your mod?', text: 'Use the map or region name' });
+      const newName = await this.$dialog.prompt({ title: 'What would you like to call your mod?', text: 'Use the map or region name', value: this.mod.meta.name });
       if(!newName) return;
 
       this.mod.meta.name = newName;
@@ -527,7 +527,7 @@ export default {
     },
 
     async changeAuthor() {
-      const newName = await this.$dialog.prompt({ title: 'Who should get credit for this mod?', text: 'Your Rair alias or name' });
+      const newName = await this.$dialog.prompt({ title: 'Who should get credit for this mod?', text: 'Your Rair alias or name', value: this.mod.meta.author });
       if(!newName) return;
 
       this.mod.meta.author = newName;

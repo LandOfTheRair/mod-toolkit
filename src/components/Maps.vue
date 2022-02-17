@@ -106,7 +106,7 @@ export default {
     },
 
     async renameMap(mapName) {
-      const newName = await this.$dialog.prompt({ title: 'What would you like to rename this map to?', text: '' });
+      const newName = await this.$dialog.prompt({ title: 'What would you like to rename this map to?', text: '', value: mapName });
       if(!newName) return;
 
       if(this.maps.some(map => map.name === newName)) {
