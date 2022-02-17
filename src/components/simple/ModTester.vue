@@ -187,7 +187,7 @@ export default {
         ...JSON.parse(this.settings.otherProps)
       });
 
-      window.api.send('TEST_MOD', { map: this.settings.map, settings, openClient: this.settings.openClient });
+      window.api.send('TEST_MOD', { mod: this.mod, map: this.settings.map, settings, openClient: this.settings.openClient });
 
       this.persist();
     },

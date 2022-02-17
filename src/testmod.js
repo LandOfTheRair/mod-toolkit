@@ -32,7 +32,7 @@ export const killMod = (sendToUI) => {
   }
 };
 
-export const testMod = (sendToUI, { openClient, map, settings }) => {
+export const testMod = (sendToUI, { mod, openClient, map, settings }) => {
 
   // check mongodb install
   if(!fs.existsSync(`${baseUrl}/resources/mongodb/bin/mongod.exe`)) {
@@ -62,9 +62,11 @@ export const testMod = (sendToUI, { openClient, map, settings }) => {
   fs.rmdirSync(`${baseUrl}/resources/rair/content/maps`, { recursive: true });
   fs.ensureDirSync(`${baseUrl}/resources/rair/content/maps`);
 
-  // copy only this map over
-  fs.copyFileSync(`${baseUrl}/resources/maps/src/content/maps/custom/${map}.json`, `${baseUrl}/resources/rair/content/maps/${map}.json`);
-  sendToUI('notify', { type: 'info', text: `Copied map ${map} file!` });
+  // dump all mod data
+  fs.rmdirSync(`${baseUrl}/resources/rair/content/mods`, { recursive: true });
+  fs.ensureDirSync(`${baseUrl}/resources/rair/content/mods`);
+  fs.writeJsonSync(`${baseUrl}/resources/rair/content/mods/mod.json`, mod);
+  sendToUI('notify', { type: 'info', text: 'Copied mod file!' });
 
   // write .env
   fs.writeFileSync(`${baseUrl}/resources/rair/.env`, `
