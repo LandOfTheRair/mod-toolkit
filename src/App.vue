@@ -29,6 +29,7 @@
         <b-dropdown-divider></b-dropdown-divider>
 
         <b-dropdown-item disabled>Mod Testing</b-dropdown-item>
+        <b-dropdown-item target="_blank" href="https://rair.land/docs/modkit/">Help</b-dropdown-item>
         <b-dropdown-item @click="downloadMongo()">Install MongoDB...</b-dropdown-item>
         <b-dropdown-item @click="downloadRair()">Install Rair Server...</b-dropdown-item>
         <mod-tester :mod="mod"></mod-tester>
