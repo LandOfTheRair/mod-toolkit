@@ -250,6 +250,58 @@ export const loadJSON = (json) => {
 
 export const formatMod = (mod) => {
 
+  // put droptables into the correct format
+  const formatDrops = () => {
+    const finalDrops = [];
+
+    const mapDrops = {};
+    const regionDrops = {};
+
+    mod.drops.forEach(drop => {
+
+      if(drop.mapName) {
+        mapDrops[drop.mapName] = mapDrops[drop.mapName] || [];
+        mapDrops[drop.mapName].push({ 
+          result: drop.result, 
+          chance: drop.chance,
+          maxChance: drop.maxChance,
+          noLuckBonus: drop.noLuckBonus,
+          requireHoliday: drop.requireHoliday
+        });
+      }
+
+      if(drop.regionName) {
+        regionDrops[drop.regionName] = regionDrops[drop.regionName] || [];
+        regionDrops[drop.regionName].push({ 
+          result: drop.result, 
+          chance: drop.chance,
+          maxChance: drop.maxChance,
+          noLuckBonus: drop.noLuckBonus,
+          requireHoliday: drop.requireHoliday
+        });
+      }
+
+    });
+
+    Object.keys(mapDrops).forEach(mapName => {
+      finalDrops.push({
+        mapName,
+        drops: mapDrops[mapName]
+      });
+    });
+
+    Object.keys(regionDrops).forEach(regionName => {
+      finalDrops.push({
+        regionName,
+        drops: regionDrops[regionName]
+      });
+    });
+
+    mod.drops = finalDrops;
+  };
+
+  formatDrops();
+
   // whatever
   // eslint-disable-next-line no-undef
   const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
