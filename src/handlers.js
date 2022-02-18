@@ -7,6 +7,10 @@ const { default: fetch } = require('node-fetch');
 const admZip = require('adm-zip');
 const dlgit = require('download-github-repo');
 
+const agent = new require('https').Agent({
+  rejectUnauthorized: false,
+});
+
 const baseUrl = app.getAppPath();
 
 let isUpdating = false;
@@ -46,11 +50,12 @@ export const updateResources = async (sendToUI) => {
       
       try {
         const url = `https://play.rair.land/assets/spritesheets/${sheet}.png`;
-        const res = await fetch(url);
+        const res = await fetch(url, { agent });
         const buffer = await res.buffer();
     
-        fs.writeFileSync(`${baseUrl}/resources/maps/src/content/__assets/spritesheets/${sheet}.png`, buffer);
-      } catch {
+        await fs.writeFile(`${baseUrl}/resources/maps/src/content/__assets/spritesheets/${sheet}.png`, buffer);
+      } catch (e) {
+        sendToUI('notify', { type: 'error', text: `Error downloading "${sheet}": ${e}` });
         isUpdating = false;
       }
     }
@@ -64,26 +69,39 @@ export const updateResources = async (sendToUI) => {
       
       try {
         const templateUrl = `https://play.rair.land/assets/content/_output/${json}.json`;
-        const templateRes = await fetch(templateUrl);
+        const templateRes = await fetch(templateUrl, { agent });
         const templateBuffer = await templateRes.buffer();
 
-        fs.writeFileSync(`${baseUrl}/resources/json/${json}.json`, templateBuffer);
-      } catch {
+        await fs.writeFile(`${baseUrl}/resources/json/${json}.json`, templateBuffer);
+      } catch (e) {
+        sendToUI('notify', { type: 'error', text: `Error downloading "${json}": ${e}` });
         isUpdating = false;
       }
     }
   };
 
   const template = async () => {
-    sendToUI('notify', { type: 'info', text: 'Downloading template...' });
+    sendToUI('notify', { type: 'info', text: 'Downloading template & TestArea...' });
 
     try {
       const templateUrl = 'https://server.rair.land/editor/map?map=Template';
-      const templateRes = await fetch(templateUrl);
+      const templateRes = await fetch(templateUrl, { agent });
       const templateBuffer = await templateRes.buffer();
 
-      fs.writeFileSync(`${baseUrl}/resources/maps/src/content/maps/custom/Template.json`, templateBuffer);
-    } catch {
+      await fs.writeFile(`${baseUrl}/resources/maps/src/content/maps/custom/Template.json`, templateBuffer);
+    } catch (e) {
+      sendToUI('notify', { type: 'error', text: `Error downloading Template: ${e}` });
+      isUpdating = false;
+    }
+
+    try {
+      const templateUrl = 'https://server.rair.land/editor/map?map=TestArea';
+      const templateRes = await fetch(templateUrl, { agent });
+      const templateBuffer = await templateRes.buffer();
+
+      await fs.writeFile(`${baseUrl}/resources/maps/src/content/maps/custom/TestArea.json`, templateBuffer);
+    } catch (e) {
+      sendToUI('notify', { type: 'error', text: `Error downloading TestArea: ${e}` });
       isUpdating = false;
     }
   };
@@ -93,15 +111,16 @@ export const updateResources = async (sendToUI) => {
 
     try {
       const tiledUrl = 'https://rair.land/Tiled.zip';
-      const tiledRes = await fetch(tiledUrl);
+      const tiledRes = await fetch(tiledUrl, { agent });
       const tiledBuffer = await tiledRes.buffer();
-      fs.writeFileSync(`${baseUrl}/resources/Tiled.zip`, tiledBuffer);
+      await fs.writeFile(`${baseUrl}/resources/Tiled.zip`, tiledBuffer);
 
       const adm = new admZip(`${baseUrl}/resources/Tiled.zip`);
       adm.extractAllTo(`${baseUrl}/resources`);
 
       fs.rmSync(`${baseUrl}/resources/Tiled.zip`);
-    } catch {
+    } catch (e) {
+      sendToUI('notify', { type: 'error', text: `Error downloading Tiled: ${e}` });
       isUpdating = false;
     }
   };
@@ -130,6 +149,10 @@ export const downloadMongo = async (sendToUI) => {
     if(fs.existsSync(`${baseUrl}/resources/mongodb`)) {
       fs.rmSync(`${baseUrl}/resources/mongodb`);
     }
+
+    if(fs.existsSync(`${baseUrl}/resources/mongodb-win32-x86_64-windows-5.0.6`)) {
+      fs.rmSync(`${baseUrl}/resources/mongodb-win32-x86_64-windows-5.0.6`);
+    }
     
     const mongoUrl = 'https://fastdl.mongodb.org/windows/mongodb-windows-x86_64-5.0.6.zip';
     const mongoRes = await fetch(mongoUrl);
@@ -151,7 +174,7 @@ export const downloadMongo = async (sendToUI) => {
 };
 
 export const downloadRair = async (sendToUI) => {
-  sendToUI('notify', { type: 'info', text: 'Downloading LotR Server (~70mb)...' });
+  sendToUI('notify', { type: 'info', text: 'Downloading Rair Server (~70mb)...' });
 
   try {
 
@@ -172,7 +195,7 @@ export const downloadRair = async (sendToUI) => {
 
   } catch(e) {
     console.log(e);
-    sendToUI('notify', { type: 'error', text: 'LotR Server download failed!' });
+    sendToUI('notify', { type: 'error', text: 'Rair Server download failed!' });
   }
 };
 
@@ -204,6 +227,10 @@ export const newMap = (mapName, mapAuthor) => {
 };
 
 export const editMap = (mapName) => {
+
+  if(!fs.existsSync(`${baseUrl}/resources/Tiled`)) {
+    throw new Error('Tiled is not installed.');
+  }
   
   const path = `${baseUrl}/resources/maps/src/content/maps/custom/${mapName}.json`;
 

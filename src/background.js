@@ -2,11 +2,18 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import log from 'electron-log';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 
 import * as handlers from './handlers';
 import { setupIPC, watchMaps } from './ipc';
+
+log.transports.file.resolvePath = () => path.join(app.getAppPath(), 'logs/main.log');
+
+process.on('uncaughtException', (err) => {
+  log.error(err);
+});
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
@@ -42,10 +49,12 @@ async function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
       webSecurity: false,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     }
   });
+
+  win.webContents.openDevTools();
 
   win.setMenu(null);
   
@@ -132,6 +141,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
+
   createWindow();
 });
 

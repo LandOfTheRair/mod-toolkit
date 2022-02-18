@@ -50,7 +50,7 @@
     </div>
 
     <div class="px-3" v-if="mod && isLoaded">
-      <h3 class="text-center my-3">{{ mod.meta.name || 'Unnamed Modkit' }}</h3>
+      <h3 class="text-center my-3">{{ mod.meta.name || 'UnnamedMod' }}</h3>
       <h6 class="text-center my-2">{{ mod.meta.author || 'Unknown Author' }}</h6>
 
       <div class="mt-3">
@@ -130,8 +130,8 @@ import QuestsTab from './components/Quests';
 
 const defaultData = {
   meta: {
-    name: '',
-    author: '',
+    name: 'UnnamedMod',
+    author: 'Anonymous',
     version: 1,
     savedAt: 0
   },

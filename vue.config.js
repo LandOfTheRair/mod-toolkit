@@ -7,16 +7,20 @@ module.exports = {
       preload: 'src/preload.js',
 
       builderOptions: {
-        productName: 'LotR Modding Tools',
+        productName: 'Land of the Rair Modding Tools',
+        artifactName: 'LandOfTheRairModdingTools.${ext}',
+        asar: false,
 
         appId: 'modding.rair.land',
+        portable: {
+          artifactName: 'LotRModdingTools.exe'
+        },
         win: {
           publish: [],
           target: [
-            'nsis'
+            'zip'
           ],
-          icon: './public/favicon.png',
-          requestedExecutionLevel: 'requireAdministrator'
+          icon: './public/favicon.png'
         },
       },
 
@@ -28,10 +32,10 @@ module.exports = {
           .loader('native-ext-loader')
           .options(
             process.env.NODE_ENV === 'development'
-            ? {
-            rewritePath: path.resolve(__dirname, 'native'),
-            }
-            : {}
+              ? {
+                rewritePath: path.resolve(__dirname, 'native'),
+              }
+              : {}
           );
       }
     }

@@ -69,7 +69,11 @@ export function setupIPC(sendToUI) {
     const name = data.name;
     if(!name) return;
     
-    handlers.editMap(name);
+    try {
+      handlers.editMap(name);
+    } catch(e) {
+      sendToUI('notify', { type: 'error', text: 'Tiled is not installed.' });
+    }
   });
   
   ipcMain.on('EDIT_MAP_SPAWNER', async (e, data) => {
@@ -135,7 +139,7 @@ export function setupIPC(sendToUI) {
 
   ipcMain.on('DOWNLOAD_RAIR', async () => {
     await handlers.downloadRair(sendToUI);
-    sendToUI('notify', { type: 'info', text: 'Finished downloading LotR Server!' });
+    sendToUI('notify', { type: 'info', text: 'Finished downloading Rair Server!' });
   });
 
   ipcMain.on('TEST_MOD', async (e, data) => {

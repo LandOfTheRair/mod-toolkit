@@ -18,9 +18,9 @@ export const killMod = (sendToUI) => {
   try { 
     childProcess.exec('taskkill /F /IM lotr-server.exe'); 
     lotrProcess = null;
-    if(sendToUI) sendToUI('notify', { type: 'info', text: 'Killed LotR server!' });
+    if(sendToUI) sendToUI('notify', { type: 'info', text: 'Killed Rair server!' });
   } catch (e) {
-    if(sendToUI) sendToUI('notify', { type: 'error', text: `Could not kill LotR: ${e}` });
+    if(sendToUI) sendToUI('notify', { type: 'error', text: `Could not kill Rair: ${e}` });
   }
 
   try { 
@@ -42,7 +42,7 @@ export const testMod = (sendToUI, { mod, openClient, map, settings }) => {
 
   // check lotr server install
   if(!fs.existsSync(`${baseUrl}/resources/rair/lotr-server.exe`)) {
-    sendToUI('notify', { type: 'error', text: 'LotR Server is not installed.' });
+    sendToUI('notify', { type: 'error', text: 'Rair Server is not installed.' });
     return;
   }
 
@@ -87,7 +87,7 @@ TEST_USER_PROPS=${settings}
   // run lotr server if not running (kill old install)
   if(lotrProcess) {
     try {
-      sendToUI('notify', { type: 'info', text: 'Stopping old LotR Server...' });
+      sendToUI('notify', { type: 'info', text: 'Stopping old Rair Server...' });
       childProcess.exec('taskkill /F /IM lotr-server.exe');
     } catch (e) {
       console.error(e);
@@ -95,7 +95,7 @@ TEST_USER_PROPS=${settings}
   }
   
   // re/start lotr server
-  sendToUI('notify', { type: 'info', text: 'Starting LotR Server...' });
+  sendToUI('notify', { type: 'info', text: 'Starting Rair Server...' });
   lotrProcess = childProcess.exec(`${baseUrl}/resources/rair/lotr-server.exe`, { cwd: `${baseUrl}/resources/rair` }, () => {});
 
   // open lotr client
