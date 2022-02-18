@@ -3,7 +3,7 @@ name: Release New Tags
 on:
   push:
     tags:
-      - 'v*' # Any pushed tag
+      - '*' # Any pushed tag
 
 jobs:
   build:
