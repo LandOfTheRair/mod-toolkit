@@ -208,7 +208,7 @@
       </template>
 
       <template v-slot:cell(behaviors)="data">
-        {{ data.item.behaviors.length }}
+        {{ data.item.behaviors ? data.item.behaviors.length : 0 }}
       </template>
 
       <template v-slot:cell(dialog)="data">
@@ -371,7 +371,7 @@ export default {
     },
 
     numDialogs(dialog) {
-      return Object.keys(dialog.dialog).length;
+      return Object.keys(dialog.dialog || {}).length;
     },
 
     reset() {
@@ -380,8 +380,8 @@ export default {
     },
 
     confirm() {
-      this.dialog.behaviors = yaml.load(this.npcBehaviors);
-      this.dialog.dialog = yaml.load(this.npcDialog);
+      this.dialog.behaviors = yaml.load(this.npcBehaviors || '[]');
+      this.dialog.dialog = yaml.load(this.npcDialog || '{}');
 
       events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:dialog`, {
         dialog: this.dialog,
@@ -392,7 +392,7 @@ export default {
 
     openModal() {
       this.npcBehaviors = yaml.dump(this.dialog.behaviors || []);
-      this.npcDialog = yaml.dump(this.dialog.dialog || { keyword: {} });
+      this.npcDialog = yaml.dump(this.dialog.dialog || {});
       this.$refs.modal.show();
     },
 

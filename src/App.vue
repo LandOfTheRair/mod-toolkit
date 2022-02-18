@@ -110,6 +110,7 @@
 
 <script>
 import localforage from 'localforage';
+import yaml from 'js-yaml';
 
 import { events } from './main';
 
@@ -500,6 +501,18 @@ export default {
           return newName;
         });
 
+      });
+    
+      this.mod.dialogs.forEach(dialog => {
+
+        const npcBehaviors = (yaml.dump(dialog.behaviors || []) || '').split(oldName).join(newName);
+        const npcDialog = (yaml.dump(dialog.dialog || {}) || '').split(oldName).join(newName);
+
+        const newBehaviors = yaml.load(npcBehaviors);
+        const newDialog = yaml.load(npcDialog);
+        
+        dialog.behaviors = newBehaviors;
+        dialog.dialog = newDialog;
       });
     },
 
