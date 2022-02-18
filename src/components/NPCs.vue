@@ -707,6 +707,7 @@ const defaultNPC = {
     cha: 0,
     luk: 0
   },
+  skillOnKill: 0,
   otherStats: {},
   gear: {},
   hp: { min: 0, max: 0 },
