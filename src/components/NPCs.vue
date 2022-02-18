@@ -99,7 +99,7 @@
                     <b-form-input
                       type="text"
                       v-model="npc.monsterGroup"
-                      placeholder="The guild/tag for NPC"
+                      placeholder="The grouping for NPC"
                     ></b-form-input>
                   </b-form-group>
 
