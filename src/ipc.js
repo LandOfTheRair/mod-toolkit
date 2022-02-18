@@ -94,15 +94,18 @@ export function setupIPC(sendToUI) {
   ipcMain.on('SAVE_MOD', (e, { mapData, shouldExport }) => {
 
     if(shouldExport && !fs.existsSync(`${baseUrl}/resources/rair`)) {
-      sendToUI('notify', { type: 'error', text: 'Mod cannot be formatted for saving!' });
+      sendToUI('notify', { type: 'error', text: 'Mod cannot be formatted for saving, install Rair Server first!' });
       return;
     }
+
+    const extname = shouldExport ? 'Rair Mods' : 'Rair In-Dev Mods';
+    const ext = shouldExport ? 'rairmod' : 'rairdevmod';
 
     const res = dialog.showSaveDialogSync(null, {
       title: 'Save Land of the Rair Mod',
       defaultPath: mapData.meta.name,
       filters: [
-        { name: 'Rair Mods', extensions: ['rairmod'] }
+        { name: extname, extensions: [ext] }
       ]
     });
     
@@ -118,7 +121,7 @@ export function setupIPC(sendToUI) {
     const res = dialog.showOpenDialogSync(null, {
       title: 'Load Land of the Rair Mod',
       filters: [
-        { name: 'Rair Mods', extensions: ['rairmod'] }
+        { name: 'Rair In-Dev Mods', extensions: ['rairdevmod'] }
       ],
       properties: ['openFile']
     });
