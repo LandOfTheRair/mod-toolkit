@@ -409,8 +409,11 @@ export default {
     },
 
     copy(spawner) {
-      events.$emit('add:spawner', { spawner: clone(spawner) });
-      this.onFiltered(this.spawners);
+      this.spawner = clone(spawner);
+      this.spawner._paths = this.spawner.paths
+        ? this.spawner.paths.join('\n')
+        : '';
+      this.openModal();
     },
 
     edit(spawner) {

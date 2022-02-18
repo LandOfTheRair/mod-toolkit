@@ -680,11 +680,8 @@ export default {
     },
 
     copy(item) {
-      const cloneItem = clone(item);
-      cloneItem.name = cloneItem.name + ' (Copy)';
-
-      events.$emit('add:item', { item: cloneItem });
-      this.onFiltered(this.items);
+      this.item = clone(item);
+      this.openModal();
     },
 
     edit(item) {

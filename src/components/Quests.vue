@@ -359,8 +359,8 @@ export default {
     },
 
     copy(quest) {
-      events.$emit('add:quest', { quest: clone(quest) });
-      this.onFiltered(this.quests);
+      this.quest = clone(quest);
+      this.openModal();
     },
 
     edit(quest) {

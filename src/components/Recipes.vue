@@ -285,8 +285,8 @@ export default {
     },
 
     copy(recipe) {
-      events.$emit('add:recipe', { recipe: clone(recipe) });
-      this.onFiltered(this.recipes);
+      this.recipe = this.preRecipe(clone(recipe));
+      this.openModal();
     },
 
     edit(recipe) {

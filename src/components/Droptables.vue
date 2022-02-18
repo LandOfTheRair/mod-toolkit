@@ -216,8 +216,8 @@ export default {
     },
 
     copy(droptable) {
-      events.$emit('add:droptable', { droptable: clone(droptable) });
-      this.onFiltered(this.droptables);
+      this.droptable = clone(droptable);
+      this.openModal();
     },
 
     edit(droptable) {

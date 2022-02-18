@@ -854,8 +854,8 @@ export default {
     },
 
     copy(npc) {
-      events.$emit('add:npc', { npc: clone(npc) });
-      this.onFiltered(this.npcs);
+      this.npc = clone(npc);
+      this.openModal();
     },
 
     edit(npc) {

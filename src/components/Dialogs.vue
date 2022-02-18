@@ -397,8 +397,8 @@ export default {
     },
 
     copy(dialog) {
-      events.$emit('add:dialog', { dialog: clone(dialog) });
-      this.onFiltered(this.dialogs);
+      this.dialog = clone(dialog);
+      this.openModal();
     },
 
     edit(dialog) {
