@@ -412,7 +412,7 @@ export default {
         }
       }
 
-      window.api.send('SAVE_MOD', { shouldExport, mapData: this.mod });
+      window.api.send('SAVE_MOD', { shouldExport, modData: this.mod });
     },
 
     importMod() {

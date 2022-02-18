@@ -1,4 +1,3 @@
-
 const { app } = require('electron');
 const childProcess = require('child_process');
 
@@ -6,6 +5,8 @@ const fs = require('fs-extra');
 const { default: fetch } = require('node-fetch');
 const admZip = require('adm-zip');
 const dlgit = require('download-github-repo');
+
+const { clone } = require('./helpers');
 
 const agent = new require('https').Agent({
   rejectUnauthorized: false,
@@ -276,6 +277,8 @@ export const loadJSON = (json) => {
 };
 
 export const formatMod = (mod) => {
+
+  mod.meta._backup = clone(mod);
 
   // put droptables into the correct format
   const formatDrops = () => {

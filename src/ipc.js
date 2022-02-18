@@ -91,7 +91,7 @@ export function setupIPC(sendToUI) {
     sendToUI('json', { name: json, data: jsonData });
   });
 
-  ipcMain.on('SAVE_MOD', (e, { mapData, shouldExport }) => {
+  ipcMain.on('SAVE_MOD', (e, { modData, shouldExport }) => {
 
     if(shouldExport && !fs.existsSync(`${baseUrl}/resources/rair`)) {
       sendToUI('notify', { type: 'error', text: 'Mod cannot be formatted for saving, install Rair Server first!' });
@@ -103,7 +103,7 @@ export function setupIPC(sendToUI) {
 
     const res = dialog.showSaveDialogSync(null, {
       title: 'Save Land of the Rair Mod',
-      defaultPath: mapData.meta.name,
+      defaultPath: modData.meta.name,
       filters: [
         { name: extname, extensions: [ext] }
       ]
@@ -111,7 +111,7 @@ export function setupIPC(sendToUI) {
     
     if(!res) return;
 
-    const fullMod = shouldExport ? handlers.formatMod(mapData) : mapData;
+    const fullMod = shouldExport ? handlers.formatMod(modData) : modData;
 
     fs.writeJSONSync(res, fullMod, { spaces: 2 });
     sendToUI('notify', { type: 'info', text: `Saved ${res}!` });
