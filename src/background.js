@@ -54,8 +54,6 @@ async function createWindow() {
     }
   });
 
-  win.webContents.openDevTools();
-
   win.setMenu(null);
   
   win.once('ready-to-show', win.show);
