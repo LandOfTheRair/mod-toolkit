@@ -450,12 +450,16 @@
                   <b-button class="mb-3" variant="info" block @click="addSackItem()">Add Sack Item</b-button>
 
                   <div class="row" v-for="(sitem, index) of npc.items.sack" :key="index">
-                    <div class="col-7">
+                    <div class="col-4">
                       <item-selector v-model="sitem.result" :modItems="items" label="Item" @change="sitem.result = $event"></item-selector>
                     </div>
 
                     <div class="col-3">
-                      <b-form-input type="number" v-model="sitem.chance" placeholder="1/x" min="-1"></b-form-input>
+                      <b-form-input type="number" v-model="sitem.chance" placeholder="Chance" min="-1"></b-form-input>
+                    </div>
+
+                    <div class="col-3">
+                      <b-form-input type="number" v-model="sitem.maxChance" placeholder="Max Chance" min="0"></b-form-input>
                     </div>
 
                     <div class="col-2">
@@ -494,12 +498,16 @@
                   <b-button class="mb-3" variant="info" block @click="addDrop()">Add Drop</b-button>
 
                   <div class="row" v-for="(drop, index) of npc.drops" :key="index">
-                    <div class="col-6">
+                    <div class="col-4">
                       <item-selector v-model="drop.result" :modItems="items" label="Item" @change="drop.result = $event"></item-selector>
                     </div>
 
-                    <div class="col-4">
-                      <b-form-input type="number" v-model="drop.chance" placeholder="1/x" min="-1"></b-form-input>
+                    <div class="col-3">
+                      <b-form-input type="number" v-model="drop.chance" placeholder="Chance" min="-1"></b-form-input>
+                    </div>
+
+                    <div class="col-3">
+                      <b-form-input type="number" v-model="drop.maxChance" placeholder="Max Chance" min="0"></b-form-input>
                     </div>
 
                     <div class="col-2">
@@ -940,7 +948,7 @@ export default {
     },
     
     addDrop() {
-      this.npc.drops.push({ result: '', chance: -1 });
+      this.npc.drops.push({ result: '', chance: -1, maxChance: 100 });
     },
 
     removeDrop(index) {
@@ -966,7 +974,8 @@ export default {
     addSackItem() {
       this.npc.items.sack.push({
         result: '',
-        chance: -1
+        chance: -1,
+        maxChance: 100
       });
     },
 
