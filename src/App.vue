@@ -10,7 +10,7 @@
       <b-dropdown
         split
         right
-        text="Save"
+        text="Menu"
         class="ml-auto"
         @click="persist()"
         v-if="isLoaded"
@@ -22,7 +22,7 @@
         <b-dropdown-divider></b-dropdown-divider>
 
         <b-dropdown-item disabled>Mod I/O</b-dropdown-item>
-        <b-dropdown-item @click="importMod()">Load Mod</b-dropdown-item>
+        <b-dropdown-item @click="importMod()">Load/Import Mod</b-dropdown-item>
         <b-dropdown-item @click="exportMod()">Save Mod</b-dropdown-item>
         <b-dropdown-item @click="exportMod(true)">Export Mod</b-dropdown-item>
         <mod-validator :mod="mod"></mod-validator>
@@ -386,6 +386,11 @@ export default {
 
       window.api.receive('loadmod', mod => {
         this.mod = mod;
+        this.persist();
+      });
+
+      window.api.receive('importmod', mod => {
+        this.mod = mod._backup;
         this.persist();
       });
     },

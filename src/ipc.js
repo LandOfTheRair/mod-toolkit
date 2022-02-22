@@ -121,7 +121,7 @@ export function setupIPC(sendToUI) {
     const res = dialog.showOpenDialogSync(null, {
       title: 'Load Land of the Rair Mod',
       filters: [
-        { name: 'Rair In-Dev Mods', extensions: ['rairdevmod'] }
+        { name: 'Rair In-Dev/Exported Mods', extensions: ['rairmod', 'rairdevmod'] }
       ],
       properties: ['openFile']
     });
@@ -131,7 +131,14 @@ export function setupIPC(sendToUI) {
     const file = res[0];
     const json = fs.readJSONSync(file);
 
-    sendToUI('loadmod', json);
+    const shouldImport = !!json._backup;
+
+    if(shouldImport) {
+      sendToUI('importmod', json);
+    } else {
+      sendToUI('loadmod', json);
+    }
+
     sendToUI('notify', { type: 'info', text: `Loaded ${file}!` });
   });
 
