@@ -75,6 +75,7 @@ TEST_MODE=1
 TEST_USER_NAME=${username}
 TEST_USER_PASSWORD=${password}
 TEST_USER_PROPS=${settings}
+MODS_TO_LOAD=mod
   `);
   sendToUI('notify', { type: 'info', text: 'Wrote .env file!' });
 
