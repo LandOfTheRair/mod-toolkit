@@ -330,7 +330,33 @@ export const formatMod = (mod) => {
     mod.drops = finalDrops;
   };
 
+  // remove extraneous things from the final item
+  const formatItems = () => {
+    const items = mod.items.map(item => {
+      item.sprite = +item.sprite;
+      if(!item.sellValue) delete item.sellValue;
+      if(!item.maxUpgrades) delete item.maxUpgrades;
+      if(!item.secondaryType) delete item.secondaryType;
+      if(!item.succorInfo.map) delete item.succorInfo;
+      if(!item.cosmetic.name) delete item.cosmetic;
+      if(!item.containedItems.length) delete item.containedItems;
+      if(!item.trait.name) delete item.trait;
+      if(!item.useEffect.name) delete item.useEffect;
+      if(!item.strikeEffect.name) delete item.strikeEffect;
+      if(!item.breakEffect.name) delete item.breakEffect;
+      if(!item.equipEffect.name) delete item.equipEffect;
+      if(!item.requirements.baseClass) delete item.requirements.baseClass;
+      if(!item.requirements.level) delete item.requirements.level;
+      if(!item.requirements.baseClass && !item.requirements.level) delete item.requirements;
+
+      return item;
+    });
+
+    mod.items = items;
+  };
+
   formatDrops();
+  formatItems();
 
   // whatever
   // eslint-disable-next-line no-undef
@@ -345,7 +371,6 @@ export const formatMod = (mod) => {
   const { fillInProperties: spawnerValidator } = requireFunc('./resources/content/_transformers/props/spawner');
 
   mod.drops.forEach(dt => droptableValidator(dt));
-
   mod.items.forEach(dt => itemValidator(dt));
   mod.dialogs.forEach(dt => npcScriptValidator(dt));
   mod.npcs.forEach(dt => npcValidator(dt));
