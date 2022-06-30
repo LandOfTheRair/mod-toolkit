@@ -63,7 +63,7 @@ export const updateResources = async (sendToUI) => {
   };
 
   const json = async () => {
-    const jsons = ['effect-data', 'holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners', 'spells', 'traits'];
+    const jsons = ['challenge', 'effect-data', 'holidaydescs', 'items', 'npc-scripts', 'npcs', 'quests', 'recipes', 'spawners', 'spells', 'traits'];
 
     for await(let json of jsons) {
       sendToUI('notify', { type: 'info', text: `Downloading content "${json}"...` });
@@ -280,6 +280,15 @@ export const formatMod = (mod) => {
 
   mod.meta._backup = clone(mod);
 
+  const formatNPCs = () => {
+    mod.npcs.forEach(npc => {
+      delete npc.hp;
+      delete npc.mp;
+      delete npc.giveXp;
+      delete npc.gold;
+    });
+  };
+
   // put droptables into the correct format
   const formatDrops = () => {
     const finalDrops = [];
@@ -355,6 +364,7 @@ export const formatMod = (mod) => {
     mod.items = items;
   };
 
+  formatNPCs();
   formatDrops();
   formatItems();
 

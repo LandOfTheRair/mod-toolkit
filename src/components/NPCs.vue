@@ -65,14 +65,14 @@
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Level" class="multi">
-                    <b-form-input type="number" v-model="npc.level" placeholder="Level" min="0"></b-form-input>
+                    <b-form-input type="number" v-model="npc.level" placeholder="Level" min="1" @change.native="changeCRStats()"></b-form-input>
                     <div class="split-label true-center">
                       <strong>Skill</strong>
                     </div>
                     <b-form-input
                       type="number"
                       v-model="npc.skillLevels"
-                      min="0"
+                      min="1"
                       placeholder="Skill"
                     ></b-form-input>
                   </b-form-group>
@@ -167,61 +167,70 @@
                 </div>
 
                 <div class="col-md-5">
-                  <div class="row mb-3">
-                    <div class="col">
-                      <div class="offset-md-3">
-                        <b-button
-                          variant="info"
-                          block
-                          :disabled="!npc.level"
-                          @click="recommend()"
-                        >Recommend stats based on level</b-button>
-                      </div>
-                    </div>
-                  </div>
+
+                  <b-form-group label-cols-md="3" label="Challenge Rating">
+                    <b-form-select
+                      v-model="npc.cr"
+                      required
+                      :options="[-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                    ></b-form-select>
+                  </b-form-group>
+
+                  <b-form-group label-cols-md="3" label="HP Multiplier">
+                    <b-form-input
+                      type="number"
+                      v-model="npc.hpMult"
+                      min="0.1"
+                      @change.native="changeCRStats()"
+                    ></b-form-input>
+                  </b-form-group>
 
                   <b-form-group label-cols-md="3" label="HP" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.hp.min"
                       min="0"
+                      disabled
                       @change.native="updateKeyMaxIfNotPresent($event, 'hp')"
                     ></b-form-input>
                     <div class="split-label true-center">To</div>
-                    <b-form-input type="number" v-model="npc.hp.max" min="0"></b-form-input>
+                    <b-form-input type="number" v-model="npc.hp.max" disabled min="0"></b-form-input>
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="MP" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.mp.min"
+                      disabled
                       min="0"
                       @change.native="updateKeyMaxIfNotPresent($event, 'mp')"
                     ></b-form-input>
                     <div class="split-label true-center">To</div>
-                    <b-form-input type="number" v-model="npc.mp.max" min="0"></b-form-input>
+                    <b-form-input type="number" v-model="npc.mp.max" disabled min="0"></b-form-input>
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="XP" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.giveXp.min"
+                      disabled
                       min="0"
                       @change.native="updateKeyMaxIfNotPresent($event, 'giveXp')"
                     ></b-form-input>
                     <div class="split-label true-center">To</div>
-                    <b-form-input type="number" v-model="npc.giveXp.max" min="0"></b-form-input>
+                    <b-form-input type="number" v-model="npc.giveXp.max" disabled min="0"></b-form-input>
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Gold" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.gold.min"
+                      disabled
                       min="0"
                       @change.native="updateKeyMaxIfNotPresent($event, 'gold')"
                     ></b-form-input>
                     <div class="split-label true-center">To</div>
-                    <b-form-input type="number" v-model="npc.gold.max" min="0"></b-form-input>
+                    <b-form-input type="number" v-model="npc.gold.max" disabled min="0"></b-form-input>
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Skill on Kill">
@@ -704,6 +713,8 @@ const defaultNPC = {
   baseClass: '',
   affiliation: '',
   alignment: 'Neutral',
+  cr: 0,
+  hpMult: 1,
   stats: {
     str: 0,
     dex: 0,
@@ -715,7 +726,9 @@ const defaultNPC = {
     cha: 0,
     luk: 0
   },
-  skillOnKill: 0,
+  level: 1,
+  skillLevels: 1,
+  skillOnKill: 1,
   otherStats: {},
   gear: {},
   hp: { min: 0, max: 0 },
@@ -816,12 +829,17 @@ export default {
       currentTrait: '',
       currentExtraStat: '',
       extraStats: extraStats.map(x => x.stat),
-      npc: clone(defaultNPC)
+      npc: clone(defaultNPC),
+      challengeData: {}
     };
   },
 
   created() {
     this.onFiltered(this.npcs);
+
+    events.$on('json:challenge', this.updateChallenge);
+
+    window.api.send('JSON', { json: 'challenge' });
   },
 
   methods: {
@@ -829,6 +847,10 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
       this.npcs.count = filteredItems.length;
+    },
+
+    updateChallenge(data) {
+      this.challengeData = data;
     },
     
     objectPosition,
@@ -850,6 +872,7 @@ export default {
 
     reset() {
       this.npc = clone(defaultNPC);
+      this.changeCRStats();
       this.isEditing = -1;
     },
 
@@ -860,6 +883,7 @@ export default {
 
     openModal() {
       this.$refs.modal.show();
+      this.changeCRStats();
     },
 
     copy(npc) {
@@ -902,41 +926,15 @@ export default {
       coreStats.forEach(({ stat }) => (this.npc.stats[stat] = value));
     },
 
-    recommend() {
+    changeCRStats() {
       const level = this.npc.level;
+      this.npc.hp = clone(this.challengeData.global.stats.hp[level]);
+      this.npc.mp = clone(this.challengeData.global.stats.mp[level]);
+      this.npc.giveXp = clone(this.challengeData.global.stats.giveXp[level]);
+      this.npc.gold = clone(this.challengeData.global.stats.gold[level]);
 
-      coreStats.forEach(
-        ({ stat }) =>
-          (this.npc.stats[stat] = Math.max(1, Math.floor(level * 0.7)))
-      );
-      this.npc.skillOnKill = Math.floor(1.992296 * level - 0.3004622);
-
-      this.npc.hp.max = this.npc.hp.min = Math.max(
-        100,
-        Math.floor(9947.208 * level - 79505.7)
-      );
-
-      if(['Warrior', 'Thief'].includes(this.npc.baseClass)) {
-        this.npc.mp.max = this.npc.mp.min = 100;
-      }
-
-      if(['Mage', 'Healer'].includes(this.npc.baseClass)) {
-        this.npc.mp.max = this.npc.mp.min = Math.max(
-          100,
-          Math.floor(1947.208 * level - 19505.7)
-        );
-      }
-
-      if(!this.npc.baseClass || this.npc.baseClass === 'Traveller') {
-        this.npc.mp.max = this.npc.mp.min = 0;
-      }
-
-      this.npc.giveXp.max = this.npc.giveXp.min = Math.max(
-        10,
-        Math.floor(3247.873 * level - 41978.42)
-      );
-
-      this.npc.gold.max = this.npc.gold.min = 300 * level;
+      this.npc.hp.min = Math.floor(this.npc.hp.min * this.npc.hpMult);
+      this.npc.hp.max = Math.floor(this.npc.hp.max * this.npc.hpMult);
     },
 
     addCombatMessage() {
