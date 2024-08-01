@@ -1,13 +1,20 @@
 <template>
+
   <div>
+
     <div class="true-center blank-slate" v-if="npcs.length === 0">
-      Add NPCs first
+       Add NPCs first
     </div>
 
-    <div class="true-center blank-slate" v-if="npcs.length && dialogs.length === 0">No NPC Scripts
-      <br>
+    <div
+      class="true-center blank-slate"
+      v-if="npcs.length && dialogs.length === 0"
+    >
+       No NPC Scripts
+      <br />
 
       <b-button variant="primary" @click="openModal()">Add one</b-button>
+
     </div>
 
     <b-modal
@@ -25,169 +32,350 @@
       @ok="confirm()"
       :ok-disabled="!isValidNPCScript(dialog)"
     >
+
       <div class="d-block p-1">
+
         <b-form>
+
           <b-tabs content-class="mt-3" fill>
+
             <b-tab title="Core Stats">
+
               <div class="row">
+
                 <div class="col-md-4">
 
-                  <map-npc-selector v-model="dialog.tag" label="Map NPC Tag" @change="dialog.tag = $event" :maps="maps"></map-npc-selector>
+                  <map-npc-selector
+                    v-model="dialog.tag"
+                    label="Map NPC Tag"
+                    @change="dialog.tag = $event"
+                    :maps="maps"
+                  ></map-npc-selector>
 
                   <b-form-group label-cols-md="3" label="Name" class="optional">
+
                     <b-form-input
                       type="text"
                       v-model="dialog.name"
                       placeholder="The NPC name (if not specified in the map)"
                     ></b-form-input>
+
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Affiliation" class="optional">
+                  <b-form-group
+                    label-cols-md="3"
+                    label="Affiliation"
+                    class="optional"
+                  >
+
                     <b-form-input
                       type="text"
                       v-model="dialog.affiliation"
                       placeholder="The guild/tag for NPC"
                     ></b-form-input>
+
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="HP" class="multi">
+
                     <b-form-input
                       type="number"
                       v-model="dialog.hp.min"
                       min="0"
                       @change.native="updateKeyMaxIfNotPresent($event, 'hp')"
                     ></b-form-input>
+
                     <div class="split-label true-center">To</div>
-                    <b-form-input type="number" v-model="dialog.hp.max" min="0"></b-form-input>
+
+                    <b-form-input
+                      type="number"
+                      v-model="dialog.hp.max"
+                      min="0"
+                    ></b-form-input>
+
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="MP" class="multi">
+
                     <b-form-input
                       type="number"
                       v-model="dialog.mp.min"
                       min="0"
                       @change.native="updateKeyMaxIfNotPresent($event, 'mp')"
                     ></b-form-input>
+
                     <div class="split-label true-center">To</div>
-                    <b-form-input type="number" v-model="dialog.mp.max" min="0"></b-form-input>
+
+                    <b-form-input
+                      type="number"
+                      v-model="dialog.mp.max"
+                      min="0"
+                    ></b-form-input>
+
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Hostility">
+
                     <b-form-select
                       v-model="dialog.hostility"
                       required
                       :options="['OnHit', 'Faction', 'Always', 'Never']"
                     ></b-form-select>
+
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Allegiance">
+
                     <b-form-select
                       v-model="dialog.allegiance"
                       required
-                      :options="['Enemy', 'Adventurers', 'Pirates', 'Royalty', 'Townsfolk', 'Underground', 'Wilderness', 'NaturalResource']"
+                      :options="[
+                        'Enemy',
+                        'Adventurers',
+                        'Pirates',
+                        'Royalty',
+                        'Townsfolk',
+                        'Underground',
+                        'Wilderness',
+                        'NaturalResource',
+                      ]"
                     ></b-form-select>
+
                   </b-form-group>
 
                   <b-form-group label-cols-md="3" label="Alignment">
+
                     <b-form-select
                       v-model="dialog.alignment"
                       required
                       :options="['Good', 'Neutral', 'Evil']"
                     ></b-form-select>
+
                   </b-form-group>
 
                 </div>
 
                 <div class="col-md-4">
-                  <b-button class="mb-3" variant="info" block @click="addUsableSkill()">Add Spell</b-button>
 
-                  <div class="row" v-for="(skill, index) of dialog.usableSkills" :key="index">
+                  <b-button
+                    class="mb-3"
+                    variant="info"
+                    block
+                    @click="addUsableSkill()"
+                  >
+                     Add Spell
+                  </b-button>
+
+                  <div
+                    class="row"
+                    v-for="(skill, index) of dialog.usableSkills"
+                    :key="index"
+                  >
+
                     <div class="col-6">
-                      <spell-selector v-model="skill.result" label="Spell" @change="skill.result = $event"></spell-selector>
+
+                      <spell-selector
+                        v-model="skill.result"
+                        label="Spell"
+                        @change="skill.result = $event"
+                      ></spell-selector>
+
                     </div>
 
                     <div class="col-4">
-                      <b-form-input type="number" v-model="skill.chance" placeholder="X" min="1"></b-form-input>
+
+                      <b-form-input
+                        type="number"
+                        v-model="skill.chance"
+                        placeholder="X"
+                        min="1"
+                      ></b-form-input>
+
                     </div>
 
                     <div class="col-2">
-                      <b-button variant="danger" @click="removeUsableSkill(index)">Del</b-button>
+
+                      <b-button
+                        variant="danger"
+                        @click="removeUsableSkill(index)"
+                      >
+                         Del
+                      </b-button>
+
                     </div>
+
                   </div>
+
                 </div>
 
                 <div class="col-md-4">
-                  <div class="row" v-for="(val, slot) of dialog.items.equipment" :key="slot">
-                    <div class="col-12">
-                      <b-button class="mb-3" variant="info" block @click="addEquipmentItem(slot)">Add {{ slot }} Item</b-button>
 
-                      <div class="row" v-for="(sitem, index) of dialog.items.equipment[slot]" :key="index">
+                  <div
+                    class="row"
+                    v-for="(val, slot) of dialog.items.equipment"
+                    :key="slot"
+                  >
+
+                    <div class="col-12">
+
+                      <b-button
+                        class="mb-3"
+                        variant="info"
+                        block
+                        @click="addEquipmentItem(slot)"
+                      >
+                         Add {{ slot }} Item
+                      </b-button>
+
+                      <div
+                        class="row"
+                        v-for="(sitem, index) of dialog.items.equipment[slot]"
+                        :key="index"
+                      >
+
                         <div class="col-7">
-                          <item-selector v-model="sitem.result" :modItems="items" label="Item" @change="sitem.result = $event"></item-selector>
+
+                          <item-selector
+                            v-model="sitem.result"
+                            :modItems="items"
+                            label="Item"
+                            @change="sitem.result = $event"
+                          ></item-selector>
+
                         </div>
 
                         <div class="col-3">
-                          <b-form-input type="number" v-model="sitem.chance" placeholder="1/x" min="1"></b-form-input>
+
+                          <b-form-input
+                            type="number"
+                            v-model="sitem.chance"
+                            placeholder="1/x"
+                            min="1"
+                          ></b-form-input>
+
                         </div>
 
                         <div class="col-2">
-                          <b-button variant="danger" @click="removeEquipmentItem(slot, index)">Del</b-button>
+
+                          <b-button
+                            variant="danger"
+                            @click="removeEquipmentItem(slot, index)"
+                          >
+                             Del
+                          </b-button>
+
                         </div>
+
                       </div>
+
                     </div>
+
                   </div>
+
                 </div>
 
               </div>
+
             </b-tab>
 
             <b-tab title="Behaviors">
+
               <div class="row">
+
                 <div class="col">
-                  <prism-editor class="code-editor" v-model="npcBehaviors" :highlight="highlighter" line-numbers></prism-editor>
+
+                  <prism-editor
+                    class="code-editor"
+                    v-model="npcBehaviors"
+                    :highlight="highlighter"
+                    line-numbers
+                  ></prism-editor>
+
                 </div>
+
               </div>
 
               <div class="row">
+
                 <div class="col">
-                  <div class="feedback" :class="{ 'has-error': npcBehaviorsFeedback }">{{ npcBehaviorsFeedback || 'No errors.' }}</div>
+
+                  <div
+                    class="feedback"
+                    :class="{ 'has-error': npcBehaviorsFeedback }"
+                  >
+                     {{ npcBehaviorsFeedback || 'No errors.' }}
+                  </div>
+
                 </div>
+
               </div>
 
             </b-tab>
 
             <b-tab title="Dialog">
+
               <div class="row">
+
                 <div class="col">
-                  <prism-editor class="code-editor" v-model="npcDialog" :highlight="highlighter" line-numbers></prism-editor>
+
+                  <prism-editor
+                    class="code-editor"
+                    v-model="npcDialog"
+                    :highlight="highlighter"
+                    line-numbers
+                  ></prism-editor>
+
                 </div>
+
               </div>
 
               <div class="row">
+
                 <div class="col">
-                  <div class="feedback" :class="{ 'has-error': npcDialogFeedback }">{{ npcDialogFeedback || 'No errors.' }}</div>
+
+                  <div
+                    class="feedback"
+                    :class="{ 'has-error': npcDialogFeedback }"
+                  >
+                     {{ npcDialogFeedback || 'No errors.' }}
+                  </div>
+
                 </div>
+
               </div>
+
             </b-tab>
 
           </b-tabs>
+
         </b-form>
+
       </div>
+
     </b-modal>
 
     <div class="mb-3 row" v-if="dialogs.length > 0">
+
       <div class="col-6">
-        <b-form-input v-model="filter" placeholder="Search NPC scripts..."></b-form-input>
+
+        <b-form-input
+          v-model="filter"
+          placeholder="Search NPC scripts..."
+        ></b-form-input>
+
       </div>
 
       <div class="col-6">
+
         <b-pagination
           class="float-right"
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
         ></b-pagination>
+
       </div>
+
     </div>
 
     <b-table
@@ -203,43 +391,71 @@
       :current-page="currentPage"
       @filtered="onFiltered"
     >
+
       <template v-slot:head(actions)>
-        <b-button size="sm" variant="success" @click="openModal()">Add</b-button>
+
+        <b-button size="sm" variant="success" @click="openModal()">
+           Add
+        </b-button>
+
       </template>
 
       <template v-slot:cell(behaviors)="data">
-        {{ data.item.behaviors ? data.item.behaviors.length : 0 }}
+         {{ data.item.behaviors ? data.item.behaviors.length : 0 }}
       </template>
 
       <template v-slot:cell(dialog)="data">
-        {{ numDialogs(data.item) }}
+         {{ numDialogs(data.item) }}
       </template>
 
       <template v-slot:cell(actions)="data">
-        <b-button class="mr-1" size="sm" variant="info" @click="copy(data.item)">Copy</b-button>
-        <b-button class="mr-1" size="sm" variant="info" @click="edit(data.item)">Edit</b-button>
-        <b-button size="sm" variant="danger" @click="remove(data.item)">Remove</b-button>
+
+        <b-button
+          class="mr-1"
+          size="sm"
+          variant="info"
+          @click="copy(data.item)"
+        >
+           Copy
+        </b-button>
+
+        <b-button
+          class="mr-1"
+          size="sm"
+          variant="info"
+          @click="edit(data.item)"
+        >
+           Edit
+        </b-button>
+
+        <b-button size="sm" variant="danger" @click="remove(data.item)">
+           Remove
+        </b-button>
+
       </template>
+
     </b-table>
+
   </div>
+
 </template>
 
 <script>
-import { get } from 'lodash';
 import yaml from 'js-yaml';
+import { get } from 'lodash';
 import { PrismEditor } from 'vue-prism-editor';
 
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-yaml';
 
-import { events } from '../main';
 import { clone } from '../helpers';
+import { events } from '../main';
 
 import { globalTableHeight } from '../constants';
 
 import ItemSelector from './shared/ItemSelector.vue';
-import SpellSelector from './shared/SpellSelector.vue';
 import MapNPCSelector from './shared/MapNPCSelector.vue';
+import SpellSelector from './shared/SpellSelector.vue';
 
 const defaultScript = {
   tag: '',
@@ -276,13 +492,13 @@ const defaultScript = {
       robe2: [],
       trinket: [],
       potion: [],
-      ammo: []
-    }
+      ammo: [],
+    },
   },
   dialog: {
-    keyword: {}
+    keyword: {},
   },
-  behaviors: []
+  behaviors: [],
 };
 
 export default {
@@ -290,7 +506,12 @@ export default {
 
   props: ['dialogs', 'npcs', 'maps', 'items'],
 
-  components: { PrismEditor, 'map-npc-selector': MapNPCSelector, ItemSelector, SpellSelector },
+  components: {
+    PrismEditor,
+    'map-npc-selector': MapNPCSelector,
+    ItemSelector,
+    SpellSelector,
+  },
 
   data() {
     return {
@@ -313,10 +534,10 @@ export default {
         { key: 'alignment', label: 'Alignment', sortable: true },
         { key: 'behaviors', label: '# Behaviors', sortable: true },
         { key: 'dialog', label: '# Dialogs', sortable: true },
-        { key: 'actions', label: 'Actions', class: 'text-right' }
+        { key: 'actions', label: 'Actions', class: 'text-right' },
       ],
       isEditing: -1,
-      dialog: clone(defaultScript)
+      dialog: clone(defaultScript),
     };
   },
 
@@ -329,7 +550,6 @@ export default {
       try {
         yaml.load(this.npcDialog);
         return '';
-
       } catch (e) {
         return e.message;
       }
@@ -339,17 +559,18 @@ export default {
       try {
         yaml.load(this.npcBehaviors);
         return '';
-
       } catch (e) {
         return e.message;
       }
-    }
+    },
   },
 
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
+
+      // eslint-disable-next-line
       this.dialogs.count = filteredItems.length;
     },
 
@@ -366,7 +587,14 @@ export default {
         return false;
       }
 
-      const validKeys = ['tag', 'hp.max', 'hp.min', 'hostility', 'allegiance', 'alignment'];
+      const validKeys = [
+        'tag',
+        'hp.max',
+        'hp.min',
+        'hostility',
+        'allegiance',
+        'alignment',
+      ];
       return validKeys.every(x => get(dialog, x));
     },
 
@@ -385,7 +613,7 @@ export default {
 
       events.$emit(`${this.isEditing >= 0 ? 'edit' : 'add'}:dialog`, {
         dialog: this.dialog,
-        index: this.isEditing
+        index: this.isEditing,
       });
       this.onFiltered(this.dialogs);
     },
@@ -408,17 +636,22 @@ export default {
     },
 
     async remove(dialog) {
-      const willRemove = await this.$dialog.confirm({ title: 'Remove NPC Script?', text: 'Are you sure you want to remove this NPC Script?' });
-      if(!willRemove) return;
+      const willRemove = await this.$dialog.confirm({
+        title: 'Remove NPC Script?',
+        text: 'Are you sure you want to remove this NPC Script?',
+      });
+      if (!willRemove) return;
 
-      events.$emit('remove:dialog', { index: this.dialogs.findIndex(x => x === dialog) });
+      events.$emit('remove:dialog', {
+        index: this.dialogs.findIndex(x => x === dialog),
+      });
       this.onFiltered(this.dialogs);
     },
 
     addEquipmentItem(slot) {
       this.dialog.items.equipment[slot].push({
         result: '',
-        chance: 1
+        chance: 1,
       });
     },
 
@@ -429,7 +662,7 @@ export default {
     addUsableSkill() {
       this.dialog.usableSkills.push({
         result: '',
-        chance: 1
+        chance: 1,
       });
     },
 
@@ -439,8 +672,8 @@ export default {
 
     highlighter(code) {
       return highlight(code, languages.yaml);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -458,3 +691,4 @@ export default {
   font-weight: bold;
 }
 </style>
+
