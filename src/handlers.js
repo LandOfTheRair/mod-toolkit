@@ -6,7 +6,7 @@ const { default: fetch } = require('node-fetch');
 const admZip = require('adm-zip');
 const dlgit = require('download-github-repo');
 
-const { clone } = require('./helpers');
+const { clone, fixTiledMapPaths } = require('./helpers');
 
 const agent = new require('https').Agent({
   rejectUnauthorized: false,
@@ -16,7 +16,7 @@ const baseUrl = app.getAppPath();
 
 let isUpdating = false;
 
-export const updateResources = async sendToUI => {
+export const updateResources = async (sendToUI) => {
   if (isUpdating) throw new Error('Currently updating, please wait.');
   isUpdating = true;
 
@@ -29,6 +29,9 @@ export const updateResources = async sendToUI => {
   fs.ensureDirSync(`${baseUrl}/resources`);
 
   fs.ensureDirSync(`${baseUrl}/resources/json`);
+
+  fs.ensureDirSync(`${baseUrl}/resources/maps/__assets`);
+  fs.ensureDirSync(`${baseUrl}/resources/maps/__assets/spritesheets`);
 
   fs.ensureDirSync(`${baseUrl}/resources/maps/src`);
   fs.ensureDirSync(`${baseUrl}/resources/maps/src`);
@@ -61,6 +64,11 @@ export const updateResources = async sendToUI => {
         await fs.writeFile(
           `${baseUrl}/resources/maps/src/content/__assets/spritesheets/${sheet}.png`,
           buffer,
+        );
+
+        await fs.copyFile(
+          `${baseUrl}/resources/maps/src/content/__assets/spritesheets/${sheet}.png`,
+          `${baseUrl}/resources/maps/__assets/spritesheets/${sheet}.png`,
         );
       } catch (e) {
         sendToUI('notify', {
@@ -195,7 +203,7 @@ export const updateResources = async sendToUI => {
   isUpdating = false;
 };
 
-export const downloadMongo = async sendToUI => {
+export const downloadMongo = async (sendToUI) => {
   sendToUI('notify', { type: 'info', text: 'Downloading MongoDB (~300mb)...' });
 
   try {
@@ -232,7 +240,7 @@ export const downloadMongo = async sendToUI => {
   }
 };
 
-export const downloadRair = async sendToUI => {
+export const downloadRair = async (sendToUI) => {
   sendToUI('notify', {
     type: 'info',
     text: 'Downloading Rair Server (~70mb)...',
@@ -250,8 +258,9 @@ export const downloadRair = async sendToUI => {
     const releaseRes = await fetch(releaseUrl);
     const releaseData = await releaseRes.json();
 
-    const serverUrl = releaseData.assets.find(x => x.name === 'lotr-server.exe')
-      .browser_download_url;
+    const serverUrl = releaseData.assets.find(
+      (x) => x.name === 'lotr-server.exe',
+    ).browser_download_url;
     const serverRes = await fetch(serverUrl);
     const serverBuffer = await serverRes.buffer();
     fs.writeFileSync(`${baseUrl}/resources/rair/lotr-server.exe`, serverBuffer);
@@ -286,12 +295,16 @@ export const newMap = (mapName, mapAuthor) => {
   return json;
 };
 
-export const editMap = mapName => {
+export const editMap = (mapName) => {
   if (!fs.existsSync(`${baseUrl}/resources/Tiled`)) {
     throw new Error('Tiled is not installed.');
   }
 
   const path = `${baseUrl}/resources/maps/src/content/maps/custom/${mapName}.json`;
+
+  const map = fs.readJsonSync(path);
+  fixTiledMapPaths(map);
+  fs.writeJsonSync(path, map);
 
   childProcess.exec(`${baseUrl}/resources/Tiled/tiled.exe "${path}"`);
 };
@@ -305,13 +318,13 @@ export const renameMap = (oldName, newName) => {
 
 export const editMapSpawnerNames = (oldName, newName) => {
   fs.readdirSync(`${baseUrl}/resources/maps/src/content/maps/custom`).forEach(
-    file => {
+    (file) => {
       const path = `${baseUrl}/resources/maps/src/content/maps/custom/${file}`;
       const json = fs.readJSONSync(path);
 
       let didWrite = false;
 
-      json.layers[10].objects.forEach(spawner => {
+      json.layers[10].objects.forEach((spawner) => {
         if (spawner.tag !== oldName) return;
 
         spawner.tag = newName;
@@ -325,7 +338,7 @@ export const editMapSpawnerNames = (oldName, newName) => {
   );
 };
 
-export const loadJSON = json => {
+export const loadJSON = (json) => {
   const file = `${baseUrl}/resources/json/${json}.json`;
 
   if (!fs.existsSync(file)) {
@@ -335,11 +348,11 @@ export const loadJSON = json => {
   return fs.readJsonSync(file);
 };
 
-export const formatMod = mod => {
+export const formatMod = (mod) => {
   mod.meta._backup = clone(mod);
 
   const formatNPCs = () => {
-    mod.npcs.forEach(npc => {
+    mod.npcs.forEach((npc) => {
       npc.sprite = +npc.sprite;
       delete npc.hp;
       delete npc.mp;
@@ -355,7 +368,7 @@ export const formatMod = mod => {
     const mapDrops = {};
     const regionDrops = {};
 
-    mod.drops.forEach(drop => {
+    mod.drops.forEach((drop) => {
       if (drop.mapName) {
         mapDrops[drop.mapName] = mapDrops[drop.mapName] || [];
         mapDrops[drop.mapName].push({
@@ -379,14 +392,14 @@ export const formatMod = mod => {
       }
     });
 
-    Object.keys(mapDrops).forEach(mapName => {
+    Object.keys(mapDrops).forEach((mapName) => {
       finalDrops.push({
         mapName,
         drops: mapDrops[mapName],
       });
     });
 
-    Object.keys(regionDrops).forEach(regionName => {
+    Object.keys(regionDrops).forEach((regionName) => {
       finalDrops.push({
         regionName,
         drops: regionDrops[regionName],
@@ -398,7 +411,7 @@ export const formatMod = mod => {
 
   // remove extraneous things from the final item
   const formatItems = () => {
-    const items = mod.items.map(item => {
+    const items = mod.items.map((item) => {
       item.sprite = +item.sprite;
       if (!item.sellValue) delete item.sellValue;
       if (!item.maxUpgrades) delete item.maxUpgrades;
@@ -456,13 +469,13 @@ export const formatMod = mod => {
     './resources/content/_transformers/props/spawner',
   );
 
-  mod.drops.forEach(dt => droptableValidator(dt));
-  mod.items.forEach(dt => itemValidator(dt));
-  mod.dialogs.forEach(dt => npcScriptValidator(dt));
-  mod.npcs.forEach(dt => npcValidator(dt));
-  mod.quests.forEach(dt => questValidator(dt));
-  mod.recipes.forEach(dt => recipeValidator(dt));
-  mod.spawners.forEach(dt => spawnerValidator(dt));
+  mod.drops.forEach((dt) => droptableValidator(dt));
+  mod.items.forEach((dt) => itemValidator(dt));
+  mod.dialogs.forEach((dt) => npcScriptValidator(dt));
+  mod.npcs.forEach((dt) => npcValidator(dt));
+  mod.quests.forEach((dt) => questValidator(dt));
+  mod.recipes.forEach((dt) => recipeValidator(dt));
+  mod.spawners.forEach((dt) => spawnerValidator(dt));
 
   return mod;
 };

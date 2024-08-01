@@ -7,38 +7,22 @@
       accept="application/json"
       ref="mapUpload"
       class="hidden"
-    >
+    />
 
-    <div
-class="true-center blank-slate"
-v-if="maps.length === 0"
->
+    <div class="true-center blank-slate" v-if="maps.length === 0">
       No maps
-      <br>
+      <br />
 
-      <b-button
-class="mb-1"
-variant="primary"
-@click="$refs.mapUpload.click()"
->
+      <b-button class="mb-1" variant="primary" @click="$refs.mapUpload.click()">
         Import some
       </b-button>
 
-      <b-button
-variant="primary"
-@click="createMap()"
->Create new</b-button>
+      <b-button variant="primary" @click="createMap()">Create new</b-button>
     </div>
 
-    <div
-class="mb-3 row"
-v-if="maps.length > 0"
->
+    <div class="mb-3 row" v-if="maps.length > 0">
       <div class="col-6">
-        <b-form-input
-v-model="filter"
-placeholder="Search maps..."
-/>
+        <b-form-input v-model="filter" placeholder="Search maps..." />
       </div>
 
       <div class="col-6">
@@ -72,11 +56,7 @@ placeholder="Search maps..."
           Import
         </b-button>
 
-        <b-button
-size="sm"
-variant="success"
-@click="createMap()"
->
+        <b-button size="sm" variant="success" @click="createMap()">
           New
         </b-button>
       </template>
@@ -86,6 +66,15 @@ variant="success"
       <template #cell(width)="data">{{ data.item.map.width }}</template>
 
       <template #cell(height)="data">{{ data.item.map.height }}</template>
+
+      <template #cell(region)="data">
+        {{ data.item.map.properties.region }}
+      </template>
+
+      <template #cell(max)="data">
+        {{ data.item.map.properties.maxLevel }} /
+        {{ data.item.map.properties.maxSkill }}
+      </template>
 
       <template #cell(actions)="data">
         <b-button
@@ -106,11 +95,7 @@ variant="success"
           Edit
         </b-button>
 
-        <b-button
-size="sm"
-variant="danger"
-@click="removeMap(data.index)"
->
+        <b-button size="sm" variant="danger" @click="removeMap(data.index)">
           Remove
         </b-button>
       </template>
@@ -135,10 +120,15 @@ export default {
       perPage: 10,
       totalRows: 0,
       filter: '',
+      sortBy: 'name',
+      sortDesc: false,
       tableFields: [
-        { key: 'name', label: 'Name' },
+        { key: 'name', label: 'Name', sortable: true },
         { key: 'width', label: 'Width' },
         { key: 'height', label: 'Height' },
+        { key: 'max', label: 'Maxes' },
+        { key: 'map.properties.region', label: 'Region', sortable: true },
+        { key: 'map.properties.creator', label: 'Creator' },
         { key: 'actions', label: 'Actions', class: 'text-right' },
       ],
     };

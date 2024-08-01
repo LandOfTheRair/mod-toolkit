@@ -1,16 +1,10 @@
 <template>
   <div>
-    <div
-class="true-center blank-slate"
-v-if="npcs.length === 0"
->
+    <div class="true-center blank-slate" v-if="npcs.length === 0">
       No NPCs
-      <br>
+      <br />
 
-      <b-button
-variant="primary"
-@click="openModal()"
->Add one</b-button>
+      <b-button variant="primary" @click="openModal()">Add one</b-button>
     </div>
 
     <b-modal
@@ -30,10 +24,7 @@ variant="primary"
     >
       <div class="d-block p-1">
         <b-form>
-          <b-tabs
-content-class="mt-3"
-fill
->
+          <b-tabs content-class="mt-3" fill>
             <b-tab title="Core Stats">
               <div class="row">
                 <div class="col-md-4">
@@ -49,7 +40,7 @@ fill
                         :style="{
                           'object-position': objectPosition(npc.sprite, 40),
                         }"
-                      >
+                      />
                     </div>
 
                     <b-form-input
@@ -61,10 +52,7 @@ fill
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Internal ID"
->
+                  <b-form-group label-cols-md="3" label="Internal ID">
                     <b-form-input
                       type="text"
                       v-model="npc.npcId"
@@ -73,11 +61,7 @@ label="Internal ID"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Name"
-class="optional"
->
+                  <b-form-group label-cols-md="3" label="Name" class="optional">
                     <b-form-input
                       type="text"
                       v-model="npc.name"
@@ -97,11 +81,7 @@ class="optional"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Level"
-class="multi"
->
+                  <b-form-group label-cols-md="3" label="Level" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.level"
@@ -128,10 +108,7 @@ class="multi"
                     @change="npc.baseClass = $event"
                   />
 
-                  <b-form-group
-label-cols-md="3"
-label="Alignment"
->
+                  <b-form-group label-cols-md="3" label="Alignment">
                     <b-form-select
                       v-model="npc.alignment"
                       required
@@ -139,10 +116,7 @@ label="Alignment"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Hostility"
->
+                  <b-form-group label-cols-md="3" label="Hostility">
                     <b-form-select
                       v-model="npc.hostility"
                       required
@@ -162,10 +136,7 @@ label="Hostility"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Allegiance"
->
+                  <b-form-group label-cols-md="3" label="Allegiance">
                     <b-form-select
                       v-model="npc.allegiance"
                       required
@@ -182,10 +153,7 @@ label="Allegiance"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Category"
->
+                  <b-form-group label-cols-md="3" label="Category">
                     <b-form-select
                       v-model="npc.monsterClass"
                       required
@@ -238,10 +206,7 @@ label="Category"
                       </span>
                     </b-form-checkbox>
 
-                    <b-form-checkbox
-v-model="npc.noItemDrop"
-class="col-md-5"
->
+                    <b-form-checkbox v-model="npc.noItemDrop" class="col-md-5">
                       <span
                         v-b-tooltip.hover
                         title="Creature will not drop items"
@@ -255,10 +220,7 @@ class="col-md-5"
                 </div>
 
                 <div class="col-md-5">
-                  <b-form-group
-label-cols-md="3"
-label="Challenge Rating"
->
+                  <b-form-group label-cols-md="3" label="Challenge Rating">
                     <b-form-select
                       v-model="npc.cr"
                       required
@@ -269,10 +231,7 @@ label="Challenge Rating"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="HP Multiplier"
->
+                  <b-form-group label-cols-md="3" label="HP Multiplier">
                     <b-form-input
                       type="number"
                       v-model="npc.hpMult"
@@ -281,11 +240,7 @@ label="HP Multiplier"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="HP"
-class="multi"
->
+                  <b-form-group label-cols-md="3" label="HP" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.hp.min"
@@ -304,11 +259,7 @@ class="multi"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="MP"
-class="multi"
->
+                  <b-form-group label-cols-md="3" label="MP" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.mp.min"
@@ -327,11 +278,7 @@ class="multi"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="XP"
-class="multi"
->
+                  <b-form-group label-cols-md="3" label="XP" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.giveXp.min"
@@ -352,11 +299,7 @@ class="multi"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Gold"
-class="multi"
->
+                  <b-form-group label-cols-md="3" label="Gold" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.gold.min"
@@ -375,10 +318,7 @@ class="multi"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Skill on Kill"
->
+                  <b-form-group label-cols-md="3" label="Skill on Kill">
                     <b-form-input
                       type="number"
                       v-model="npc.skillOnKill"
@@ -401,11 +341,7 @@ label="Skill on Kill"
                     </b-form-checkbox>
                   </div>
 
-                  <b-form-group
-label-cols-md="3"
-label="STR"
-class="multi-3"
->
+                  <b-form-group label-cols-md="3" label="STR" class="multi-3">
                     <b-form-input
                       type="number"
                       v-model="npc.stats.str"
@@ -436,11 +372,7 @@ class="multi-3"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="INT"
-class="multi-3"
->
+                  <b-form-group label-cols-md="3" label="INT" class="multi-3">
                     <b-form-input
                       type="number"
                       v-model="npc.stats.int"
@@ -471,11 +403,7 @@ class="multi-3"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="CON"
-class="multi-3"
->
+                  <b-form-group label-cols-md="3" label="CON" class="multi-3">
                     <b-form-input
                       type="number"
                       v-model="npc.stats.con"
@@ -540,10 +468,7 @@ class="multi-3"
                     :key="stat"
                   >
                     <div class="col">
-                      <b-form-group
-:label="stat"
-class="left-header"
->
+                      <b-form-group :label="stat" class="left-header">
                         <b-input-group>
                           <b-form-input
                             type="number"
@@ -610,10 +535,7 @@ class="left-header"
                     </div>
 
                     <div class="col-4">
-                      <b-button
-variant="danger"
-@click="removeTrait(trait)"
->
+                      <b-button variant="danger" @click="removeTrait(trait)">
                         Del
                       </b-button>
                     </div>
@@ -706,10 +628,7 @@ variant="danger"
                       />
                     </div>
 
-                    <div
-class="col-3"
-v-if="effect.name === 'Attribute'"
->
+                    <div class="col-3" v-if="effect.name === 'Attribute'">
                       <b-form-input
                         type="number"
                         v-model="effect.extra.potency"
@@ -767,10 +686,7 @@ v-if="effect.name === 'Attribute'"
                     </div>
 
                     <div class="col-2">
-                      <b-button
-variant="danger"
-@click="removeSackItem(index)"
->
+                      <b-button variant="danger" @click="removeSackItem(index)">
                         Del
                       </b-button>
                     </div>
@@ -876,10 +792,7 @@ variant="danger"
                     </div>
 
                     <div class="col-2">
-                      <b-button
-variant="danger"
-@click="removeDrop(index)"
->
+                      <b-button variant="danger" @click="removeDrop(index)">
                         Del
                       </b-button>
                     </div>
@@ -910,10 +823,7 @@ variant="danger"
                     </div>
 
                     <div class="col-2">
-                      <b-button
-variant="danger"
-@click="removeCopyDrop(index)"
->
+                      <b-button variant="danger" @click="removeCopyDrop(index)">
                         Del
                       </b-button>
                     </div>
@@ -928,10 +838,7 @@ variant="danger"
                     @change="npc.tansFor = $event"
                   />
 
-                  <b-form-group
-label-cols-md="3"
-label="Tan Skill Required"
->
+                  <b-form-group label-cols-md="3" label="Tan Skill Required">
                     <b-form-input
                       type="number"
                       v-model="npc.tanSkillRequired"
@@ -950,11 +857,7 @@ label="Tan Skill Required"
                     Add Drop Pool Item
                   </b-button>
 
-                  <b-form-group
-label-cols-md="3"
-label="Min"
-class="multi"
->
+                  <b-form-group label-cols-md="3" label="Min" class="multi">
                     <b-form-input
                       type="number"
                       v-model="npc.dropPool.choose.min"
@@ -1039,10 +942,7 @@ class="multi"
                 </div>
 
                 <div class="col-6">
-                  <b-form-group
-label-cols-md="3"
-label="Spawn Message"
->
+                  <b-form-group label-cols-md="3" label="Spawn Message">
                     <b-form-input
                       type="text"
                       v-model="npc.triggers.spawn.messages[0]"
@@ -1056,10 +956,7 @@ label="Spawn Message"
                     @change="npc.triggers.spawn.sfx.name = $event"
                   />
 
-                  <b-form-group
-label-cols-md="3"
-label="Spawn SFX%"
->
+                  <b-form-group label-cols-md="3" label="Spawn SFX%">
                     <b-form-input
                       type="number"
                       v-model="npc.triggers.spawn.sfx.maxChance"
@@ -1069,12 +966,9 @@ label="Spawn SFX%"
                     />
                   </b-form-group>
 
-                  <hr>
+                  <hr />
 
-                  <b-form-group
-label-cols-md="3"
-label="Leash Message"
->
+                  <b-form-group label-cols-md="3" label="Leash Message">
                     <b-form-input
                       type="text"
                       v-model="npc.triggers.leash.messages[0]"
@@ -1088,10 +982,7 @@ label="Leash Message"
                     @change="npc.triggers.leash.sfx.name = $event"
                   />
 
-                  <b-form-group
-label-cols-md="3"
-label="Leash SFX%"
->
+                  <b-form-group label-cols-md="3" label="Leash SFX%">
                     <b-form-input
                       type="number"
                       v-model="npc.triggers.leash.sfx.maxChance"
@@ -1108,15 +999,9 @@ label="Leash SFX%"
       </div>
     </b-modal>
 
-    <div
-class="mb-3 row"
-v-if="npcs.length > 0"
->
+    <div class="mb-3 row" v-if="npcs.length > 0">
       <div class="col-6">
-        <b-form-input
-v-model="filter"
-placeholder="Search NPCs..."
-/>
+        <b-form-input v-model="filter" placeholder="Search NPCs..." />
       </div>
 
       <div class="col-6">
@@ -1143,11 +1028,7 @@ placeholder="Search NPCs..."
       @filtered="onFiltered"
     >
       <template #head(actions)>
-        <b-button
-size="sm"
-variant="success"
-@click="openModal()"
->
+        <b-button size="sm" variant="success" @click="openModal()">
           Add
         </b-button>
       </template>
@@ -1158,7 +1039,7 @@ variant="success"
             src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
             class="sprite"
             :style="{ 'object-position': objectPosition(data.item.sprite, 40) }"
-          >
+          />
         </div>
       </template>
 
@@ -1191,11 +1072,7 @@ variant="success"
           Edit
         </b-button>
 
-        <b-button
-size="sm"
-variant="danger"
-@click="remove(data.item)"
->
+        <b-button size="sm" variant="danger" @click="remove(data.item)">
           Remove
         </b-button>
       </template>
