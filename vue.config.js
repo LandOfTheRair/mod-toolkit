@@ -24,13 +24,6 @@ module.exports = {
 
       chainWebpackMainProcess(config) {
         config.module
-          .rule('vue')
-          .use('vue-loader')
-          .loader('vue-loader')
-          .tap(options => {
-            options.compilerOptions.whitespace = 'preserve';
-            return options;
-          })
           .rule('node')
           .test(/\.node$/)
           .use('native-ext-loader')
