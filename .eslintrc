@@ -1,0 +1,31 @@
+{
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "plugins": ["prettier"],
+  "extends": [
+    "plugin:vue/essential",
+    "plugin:vue/strongly-recommended",
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
+  "rules": {
+    "semi": 2,
+    "quotes": [2, "single"],
+    "vue/html-indent": "off",
+    "vue/multiline-html-element-content-newline": "off",
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/padding-line-between-tags": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.vue"],
+      "rules": {
+        "indent": "off"
+      }
+    }
+  ]
+}

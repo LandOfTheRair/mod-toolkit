@@ -1,10 +1,24 @@
 <template>
-  <div id="app" v-cloak>
+  <div
+id="app"
+v-cloak
+>
 
-    <img src="file://./resources/maps/src/content/__assets/spritesheets/items.png" v-if="isLoaded" class="hidden" />
-    <img src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png" v-if="isLoaded" class="hidden" />
+    <img
+src="file://./resources/maps/src/content/__assets/spritesheets/items.png"
+v-if="isLoaded"
+class="hidden"
+>
+    <img
+src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
+v-if="isLoaded"
+class="hidden"
+>
 
-    <b-navbar type="dark" variant="dark">
+    <b-navbar
+type="dark"
+variant="dark"
+>
       <b-navbar-brand>Land of the Rair Mod Toolkit</b-navbar-brand>
 
       <b-dropdown
@@ -19,89 +33,127 @@
         <b-dropdown-item disabled>Mod Metadata</b-dropdown-item>
         <b-dropdown-item @click="changeName()">Change Mod Name</b-dropdown-item>
         <b-dropdown-item @click="changeAuthor()">Change Mod Author</b-dropdown-item>
-        <b-dropdown-divider></b-dropdown-divider>
+        <b-dropdown-divider />
 
         <b-dropdown-item disabled>Mod I/O</b-dropdown-item>
         <b-dropdown-item @click="importMod()">Load/Import Mod</b-dropdown-item>
         <b-dropdown-item @click="exportMod()">Save Mod</b-dropdown-item>
         <b-dropdown-item @click="exportMod(true)">Export Mod</b-dropdown-item>
-        <mod-validator :mod="mod"></mod-validator>
-        <b-dropdown-divider></b-dropdown-divider>
+        <mod-validator :mod="mod" />
+        <b-dropdown-divider />
 
         <b-dropdown-item disabled>Mod Testing</b-dropdown-item>
-        <b-dropdown-item target="_blank" href="https://rair.land/docs/modkit/">Help</b-dropdown-item>
+        <b-dropdown-item
+target="_blank"
+href="https://rair.land/docs/modkit/"
+>Help</b-dropdown-item>
         <b-dropdown-item @click="downloadMongo()">Install MongoDB...</b-dropdown-item>
         <b-dropdown-item @click="downloadRair()">Install Rair Server...</b-dropdown-item>
-        <mod-tester :mod="mod"></mod-tester>
-        <b-dropdown-divider></b-dropdown-divider>
+        <mod-tester :mod="mod" />
+        <b-dropdown-divider />
 
         <b-dropdown-item disabled>Updates</b-dropdown-item>
         <b-dropdown-item @click="getResources()">Update Resources</b-dropdown-item>
-        <b-dropdown-divider></b-dropdown-divider>
+        <b-dropdown-divider />
 
         <b-dropdown-item disabled>Danger Zone</b-dropdown-item>
         <b-dropdown-item @click="resetMod()">Reset Mod</b-dropdown-item>
       </b-dropdown>
     </b-navbar>
 
-    <div class="px-3 loading" v-if="!isLoaded">
+    <div
+class="px-3 loading"
+v-if="!isLoaded"
+>
       First time load...
       <br>
       Gathering resources...
     </div>
 
-    <div class="px-3" v-if="mod && isLoaded">
+    <div
+class="px-3"
+v-if="mod && isLoaded"
+>
       <h3 class="text-center my-3">{{ mod.meta.name || 'UnnamedMod' }}</h3>
       <h6 class="text-center my-2">{{ mod.meta.author || 'Unknown Author' }}</h6>
 
       <div class="mt-3">
-        <b-tabs content-class="mt-3" fill class="main-tabs">
+        <b-tabs
+content-class="mt-3"
+fill
+class="main-tabs"
+>
           <b-tab active>
-            <template v-slot:title>Maps ({{ mod.maps.length }})</template>
+            <template #title>Maps ({{ mod.maps.length }})</template>
 
-            <tab-maps :maps="mod.maps" :creator="mod.meta.author || 'Unknown'"></tab-maps>
+            <tab-maps
+:maps="mod.maps"
+:creator="mod.meta.author || 'Unknown'"
+/>
           </b-tab>
 
           <b-tab>
-            <template v-slot:title>NPCs ({{ mod.npcs.length }})</template>
+            <template #title>NPCs ({{ mod.npcs.length }})</template>
 
-            <tab-npcs :npcs="mod.npcs" :items="mod.items"></tab-npcs>
+            <tab-npcs
+:npcs="mod.npcs"
+:items="mod.items"
+/>
           </b-tab>
 
           <b-tab>
-            <template v-slot:title>Items ({{ mod.items.length }})</template>
+            <template #title>Items ({{ mod.items.length }})</template>
 
-            <tab-items :items="mod.items"></tab-items>
+            <tab-items :items="mod.items" />
           </b-tab>
 
           <b-tab>
-            <template v-slot:title>Droptables ({{ mod.drops.length }})</template>
+            <template #title>Droptables ({{ mod.drops.length }})</template>
 
-            <tab-droptables :droptables="mod.drops" :items="mod.items" :maps="mod.maps"></tab-droptables>
+            <tab-droptables
+:droptables="mod.drops"
+:items="mod.items"
+:maps="mod.maps"
+/>
           </b-tab>
 
           <b-tab>
-            <template v-slot:title>Recipes ({{ mod.recipes.length }})</template>
+            <template #title>Recipes ({{ mod.recipes.length }})</template>
 
-            <tab-recipes :recipes="mod.recipes" :items="mod.items"></tab-recipes>
+            <tab-recipes
+:recipes="mod.recipes"
+:items="mod.items"
+/>
           </b-tab>
 
           <b-tab>
-            <template v-slot:title>Spawners ({{ mod.spawners.length }})</template>
+            <template #title>Spawners ({{ mod.spawners.length }})</template>
 
-            <tab-spawners :spawners="mod.spawners" :npcs="mod.npcs"></tab-spawners>
+            <tab-spawners
+:spawners="mod.spawners"
+:npcs="mod.npcs"
+/>
           </b-tab>
 
           <b-tab>
-            <template v-slot:title>Quests ({{ mod.quests.length }})</template>
+            <template #title>Quests ({{ mod.quests.length }})</template>
 
-            <tab-quests :quests="mod.quests" :npcs="mod.npcs" :items="mod.items"></tab-quests>
+            <tab-quests
+:quests="mod.quests"
+:npcs="mod.npcs"
+:items="mod.items"
+/>
           </b-tab>
 
           <b-tab>
-            <template v-slot:title>NPC Scripts ({{ mod.dialogs.length }})</template>
+            <template #title>NPC Scripts ({{ mod.dialogs.length }})</template>
 
-            <tab-dialogs :dialogs="mod.dialogs" :npcs="mod.npcs" :maps="mod.maps" :items="mod.items"></tab-dialogs>
+            <tab-dialogs
+:dialogs="mod.dialogs"
+:npcs="mod.npcs"
+:maps="mod.maps"
+:items="mod.items"
+/>
           </b-tab>
         </b-tabs>
       </div>

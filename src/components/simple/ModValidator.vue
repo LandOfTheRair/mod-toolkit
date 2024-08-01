@@ -11,9 +11,14 @@
     >
       <div class="d-block p-1">
         <div class="row">
-          <div class="col-3" v-for="(value, key) in totals" :key="key">
-            <span :class="key"></span> {{ value }}
-          </div>    
+          <div
+class="col-3"
+v-for="(value, key) in totals"
+:key="key"
+>
+            <span :class="key" />
+            {{ value }}
+          </div>
         </div>
 
         <div class="row">
@@ -24,20 +29,30 @@
 
         <div class="row">
           <div class="col scroll-container">
-            
-            <div class="row" v-for="(valid, index) of validations" :key="index">
+            <div
+class="row"
+v-for="(valid, index) of validations"
+:key="index"
+>
               <div class="col">
-                <h3 v-if="valid.header" class="header">{{ valid.header }}</h3>
-                <h5 v-if="valid.subheader" class="subheader">{{ valid.subheader }}</h5>
+                <h3
+v-if="valid.header"
+class="header"
+>{{ valid.header }}</h3>
+                <h5
+v-if="valid.subheader"
+class="subheader"
+>
+                  {{ valid.subheader }}
+                </h5>
                 <div>
-                  <span :class="valid.type"></span> {{ valid.message }}
+                  <span :class="valid.type" />
+                  {{ valid.message }}
                 </div>
               </div>
             </div>
-
           </div>
         </div>
-
       </div>
     </b-modal>
   </div>
@@ -54,7 +69,7 @@ export default {
   data() {
     return {
       validations: [],
-      totals: { warning: 0, error: 0, good: 0, whatever: 0 }
+      totals: { warning: 0, error: 0, good: 0, whatever: 0 },
     };
   },
 
@@ -63,15 +78,15 @@ export default {
       this.totals = { warning: 0, error: 0, good: 0, whatever: 0 };
       this.validations = validationMessagesForMod(this.mod);
 
-      this.validations.forEach(vdn => {
-        if(!vdn.type) return;
+      this.validations.forEach((vdn) => {
+        if (!vdn.type) return;
 
         this.totals[vdn.type]++;
       });
 
       this.$refs.modal.show();
-    }
-  }
+    },
+  },
 };
 </script>
 

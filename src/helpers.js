@@ -10,8 +10,7 @@ export const objectPosition = (sprite, divisor) => {
   return `-${x * 64}px -${y * 64}px`;
 };
 
-export const validationMessagesForMod = (mod) => {
-
+export const validationMessagesForMod = mod => {
   const validations = [];
 
   // item validators
@@ -21,18 +20,25 @@ export const validationMessagesForMod = (mod) => {
     itemValidations.push({ subheader: 'Awkward Item Stats & Settings' });
 
     mod.items.forEach(item => {
-      const modsActionSpeed = get(item, 'randomStats.actionSpeed') || get(item, 'stats.actionSpeed');
-      if(modsActionSpeed) {
-        itemValidations.push({ type: 'warning', message: `${item.name} modifies actionSpeed.` });
+      const modsActionSpeed =
+        get(item, 'randomStats.actionSpeed') || get(item, 'stats.actionSpeed');
+      if (modsActionSpeed) {
+        itemValidations.push({
+          type: 'warning',
+          message: `${item.name} modifies actionSpeed.`,
+        });
       }
 
       const destroysOnDrop = get(item, 'destroyOnDrop');
-      if(destroysOnDrop) {
-        itemValidations.push({ type: 'warning', message: `${item.name} destroys on drop.` });
+      if (destroysOnDrop) {
+        itemValidations.push({
+          type: 'warning',
+          message: `${item.name} destroys on drop.`,
+        });
       }
     });
 
-    if(itemValidations.length === 1) {
+    if (itemValidations.length === 1) {
       itemValidations.push({ type: 'good', message: 'No abnormalities!' });
     }
 
@@ -47,8 +53,8 @@ export const validationMessagesForMod = (mod) => {
     // item count tracker
     const itemCounts = {};
 
-    const addItemCount = (item) => {
-      if(itemCounts[item] >= 0) {
+    const addItemCount = item => {
+      if (itemCounts[item] >= 0) {
         itemCounts[item]++;
       }
     };
@@ -65,7 +71,7 @@ export const validationMessagesForMod = (mod) => {
     mod.recipes.forEach(recipe => {
       addItemCount(recipe.item);
 
-      recipe.ingredients.forEach((ing) => {
+      recipe.ingredients.forEach(ing => {
         addItemCount(ing);
       });
     });
@@ -79,29 +85,28 @@ export const validationMessagesForMod = (mod) => {
         npc.items.equipment[slot].forEach(item => {
           addItemCount(item.result);
         });
-        
       });
 
-      if(npc.tansFor) {
+      if (npc.tansFor) {
         addItemCount(npc.tansFor);
       }
 
       npc.drops.forEach(item => {
         addItemCount(item.result);
       });
-      
+
       npc.dropPool.items.forEach(item => {
         addItemCount(item);
       });
     });
 
     Object.keys(itemCounts).forEach(item => {
-      if(itemCounts[item] > 0) return;
+      if (itemCounts[item] > 0) return;
 
       itemValidations.push({ type: 'warning', message: `${item} is unused.` });
     });
-    
-    if(itemValidations.length === 1) {
+
+    if (itemValidations.length === 1) {
       itemValidations.push({ type: 'good', message: 'No abnormalities!' });
     }
 
@@ -116,15 +121,26 @@ export const validationMessagesForMod = (mod) => {
 
   const checkMapProperties = () => {
     const allMapPropValidations = [];
-    
-    mod.maps.forEach(map => {
 
+    mod.maps.forEach(map => {
       const mapValidations = [];
       mapValidations.push({ subheader: `${map.name} Map Properties` });
-      ['itemExpirationHours', 'itemGarbageCollection', 'maxCreatures', 'maxLevel', 'maxSkill', 'region', 'respawnX', 'respawnY'].forEach(prop => {
-        if(map.map.properties[prop]) return;
+      [
+        'itemExpirationHours',
+        'itemGarbageCollection',
+        'maxCreatures',
+        'maxLevel',
+        'maxSkill',
+        'region',
+        'respawnX',
+        'respawnY',
+      ].forEach(prop => {
+        if (map.map.properties[prop]) return;
 
-        mapValidations.push({ type: 'error', message: `${map.name} map does not have a ${prop} property.` });
+        mapValidations.push({
+          type: 'error',
+          message: `${map.name} map does not have a ${prop} property.`,
+        });
       });
 
       allMapPropValidations.push(...mapValidations);
@@ -134,18 +150,17 @@ export const validationMessagesForMod = (mod) => {
   };
 
   const checkMapSpawners = () => {
-
     const bosses = [];
-    const modSpawnerTags = {};    
+    const modSpawnerTags = {};
     const usedSpawnerTags = {};
 
-    const addModSpawnerCount = (item) => {
-      if(modSpawnerTags[item] >= 0) {
+    const addModSpawnerCount = item => {
+      if (modSpawnerTags[item] >= 0) {
         modSpawnerTags[item]++;
       }
     };
 
-    const addUsedSpawnerCount = (item) => {
+    const addUsedSpawnerCount = item => {
       usedSpawnerTags[item] = usedSpawnerTags[item] || 0;
       usedSpawnerTags[item]++;
     };
@@ -153,13 +168,13 @@ export const validationMessagesForMod = (mod) => {
     mod.spawners.forEach(item => {
       modSpawnerTags[item.tag] = 0;
     });
-    
+
     mod.maps.forEach(map => {
       map.map.layers[10].objects.forEach(spawner => {
         addModSpawnerCount(spawner.properties.tag);
         addUsedSpawnerCount(spawner.properties.tag);
 
-        if(spawner.properties.lairName) {
+        if (spawner.properties.lairName) {
           bosses.push(spawner.properties.lairName);
         }
       });
@@ -171,13 +186,19 @@ export const validationMessagesForMod = (mod) => {
     modSpawnerValidations.push({ subheader: 'Unused Mod Spawners' });
 
     Object.keys(modSpawnerTags).forEach(item => {
-      if(modSpawnerTags[item] > 0) return;
+      if (modSpawnerTags[item] > 0) return;
 
-      modSpawnerValidations.push({ type: 'warning', message: `${item} is unused.` });
+      modSpawnerValidations.push({
+        type: 'warning',
+        message: `${item} is unused.`,
+      });
     });
-    
-    if(modSpawnerValidations.length === 1) {
-      modSpawnerValidations.push({ type: 'good', message: 'No abnormalities!' });
+
+    if (modSpawnerValidations.length === 1) {
+      modSpawnerValidations.push({
+        type: 'good',
+        message: 'No abnormalities!',
+      });
     }
 
     validations.push(...modSpawnerValidations);
@@ -188,14 +209,20 @@ export const validationMessagesForMod = (mod) => {
     mapSpawnerValidations.push({ subheader: 'Map Spawners' });
 
     Object.keys(usedSpawnerTags).forEach(item => {
-      if(item === 'Global Lair') return;
-      if(usedSpawnerTags[item] > 0 && modSpawnerTags[item] > 0) return;
+      if (item === 'Global Lair') return;
+      if (usedSpawnerTags[item] > 0 && modSpawnerTags[item] > 0) return;
 
-      mapSpawnerValidations.push({ type: 'error', message: `${item} is not a valid spawner tag.` });
+      mapSpawnerValidations.push({
+        type: 'error',
+        message: `${item} is not a valid spawner tag.`,
+      });
     });
-    
-    if(mapSpawnerValidations.length === 1) {
-      mapSpawnerValidations.push({ type: 'good', message: 'No abnormalities!' });
+
+    if (mapSpawnerValidations.length === 1) {
+      mapSpawnerValidations.push({
+        type: 'good',
+        message: 'No abnormalities!',
+      });
     }
 
     validations.push(...mapSpawnerValidations);
@@ -206,17 +233,19 @@ export const validationMessagesForMod = (mod) => {
     mapLairValidations.push({ subheader: 'Lairs' });
 
     bosses.forEach(boss => {
-      if(mod.npcs.some(npc => npc.npcId === boss)) return;
+      if (mod.npcs.some(npc => npc.npcId === boss)) return;
 
-      mapLairValidations.push({ type: 'error', message: `${boss} is not a valid lair.` });
+      mapLairValidations.push({
+        type: 'error',
+        message: `${boss} is not a valid lair.`,
+      });
     });
-    
-    if(mapLairValidations.length === 1) {
+
+    if (mapLairValidations.length === 1) {
       mapLairValidations.push({ type: 'good', message: 'No abnormalities!' });
     }
 
     validations.push(...mapLairValidations);
-
   };
 
   const checkMapNPCDialogs = () => {
@@ -225,27 +254,29 @@ export const validationMessagesForMod = (mod) => {
 
     const foundDialogs = {};
 
-    const addDialogCount = (item) => {
+    const addDialogCount = item => {
       foundDialogs[item] = foundDialogs[item] || 0;
       foundDialogs[item]++;
     };
 
     mapDialogValidations.push({ subheader: 'NPC Scripts' });
-    
+
     mod.maps.forEach(map => {
       map.map.layers[9].objects.forEach(npc => {
         addDialogCount(npc.properties.tag);
       });
     });
 
-
     mod.dialogs.forEach(dia => {
-      if(foundDialogs[dia.tag]) return;
+      if (foundDialogs[dia.tag]) return;
 
-      mapDialogValidations.push({ type: 'warning', message: `${dia.tag} is unused.` });
+      mapDialogValidations.push({
+        type: 'warning',
+        message: `${dia.tag} is unused.`,
+      });
     });
-    
-    if(mapDialogValidations.length === 1) {
+
+    if (mapDialogValidations.length === 1) {
       mapDialogValidations.push({ type: 'good', message: 'No abnormalities!' });
     }
 
@@ -264,13 +295,30 @@ export const validationMessagesForMod = (mod) => {
   checkItems();
   checkMaps();
 
-  return validations;
+  return removeExtraneousSubheaders(validations);
 };
 
-export const numErrorsForMod = (mod) => {
+function removeExtraneousSubheaders(validations) {
+  const indicesToRemove = [];
+  validations.forEach((validation, idx) => {
+    if (!validation.subheader) return;
+    if (validations[idx + 1].message) return;
+
+    indicesToRemove.push(idx);
+  });
+
+  validations = validations
+    .filter((t, idx) => !indicesToRemove.includes(idx))
+    .filter(Boolean);
+
+  return validations;
+}
+
+export const numErrorsForMod = mod => {
   const validationMessages = validationMessagesForMod(mod);
 
-  const numErrors = validationMessages.filter(vdn => vdn.type === 'error').length;
+  const numErrors = validationMessages.filter(vdn => vdn.type === 'error')
+    .length;
 
   return numErrors;
 };

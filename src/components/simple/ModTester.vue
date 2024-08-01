@@ -19,7 +19,10 @@
           <div class="col-6">
             <strong>
               Extra Character Settings
-              <span v-b-tooltip.hover title="If your JSON is not well-formed, you cannot run the test.">{{ validOtherProps ? '✅' : '🚫' }}</span>
+              <span
+v-b-tooltip.hover
+title="If your JSON is not well-formed, you cannot run the test."
+>{{ validOtherProps ? '✅' : '🚫' }}</span>
             </strong>
           </div>
         </div>
@@ -30,48 +33,60 @@
 
               <div class="row">
                 <div class="col">
-                  <b-form-group label-cols-md="3" label="Level">
+                  <b-form-group
+label-cols-md="3"
+label="Level"
+>
                     <b-form-input
                       type="text"
                       v-model="settings.level"
                       placeholder="The player level"
-                    ></b-form-input>
+                    />
                   </b-form-group>
                 </div>
               </div>
               
               <div class="row">
                 <div class="col">
-                  <b-form-group label-cols-md="3" label="Map">
+                  <b-form-group
+label-cols-md="3"
+label="Map"
+>
                     <b-form-input
                       type="text"
                       v-model="settings.map"
                       placeholder="The map to spawn on"
-                    ></b-form-input>
+                    />
                   </b-form-group>
                 </div>
               </div>
               
               <div class="row">
                 <div class="col">
-                  <b-form-group label-cols-md="3" label="Map X">
+                  <b-form-group
+label-cols-md="3"
+label="Map X"
+>
                     <b-form-input
                       type="text"
                       v-model="settings.x"
                       placeholder="The map X to spawn on"
-                    ></b-form-input>
+                    />
                   </b-form-group>
                 </div>
               </div>
               
               <div class="row">
                 <div class="col">
-                  <b-form-group label-cols-md="3" label="Map Y">
+                  <b-form-group
+label-cols-md="3"
+label="Map Y"
+>
                     <b-form-input
                       type="text"
                       v-model="settings.y"
                       placeholder="The map Y to spawn on"
-                    ></b-form-input>
+                    />
                   </b-form-group>
                 </div>
               </div>
@@ -92,11 +107,19 @@
           </div>
 
           <div class="col-6">
-            <prism-editor class="code-editor" v-model="settings.otherProps" :highlight="highlighter" line-numbers></prism-editor>
+            <prism-editor
+class="code-editor"
+v-model="settings.otherProps"
+:highlight="highlighter"
+line-numbers
+/>
           </div>
         </div>
 
-        <div class="row my-3" v-if="numErrors > 0">
+        <div
+class="row my-3"
+v-if="numErrors > 0"
+>
           <div class="col-12 text-danger text-center">
             Your mod has {{ numErrors }} error(s). Check Menu > Validate Mod for more info.
           </div>
@@ -104,10 +127,19 @@
 
         <div class="row">
           <div class="col-8">
-            <b-button block variant="primary" @click="testMod()" :disabled="!validOtherProps || !validTestProps || numErrors > 0">Test Mod!</b-button>
+            <b-button
+block
+variant="primary"
+@click="testMod()"
+:disabled="!validOtherProps || !validTestProps || numErrors > 0"
+>Test Mod!</b-button>
           </div>
           <div class="col-4">
-            <b-button block variant="danger" @click="killMod()">Kill LotR/MongoDB</b-button>
+            <b-button
+block
+variant="danger"
+@click="killMod()"
+>Kill LotR/MongoDB</b-button>
           </div>
         </div>
       </div>

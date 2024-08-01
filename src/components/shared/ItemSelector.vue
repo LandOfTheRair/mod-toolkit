@@ -1,5 +1,8 @@
 <template>
-  <b-form-group label-cols-md="3" :label="label">
+  <b-form-group
+label-cols-md="3"
+:label="label"
+>
     <b-form-select
       :value="value"
       @change="$emit('change', $event)"
@@ -7,7 +10,10 @@
     >
         <option :value="''">None</option>
 
-        <optgroup label="My Items" :key="'My Items'">
+        <optgroup
+label="My Items"
+:key="'My Items'"
+>
           <option
             v-for="item in modItems"
             :value="item.name"
@@ -15,7 +21,10 @@
           >{{ item.name }}</option>
         </optgroup>
 
-        <optgroup label="Core Items" :key="'Core Items'">
+        <optgroup
+label="Core Items"
+:key="'Core Items'"
+>
           <option
             v-for="item in baseItems"
             :value="item"

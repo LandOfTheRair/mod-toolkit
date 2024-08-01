@@ -1,25 +1,25 @@
 <template>
-
   <div>
-
     <div
       class="true-center blank-slate"
       v-if="
         (items.length === 0 || maps.length === 0) && droptables.length === 0
       "
     >
-       Add items & maps first
+      Add items & maps first
     </div>
 
     <div
       class="true-center blank-slate"
       v-if="items.length && maps.length && droptables.length === 0"
     >
-       No Droptables
-      <br />
+      No Droptables
+      <br>
 
-      <b-button variant="primary" @click="openModal()">Add one</b-button>
-
+      <b-button
+variant="primary"
+@click="openModal()"
+>Add one</b-button>
     </div>
 
     <b-modal
@@ -37,41 +37,40 @@
       @ok="confirm()"
       :ok-disabled="!isValidDroptable(droptable)"
     >
-
       <div class="d-block p-1">
-
         <b-form>
-
           <div class="row mt-3">
-
             <div class="col-6">
-
-              <b-form-group label-cols-md="3" label="Map">
-
+              <b-form-group
+label-cols-md="3"
+label="Map"
+>
                 <b-form-select
                   v-model="droptable.mapName"
                   required
                   @change.native="droptable.regionName = ''"
                 >
-
                   <option :value="''">Choose map (unselects region)</option>
 
-                  <option v-for="map in mapNames" :value="map" :key="map">
-                     {{ map }}
+                  <option
+v-for="map in mapNames"
+:value="map"
+:key="map"
+>
+                    {{ map }}
                   </option>
-
                 </b-form-select>
-
               </b-form-group>
 
-              <b-form-group label-cols-md="3" label="Region">
-
+              <b-form-group
+label-cols-md="3"
+label="Region"
+>
                 <b-form-select
                   v-model="droptable.regionName"
                   required
                   @change.native="droptable.mapName = ''"
                 >
-
                   <option :value="''">Choose region (unselects map)</option>
 
                   <option
@@ -79,17 +78,19 @@
                     :value="region"
                     :key="region"
                   >
-                     {{ region }}
+                    {{ region }}
                   </option>
-
                 </b-form-select>
-
               </b-form-group>
 
-              <b-form-group label-cols-md="3" label="Item">
-
-                <b-form-select v-model="droptable.result" required>
-
+              <b-form-group
+label-cols-md="3"
+label="Item"
+>
+                <b-form-select
+v-model="droptable.result"
+required
+>
                   <option :value="''">Choose item</option>
 
                   <option
@@ -97,80 +98,67 @@
                     :value="item.name"
                     :key="item.name"
                   >
-                     {{ item.name }}
+                    {{ item.name }}
                   </option>
-
                 </b-form-select>
-
               </b-form-group>
 
-              <b-form-group label-cols-md="3" label="Chance to Drop (1/x)">
-
+              <b-form-group
+label-cols-md="3"
+label="Chance to Drop (1/x)"
+>
                 <b-form-input
                   type="number"
                   v-model="droptable.maxChance"
                   placeholder="Chance - x"
                   min="0"
-                ></b-form-input>
-
+                />
               </b-form-group>
 
               <div class="row mb-3">
-
                 <b-form-checkbox
                   v-model="droptable.noLuckBonus"
                   class="col-md-9 offset-md-3"
                 >
-
                   <span
                     v-b-tooltip.hover
                     title="This drop will not factor in LUK, meaning it will always be a 1/x."
                   >
-                     No Luck Bonus
+                    No Luck Bonus
                   </span>
-
                 </b-form-checkbox>
-
               </div>
 
               <holiday-selector
                 v-model="droptable.requireHoliday"
                 label="Holiday"
                 @change="droptable.requireHoliday = $event"
-              ></holiday-selector>
-
+              />
             </div>
-
           </div>
-
         </b-form>
-
       </div>
-
     </b-modal>
 
-    <div class="mb-3 row" v-if="droptables.length > 0">
-
+    <div
+class="mb-3 row"
+v-if="droptables.length > 0"
+>
       <div class="col-6">
-
         <b-form-input
-          v-model="filter"
-          placeholder="Search droptables..."
-        ></b-form-input>
-
+v-model="filter"
+placeholder="Search droptables..."
+/>
       </div>
 
       <div class="col-6">
-
         <b-pagination
           class="float-right"
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
-        ></b-pagination>
-
+        />
       </div>
-
     </div>
 
     <b-table
@@ -186,28 +174,26 @@
       :current-page="currentPage"
       @filtered="onFiltered"
     >
-
-      <template v-slot:head(actions)>
-
-        <b-button size="sm" variant="success" @click="openModal()">
-           Add
+      <template #head(actions)>
+        <b-button
+size="sm"
+variant="success"
+@click="openModal()"
+>
+          Add
         </b-button>
-
       </template>
 
-      <template v-slot:cell(maxChance)="data">
-         1/{{ data.item.maxChance }}
-      </template>
+      <template #cell(maxChance)="data">1/{{ data.item.maxChance }}</template>
 
-      <template v-slot:cell(actions)="data">
-
+      <template #cell(actions)="data">
         <b-button
           class="mr-1"
           size="sm"
           variant="info"
           @click="copy(data.item)"
         >
-           Copy
+          Copy
         </b-button>
 
         <b-button
@@ -216,19 +202,19 @@
           variant="info"
           @click="edit(data.item)"
         >
-           Edit
+          Edit
         </b-button>
 
-        <b-button size="sm" variant="danger" @click="remove(data.item)">
-           Remove
+        <b-button
+size="sm"
+variant="danger"
+@click="remove(data.item)"
+>
+          Remove
         </b-button>
-
       </template>
-
     </b-table>
-
   </div>
-
 </template>
 
 <script>
@@ -284,7 +270,7 @@ export default {
 
   computed: {
     regionNames() {
-      const regions = this.maps.map(x => {
+      const regions = this.maps.map((x) => {
         if (!x.map || !x.map.properties || !x.map.properties.region) return '';
         return x.map.properties.region;
       });
@@ -293,7 +279,7 @@ export default {
     },
 
     mapNames() {
-      return this.maps.map(x => x.name);
+      return this.maps.map((x) => x.name);
     },
   },
 
@@ -309,7 +295,7 @@ export default {
     isValidDroptable(droptable) {
       const validKeys = ['result', 'maxChance', 'chance'];
       return (
-        validKeys.every(x => get(droptable, x)) &&
+        validKeys.every((x) => get(droptable, x)) &&
         (droptable.mapName || droptable.regionName)
       );
     },
@@ -338,7 +324,7 @@ export default {
 
     edit(droptable) {
       this.droptable = clone(droptable);
-      this.isEditing = this.droptables.findIndex(x => x === droptable);
+      this.isEditing = this.droptables.findIndex((x) => x === droptable);
       this.openModal();
     },
 
@@ -350,7 +336,7 @@ export default {
       if (!willRemove) return;
 
       events.$emit('remove:droptable', {
-        index: this.droptables.findIndex(x => x === droptable),
+        index: this.droptables.findIndex((x) => x === droptable),
       });
       this.onFiltered(this.droptables);
     },
@@ -358,7 +344,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
-
+<style scoped></style>

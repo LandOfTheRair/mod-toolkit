@@ -1,13 +1,16 @@
 <template>
-
   <div>
+    <div
+class="true-center blank-slate"
+v-if="npcs.length === 0"
+>
+      No NPCs
+      <br>
 
-    <div class="true-center blank-slate" v-if="npcs.length === 0">
-       No NPCs
-      <br />
-
-      <b-button variant="primary" @click="openModal()">Add one</b-button>
-
+      <b-button
+variant="primary"
+@click="openModal()"
+>Add one</b-button>
     </div>
 
     <b-modal
@@ -25,35 +28,28 @@
       @ok="confirm()"
       :ok-disabled="!isValidNPC(npc)"
     >
-
       <div class="d-block p-1">
-
         <b-form>
-
-          <b-tabs content-class="mt-3" fill>
-
+          <b-tabs
+content-class="mt-3"
+fill
+>
             <b-tab title="Core Stats">
-
               <div class="row">
-
                 <div class="col-md-4">
-
                   <b-form-group
                     class="sprite-field"
                     label-cols-md="3"
                     label="Sprite"
                   >
-
                     <div class="sprite-container">
-
                       <img
                         src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
                         class="sprite"
                         :style="{
                           'object-position': objectPosition(npc.sprite, 40),
                         }"
-                      />
-
+                      >
                     </div>
 
                     <b-form-input
@@ -62,29 +58,31 @@
                       step="5"
                       min="0"
                       required
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Internal ID">
-
+                  <b-form-group
+label-cols-md="3"
+label="Internal ID"
+>
                     <b-form-input
                       type="text"
                       v-model="npc.npcId"
                       required
                       placeholder="[Map Name] - Create Type"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Name" class="optional">
-
+                  <b-form-group
+label-cols-md="3"
+label="Name"
+class="optional"
+>
                     <b-form-input
                       type="text"
                       v-model="npc.name"
                       placeholder="If unspecified, will be random"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
                   <b-form-group
@@ -92,29 +90,28 @@
                     label="Affiliation"
                     class="optional"
                   >
-
                     <b-form-input
                       type="text"
                       v-model="npc.affiliation"
                       placeholder="The guild/tag for NPC"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Level" class="multi">
-
+                  <b-form-group
+label-cols-md="3"
+label="Level"
+class="multi"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.level"
                       placeholder="Level"
                       min="1"
                       @change.native="changeCRStats()"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">
-
                       <strong>Skill</strong>
-
                     </div>
 
                     <b-form-input
@@ -122,34 +119,35 @@
                       v-model="npc.skillLevels"
                       min="1"
                       placeholder="Skill"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
                   <class-selector
                     v-model="npc.baseClass"
                     label="Class"
                     @change="npc.baseClass = $event"
-                  ></class-selector>
+                  />
 
-                  <b-form-group label-cols-md="3" label="Alignment">
-
+                  <b-form-group
+label-cols-md="3"
+label="Alignment"
+>
                     <b-form-select
                       v-model="npc.alignment"
                       required
                       :options="['Good', 'Neutral', 'Evil']"
-                    ></b-form-select>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Hostility">
-
+                  <b-form-group
+label-cols-md="3"
+label="Hostility"
+>
                     <b-form-select
                       v-model="npc.hostility"
                       required
                       :options="['OnHit', 'Faction', 'Always', 'Never']"
-                    ></b-form-select>
-
+                    />
                   </b-form-group>
 
                   <b-form-group
@@ -157,17 +155,17 @@
                     label="Grouping"
                     class="optional"
                   >
-
                     <b-form-input
                       type="text"
                       v-model="npc.monsterGroup"
                       placeholder="The grouping for NPC"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Allegiance">
-
+                  <b-form-group
+label-cols-md="3"
+label="Allegiance"
+>
                     <b-form-select
                       v-model="npc.allegiance"
                       required
@@ -181,43 +179,36 @@
                         'Wilderness',
                         'NaturalResource',
                       ]"
-                    ></b-form-select>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Category">
-
+                  <b-form-group
+label-cols-md="3"
+label="Category"
+>
                     <b-form-select
                       v-model="npc.monsterClass"
                       required
                       :options="['Beast', 'Dragon', 'Humanoid', 'Undead']"
                     >
-
-                      <template v-slot:first>
-
+                      <template #first>
                         <option :value="''">None</option>
-
                       </template>
-
                     </b-form-select>
-
                   </b-form-group>
 
                   <div class="row mb-3">
-
                     <b-form-checkbox
                       v-model="npc.aquaticOnly"
                       @input="npc.avoidWater = false"
                       class="col-md-4 offset-md-3"
                     >
-
                       <span
                         v-b-tooltip.hover
                         title="Creature will ONLY step in the water"
                       >
-                         Aquatic
+                        Aquatic
                       </span>
-
                     </b-form-checkbox>
 
                     <b-form-checkbox
@@ -225,105 +216,83 @@
                       @input="npc.aquaticOnly = false"
                       class="col-md-5"
                     >
-
                       <span
                         v-b-tooltip.hover
                         title="Creature will not step in the water"
                       >
-                         Hydrophobic
+                        Hydrophobic
                       </span>
-
                     </b-form-checkbox>
-
                   </div>
 
                   <div class="row mb-3">
-
                     <b-form-checkbox
                       v-model="npc.noCorpseDrop"
                       class="col-md-4 offset-md-3"
                     >
-
                       <span
                         v-b-tooltip.hover
                         title="Creature will not drop a corpse"
                       >
-                         No Corpse
+                        No Corpse
                       </span>
-
                     </b-form-checkbox>
 
-                    <b-form-checkbox v-model="npc.noItemDrop" class="col-md-5">
-
+                    <b-form-checkbox
+v-model="npc.noItemDrop"
+class="col-md-5"
+>
                       <span
                         v-b-tooltip.hover
                         title="Creature will not drop items"
                       >
-                         No Items
+                        No Items
                       </span>
-
                     </b-form-checkbox>
-
                   </div>
 
-                  <div class="row mb-3"></div>
-
+                  <div class="row mb-3" />
                 </div>
 
                 <div class="col-md-5">
-
-                  <b-form-group label-cols-md="3" label="Challenge Rating">
-
+                  <b-form-group
+label-cols-md="3"
+label="Challenge Rating"
+>
                     <b-form-select
                       v-model="npc.cr"
                       required
                       :options="[
-                        -10,
-                        -9,
-                        -8,
-                        -7,
-                        -6,
-                        -5,
-                        -4,
-                        -3,
-                        -2,
-                        -1,
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8,
-                        9,
-                        10,
+                        -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4,
+                        5, 6, 7, 8, 9, 10,
                       ]"
-                    ></b-form-select>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="HP Multiplier">
-
+                  <b-form-group
+label-cols-md="3"
+label="HP Multiplier"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.hpMult"
                       min="0.1"
                       @change.native="changeCRStats()"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="HP" class="multi">
-
+                  <b-form-group
+label-cols-md="3"
+label="HP"
+class="multi"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.hp.min"
                       min="0"
                       disabled
                       @change.native="updateKeyMaxIfNotPresent($event, 'hp')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">To</div>
 
@@ -332,19 +301,21 @@
                       v-model="npc.hp.max"
                       disabled
                       min="0"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="MP" class="multi">
-
+                  <b-form-group
+label-cols-md="3"
+label="MP"
+class="multi"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.mp.min"
                       disabled
                       min="0"
                       @change.native="updateKeyMaxIfNotPresent($event, 'mp')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">To</div>
 
@@ -353,12 +324,14 @@
                       v-model="npc.mp.max"
                       disabled
                       min="0"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="XP" class="multi">
-
+                  <b-form-group
+label-cols-md="3"
+label="XP"
+class="multi"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.giveXp.min"
@@ -367,7 +340,7 @@
                       @change.native="
                         updateKeyMaxIfNotPresent($event, 'giveXp')
                       "
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">To</div>
 
@@ -376,19 +349,21 @@
                       v-model="npc.giveXp.max"
                       disabled
                       min="0"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Gold" class="multi">
-
+                  <b-form-group
+label-cols-md="3"
+label="Gold"
+class="multi"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.gold.min"
                       disabled
                       min="0"
                       @change.native="updateKeyMaxIfNotPresent($event, 'gold')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">To</div>
 
@@ -397,52 +372,49 @@
                       v-model="npc.gold.max"
                       disabled
                       min="0"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="Skill on Kill">
-
+                  <b-form-group
+label-cols-md="3"
+label="Skill on Kill"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.skillOnKill"
                       placeholder="Skill gained on kill"
                       min="0"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
                   <div class="row mb-3">
-
                     <b-form-checkbox
                       v-model="linkStats"
                       class="col-md-9 offset-md-3"
                     >
-
                       <span
                         v-b-tooltip.hover
                         title="All stats will change at the same time"
                       >
-                         Link Stats
+                        Link Stats
                       </span>
-
                     </b-form-checkbox>
-
                   </div>
 
-                  <b-form-group label-cols-md="3" label="STR" class="multi-3">
-
+                  <b-form-group
+label-cols-md="3"
+label="STR"
+class="multi-3"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.stats.str"
                       min="0"
                       @change="updateStat('str')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">
-
                       <strong>DEX</strong>
-
                     </div>
 
                     <b-form-input
@@ -450,12 +422,10 @@
                       v-model="npc.stats.dex"
                       min="0"
                       @change="updateStat('dex')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">
-
                       <strong>AGI</strong>
-
                     </div>
 
                     <b-form-input
@@ -463,23 +433,23 @@
                       v-model="npc.stats.agi"
                       min="0"
                       @change="updateStat('agi')"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="INT" class="multi-3">
-
+                  <b-form-group
+label-cols-md="3"
+label="INT"
+class="multi-3"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.stats.int"
                       min="0"
                       @change="updateStat('int')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">
-
                       <strong>WIS</strong>
-
                     </div>
 
                     <b-form-input
@@ -487,12 +457,10 @@
                       v-model="npc.stats.wis"
                       min="0"
                       @change="updateStat('wis')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">
-
                       <strong>WIL</strong>
-
                     </div>
 
                     <b-form-input
@@ -500,23 +468,23 @@
                       v-model="npc.stats.wil"
                       min="0"
                       @change="updateStat('wil')"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <b-form-group label-cols-md="3" label="CON" class="multi-3">
-
+                  <b-form-group
+label-cols-md="3"
+label="CON"
+class="multi-3"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.stats.con"
                       min="0"
                       @change="updateStat('con')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">
-
                       <strong>CHA</strong>
-
                     </div>
 
                     <b-form-input
@@ -524,12 +492,10 @@
                       v-model="npc.stats.cha"
                       min="0"
                       @change="updateStat('cha')"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">
-
                       <strong>LUK</strong>
-
                     </div>
 
                     <b-form-input
@@ -537,50 +503,35 @@
                       v-model="npc.stats.luk"
                       min="0"
                       @change="updateStat('luk')"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
-
                 </div>
 
                 <div class="col-md-3">
-
                   <div class="row">
-
                     <div class="col-md-12">
-
                       <b-input-group>
-
                         <b-form-select
                           v-model="currentExtraStat"
                           required
                           :options="extraStats"
                         >
-
-                          <template v-slot:first>
-
+                          <template #first>
                             <option :value="''">Add Extra Stat</option>
-
                           </template>
-
                         </b-form-select>
 
                         <b-input-group-append>
-
                           <b-button
                             variant="primary"
                             :disabled="!currentExtraStat"
                             @click="addExtraStat(currentExtraStat)"
                           >
-                             Add
+                            Add
                           </b-button>
-
                         </b-input-group-append>
-
                       </b-input-group>
-
                     </div>
-
                   </div>
 
                   <div
@@ -588,63 +539,46 @@
                     v-for="(value, stat) in npc.otherStats"
                     :key="stat"
                   >
-
                     <div class="col">
-
-                      <b-form-group :label="stat" class="left-header">
-
+                      <b-form-group
+:label="stat"
+class="left-header"
+>
                         <b-input-group>
-
                           <b-form-input
                             type="number"
                             v-model="npc.otherStats[stat]"
-                          ></b-form-input>
+                          />
 
                           <b-input-group-append>
-
                             <b-button
                               variant="danger"
                               @click="removeExtraStat(currentExtraStat)"
                             >
-                               Del
+                              Del
                             </b-button>
-
                           </b-input-group-append>
-
                         </b-input-group>
-
                       </b-form-group>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
             </b-tab>
 
             <b-tab title="Skills & Attributes">
-
               <div class="row">
-
                 <div class="col-4">
-
                   <div class="row">
-
                     <div class="col-8">
-
                       <trait-selector
                         v-model="currentTrait"
                         label="Trait"
                         @change="currentTrait = $event"
-                      ></trait-selector>
-
+                      />
                     </div>
 
                     <div class="col-4">
-
                       <b-button
                         variant="primary"
                         :disabled="
@@ -652,11 +586,9 @@
                         "
                         @click="addTrait(currentTrait)"
                       >
-                         Add
+                        Add
                       </b-button>
-
                     </div>
-
                   </div>
 
                   <div
@@ -664,45 +596,38 @@
                     v-for="(level, trait) of npc.traitLevels"
                     :key="trait"
                   >
-
                     <div class="col-4">
-
                       <strong>{{ trait }}</strong>
-
                     </div>
 
                     <div class="col-4">
-
                       <b-form-input
                         type="number"
                         v-model="npc.traitLevels[trait]"
                         placeholder="Lv."
                         min="1"
-                      ></b-form-input>
-
+                      />
                     </div>
 
                     <div class="col-4">
-
-                      <b-button variant="danger" @click="removeTrait(trait)">
-                         Del
+                      <b-button
+variant="danger"
+@click="removeTrait(trait)"
+>
+                        Del
                       </b-button>
-
                     </div>
-
                   </div>
-
                 </div>
 
                 <div class="col-4">
-
                   <b-button
                     class="mb-3"
                     variant="info"
                     block
                     @click="addUsableSkill()"
                   >
-                     Add Spell
+                    Add Spell
                   </b-button>
 
                   <div
@@ -710,52 +635,42 @@
                     v-for="(skill, index) of npc.usableSkills"
                     :key="index"
                   >
-
                     <div class="col-6">
-
                       <spell-selector
                         v-model="skill.result"
                         label="Spell"
                         @change="skill.result = $event"
-                      ></spell-selector>
-
+                      />
                     </div>
 
                     <div class="col-4">
-
                       <b-form-input
                         type="number"
                         v-model="skill.chance"
                         placeholder="X"
                         min="1"
-                      ></b-form-input>
-
+                      />
                     </div>
 
                     <div class="col-2">
-
                       <b-button
                         variant="danger"
                         @click="removeUsableSkill(index)"
                       >
-                         Del
+                        Del
                       </b-button>
-
                     </div>
-
                   </div>
-
                 </div>
 
                 <div class="col-4">
-
                   <b-button
                     class="mb-3"
                     variant="info"
                     block
                     @click="addBaseEffect()"
                   >
-                     Add Base Effect
+                    Add Base Effect
                   </b-button>
 
                   <div
@@ -763,73 +678,60 @@
                     v-for="(effect, index) of npc.baseEffects"
                     :key="index"
                   >
-
                     <div class="col-9">
-
                       <effect-selector
                         v-model="effect.name"
                         label="Effect"
                         @change="effect.name = $event"
-                      ></effect-selector>
-
+                      />
                     </div>
 
                     <div class="col-2">
-
                       <b-button
                         variant="danger"
                         @click="removeBaseEffect(index)"
                       >
-                         Del
+                        Del
                       </b-button>
-
                     </div>
 
                     <div
                       class="col-7 offset-1"
                       v-if="effect.name === 'Attribute'"
                     >
-
                       <damage-type-selector
                         v-model="effect.extra.damageType"
                         label="Type"
                         @change="effect.extra.damageType = $event"
-                      ></damage-type-selector>
-
+                      />
                     </div>
 
-                    <div class="col-3" v-if="effect.name === 'Attribute'">
-
+                    <div
+class="col-3"
+v-if="effect.name === 'Attribute'"
+>
                       <b-form-input
                         type="number"
                         v-model="effect.extra.potency"
                         placeholder="%"
                         min="0"
-                      ></b-form-input>
-
+                      />
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
             </b-tab>
 
             <b-tab title="Gear">
-
               <div class="row">
-
                 <div class="col-6">
-
                   <b-button
                     class="mb-3"
                     variant="info"
                     block
                     @click="addSackItem()"
                   >
-                     Add Sack Item
+                    Add Sack Item
                   </b-button>
 
                   <div
@@ -837,69 +739,58 @@
                     v-for="(sitem, index) of npc.items.sack"
                     :key="index"
                   >
-
                     <div class="col-4">
-
                       <item-selector
                         v-model="sitem.result"
-                        :modItems="items"
+                        :mod-items="items"
                         label="Item"
                         @change="sitem.result = $event"
-                      ></item-selector>
-
+                      />
                     </div>
 
                     <div class="col-3">
-
                       <b-form-input
                         type="number"
                         v-model="sitem.chance"
                         placeholder="Chance"
                         min="-1"
-                      ></b-form-input>
-
+                      />
                     </div>
 
                     <div class="col-3">
-
                       <b-form-input
                         type="number"
                         v-model="sitem.maxChance"
                         placeholder="Max Chance"
                         min="0"
-                      ></b-form-input>
-
+                      />
                     </div>
 
                     <div class="col-2">
-
-                      <b-button variant="danger" @click="removeSackItem(index)">
-                         Del
+                      <b-button
+variant="danger"
+@click="removeSackItem(index)"
+>
+                        Del
                       </b-button>
-
                     </div>
-
                   </div>
-
                 </div>
 
                 <div class="col-6">
-
                   <div
                     class="row"
                     v-for="(val, slot) of npc.items.equipment"
                     :key="slot"
                   >
-
                     <div class="col-12">
-
                       <b-button
                         class="mb-3"
                         variant="info"
                         block
                         @click="addEquipmentItem(slot)"
                       >
-                         Add {{ slot }} Item
+                        Add {{ slot }} Item
                       </b-button>
 
                       <div
@@ -907,65 +798,49 @@
                         v-for="(sitem, index) of npc.items.equipment[slot]"
                         :key="index"
                       >
-
                         <div class="col-7">
-
                           <item-selector
                             v-model="sitem.result"
-                            :modItems="items"
+                            :mod-items="items"
                             label="Item"
                             @change="sitem.result = $event"
-                          ></item-selector>
-
+                          />
                         </div>
 
                         <div class="col-3">
-
                           <b-form-input
                             type="number"
                             v-model="sitem.chance"
                             placeholder="1/x"
                             min="1"
-                          ></b-form-input>
-
+                          />
                         </div>
 
                         <div class="col-2">
-
                           <b-button
                             variant="danger"
                             @click="removeEquipmentItem(slot, index)"
                           >
-                             Del
+                            Del
                           </b-button>
-
                         </div>
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
             </b-tab>
 
             <b-tab title="Drops">
-
               <div class="row">
-
                 <div class="col-4">
-
                   <b-button
                     class="mb-3"
                     variant="info"
                     block
                     @click="addDrop()"
                   >
-                     Add Drop
+                    Add Drop
                   </b-button>
 
                   <div
@@ -973,61 +848,52 @@
                     v-for="(drop, index) of npc.drops"
                     :key="index"
                   >
-
                     <div class="col-4">
-
                       <item-selector
                         v-model="drop.result"
-                        :modItems="items"
+                        :mod-items="items"
                         label="Item"
                         @change="drop.result = $event"
-                      ></item-selector>
-
+                      />
                     </div>
 
                     <div class="col-3">
-
                       <b-form-input
                         type="number"
                         v-model="drop.chance"
                         placeholder="Chance"
                         min="-1"
-                      ></b-form-input>
-
+                      />
                     </div>
 
                     <div class="col-3">
-
                       <b-form-input
                         type="number"
                         v-model="drop.maxChance"
                         placeholder="Max Chance"
                         min="0"
-                      ></b-form-input>
-
+                      />
                     </div>
 
                     <div class="col-2">
-
-                      <b-button variant="danger" @click="removeDrop(index)">
-                         Del
+                      <b-button
+variant="danger"
+@click="removeDrop(index)"
+>
+                        Del
                       </b-button>
-
                     </div>
-
                   </div>
-
                 </div>
 
                 <div class="col-4">
-
                   <b-button
                     class="mb-3"
                     variant="info"
                     block
                     @click="addCopyDrop()"
                   >
-                     Add Copy Drop
+                    Add Copy Drop
                   </b-button>
 
                   <div
@@ -1035,48 +901,44 @@
                     v-for="(cdrop, index) of npc.copyDrops"
                     :key="index"
                   >
-
                     <div class="col-10">
-
                       <slot-selector
                         v-model="cdrop.result"
                         label="Copy Slot"
                         @change="cdrop.result = $event"
-                      ></slot-selector>
-
+                      />
                     </div>
 
                     <div class="col-2">
-
-                      <b-button variant="danger" @click="removeCopyDrop(index)">
-                         Del
+                      <b-button
+variant="danger"
+@click="removeCopyDrop(index)"
+>
+                        Del
                       </b-button>
-
                     </div>
-
                   </div>
-
                 </div>
 
                 <div class="col-4">
-
                   <item-selector
                     v-model="npc.tansFor"
-                    :modItems="items"
+                    :mod-items="items"
                     label="Tans For"
                     @change="npc.tansFor = $event"
-                  ></item-selector>
+                  />
 
-                  <b-form-group label-cols-md="3" label="Tan Skill Required">
-
+                  <b-form-group
+label-cols-md="3"
+label="Tan Skill Required"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.tanSkillRequired"
                       required
                       placeholder="Tan Skill Required"
                       min="0"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
                   <b-button
@@ -1085,22 +947,23 @@
                     block
                     @click="addDropPoolItem()"
                   >
-                     Add Drop Pool Item
+                    Add Drop Pool Item
                   </b-button>
 
-                  <b-form-group label-cols-md="3" label="Min" class="multi">
-
+                  <b-form-group
+label-cols-md="3"
+label="Min"
+class="multi"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.dropPool.choose.min"
                       placeholder="Drop Pool Min"
                       min="0"
-                    ></b-form-input>
+                    />
 
                     <div class="split-label true-center">
-
                       <strong>Max</strong>
-
                     </div>
 
                     <b-form-input
@@ -1108,8 +971,7 @@
                       v-model="npc.dropPool.choose.max"
                       min="0"
                       placeholder="Drop Pool Max"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
                   <div
@@ -1117,50 +979,38 @@
                     v-for="(drop, index) of npc.dropPool.items"
                     :key="index"
                   >
-
                     <div class="col-8">
-
                       <item-selector
                         v-model="npc.dropPool.items[index]"
-                        :modItems="items"
+                        :mod-items="items"
                         label="Item"
                         @change="npc.dropPool.items[index] = $event"
-                      ></item-selector>
-
+                      />
                     </div>
 
                     <div class="col-4">
-
                       <b-button
                         variant="danger"
                         @click="removeDropPoolItem(index)"
                       >
-                         Del
+                        Del
                       </b-button>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
             </b-tab>
 
             <b-tab title="Triggers">
-
               <div class="row">
-
                 <div class="col-6">
-
                   <b-button
                     class="mb-3"
                     variant="info"
                     block
                     @click="addCombatMessage()"
                   >
-                     Add Combat Message
+                    Add Combat Message
                   </b-button>
 
                   <b-form-group
@@ -1169,128 +1019,114 @@
                     v-for="(message, index) in npc.triggers.combat.messages"
                     :key="index"
                   >
-
                     <b-input-group>
-
                       <b-form-input
                         type="text"
                         v-model="npc.triggers.combat.messages[index]"
                         placeholder="Message"
-                      ></b-form-input>
+                      />
 
                       <b-input-group-append>
-
                         <b-button
                           variant="danger"
                           @click="removeCombatMessage(index)"
                         >
-                           Del
+                          Del
                         </b-button>
-
                       </b-input-group-append>
-
                     </b-input-group>
-
                   </b-form-group>
-
                 </div>
 
                 <div class="col-6">
-
-                  <b-form-group label-cols-md="3" label="Spawn Message">
-
+                  <b-form-group
+label-cols-md="3"
+label="Spawn Message"
+>
                     <b-form-input
                       type="text"
                       v-model="npc.triggers.spawn.messages[0]"
                       placeholder="Spawn Message"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
                   <sfx-selector
                     v-model="npc.triggers.spawn.sfx.name"
                     label="Spawn SFX"
                     @change="npc.triggers.spawn.sfx.name = $event"
-                  ></sfx-selector>
+                  />
 
-                  <b-form-group label-cols-md="3" label="Spawn SFX%">
-
+                  <b-form-group
+label-cols-md="3"
+label="Spawn SFX%"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.triggers.spawn.sfx.maxChance"
                       placeholder="x/100"
                       min="0"
                       max="100"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
-                  <hr />
+                  <hr>
 
-                  <b-form-group label-cols-md="3" label="Leash Message">
-
+                  <b-form-group
+label-cols-md="3"
+label="Leash Message"
+>
                     <b-form-input
                       type="text"
                       v-model="npc.triggers.leash.messages[0]"
                       placeholder="Leash Message"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
 
                   <sfx-selector
                     v-model="npc.triggers.leash.sfx.name"
                     label="Leash SFX"
                     @change="npc.triggers.leash.sfx.name = $event"
-                  ></sfx-selector>
+                  />
 
-                  <b-form-group label-cols-md="3" label="Leash SFX%">
-
+                  <b-form-group
+label-cols-md="3"
+label="Leash SFX%"
+>
                     <b-form-input
                       type="number"
                       v-model="npc.triggers.leash.sfx.maxChance"
                       placeholder="x/100"
                       min="0"
                       max="100"
-                    ></b-form-input>
-
+                    />
                   </b-form-group>
-
                 </div>
-
               </div>
-
             </b-tab>
-
           </b-tabs>
-
         </b-form>
-
       </div>
-
     </b-modal>
 
-    <div class="mb-3 row" v-if="npcs.length > 0">
-
+    <div
+class="mb-3 row"
+v-if="npcs.length > 0"
+>
       <div class="col-6">
-
         <b-form-input
-          v-model="filter"
-          placeholder="Search NPCs..."
-        ></b-form-input>
-
+v-model="filter"
+placeholder="Search NPCs..."
+/>
       </div>
 
       <div class="col-6">
-
         <b-pagination
           class="float-right"
           v-model="currentPage"
           :total-rows="totalRows"
           :per-page="perPage"
-        ></b-pagination>
-
+        />
       </div>
-
     </div>
 
     <b-table
@@ -1306,48 +1142,44 @@
       :current-page="currentPage"
       @filtered="onFiltered"
     >
-
-      <template v-slot:head(actions)>
-
-        <b-button size="sm" variant="success" @click="openModal()">
-           Add
+      <template #head(actions)>
+        <b-button
+size="sm"
+variant="success"
+@click="openModal()"
+>
+          Add
         </b-button>
-
       </template>
 
-      <template v-slot:cell(sprite)="data">
-
+      <template #cell(sprite)="data">
         <div class="sprite-container">
-
           <img
             src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
             class="sprite"
             :style="{ 'object-position': objectPosition(data.item.sprite, 40) }"
-          />
-
+          >
         </div>
-
       </template>
 
-      <template v-slot:cell(name)="data"> {{ data.item.npcId }} </template>
+      <template #cell(name)="data">{{ data.item.npcId }}</template>
 
-      <template v-slot:cell(baseClass)="data">
-         {{ data.item.baseClass || 'None' }}
+      <template #cell(baseClass)="data">
+        {{ data.item.baseClass || 'None' }}
       </template>
 
-      <template v-slot:cell(category)="data">
-         {{ data.item.category || 'None' }}
+      <template #cell(category)="data">
+        {{ data.item.category || 'None' }}
       </template>
 
-      <template v-slot:cell(actions)="data">
-
+      <template #cell(actions)="data">
         <b-button
           class="mr-1"
           size="sm"
           variant="info"
           @click="copy(data.item)"
         >
-           Copy
+          Copy
         </b-button>
 
         <b-button
@@ -1356,19 +1188,19 @@
           variant="info"
           @click="edit(data.item)"
         >
-           Edit
+          Edit
         </b-button>
 
-        <b-button size="sm" variant="danger" @click="remove(data.item)">
-           Remove
+        <b-button
+size="sm"
+variant="danger"
+@click="remove(data.item)"
+>
+          Remove
         </b-button>
-
       </template>
-
     </b-table>
-
   </div>
-
 </template>
 
 <script>
@@ -1521,7 +1353,7 @@ export default {
       linkStats: true,
       currentTrait: '',
       currentExtraStat: '',
-      extraStats: extraStats.map(x => x.stat),
+      extraStats: extraStats.map((x) => x.stat),
       npc: clone(defaultNPC),
       challengeData: {},
     };
@@ -1567,7 +1399,7 @@ export default {
         'skillLevels',
         'skillOnKill',
       ];
-      return validKeys.every(x => get(npc, x));
+      return validKeys.every((x) => get(npc, x));
     },
 
     reset() {
@@ -1596,7 +1428,7 @@ export default {
 
     edit(npc) {
       this.npc = clone(npc);
-      this.isEditing = this.npcs.findIndex(x => x === npc);
+      this.isEditing = this.npcs.findIndex((x) => x === npc);
       this.openModal();
     },
 
@@ -1608,7 +1440,7 @@ export default {
       if (!willRemove) return;
 
       events.$emit('remove:npc', {
-        index: this.npcs.findIndex(x => x === npc),
+        index: this.npcs.findIndex((x) => x === npc),
       });
       this.onFiltered(this.npcs);
     },
@@ -1737,7 +1569,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
-
+<style scoped></style>

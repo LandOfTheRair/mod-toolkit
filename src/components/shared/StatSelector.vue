@@ -1,12 +1,15 @@
 <template>
-  <b-form-group :label-cols-md="label ? 3 : 0" :label="label">
+  <b-form-group
+:label-cols-md="label ? 3 : 0"
+:label="label"
+>
     <b-form-select
       :value="value"
       @change="$emit('change', $event)"
       required
       :options="stats"
     >
-      <template v-slot:first>
+      <template #first>
         <option :value="''">None</option>
       </template>
     </b-form-select>

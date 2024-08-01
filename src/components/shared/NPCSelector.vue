@@ -1,5 +1,8 @@
 <template>
-  <b-form-group label-cols-md="3" :label="label">
+  <b-form-group
+label-cols-md="3"
+:label="label"
+>
     <b-form-select
       :value="value"
       @change="$emit('change', $event)"
@@ -7,7 +10,10 @@
     >
         <option :value="''">None</option>
 
-        <optgroup label="My NPCs" :key="'My NPCs'">
+        <optgroup
+label="My NPCs"
+:key="'My NPCs'"
+>
           <option
             v-for="npc in modNPCs"
             :value="npc.npcId"
@@ -15,7 +21,10 @@
           >{{ npc.npcId }}</option>
         </optgroup>
 
-        <optgroup label="Core NPCs" :key="'Core NPCs'">
+        <optgroup
+label="Core NPCs"
+:key="'Core NPCs'"
+>
           <option
             v-for="npc in baseNPCs"
             :value="npc"
