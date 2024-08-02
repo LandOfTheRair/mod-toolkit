@@ -1,24 +1,17 @@
 <template>
-  <div
-id="app"
-v-cloak
->
-
+  <div id="app" v-cloak>
     <img
-src="file://./resources/maps/src/content/__assets/spritesheets/items.png"
-v-if="isLoaded"
-class="hidden"
->
+      src="file://./resources/maps/src/content/__assets/spritesheets/items.png"
+      v-if="isLoaded"
+      class="hidden"
+    />
     <img
-src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
-v-if="isLoaded"
-class="hidden"
->
+      src="file://./resources/maps/src/content/__assets/spritesheets/creatures.png"
+      v-if="isLoaded"
+      class="hidden"
+    />
 
-    <b-navbar
-type="dark"
-variant="dark"
->
+    <b-navbar type="dark" variant="dark">
       <b-navbar-brand>Land of the Rair Mod Toolkit</b-navbar-brand>
 
       <b-dropdown
@@ -32,7 +25,9 @@ variant="dark"
       >
         <b-dropdown-item disabled>Mod Metadata</b-dropdown-item>
         <b-dropdown-item @click="changeName()">Change Mod Name</b-dropdown-item>
-        <b-dropdown-item @click="changeAuthor()">Change Mod Author</b-dropdown-item>
+        <b-dropdown-item @click="changeAuthor()">
+          Change Mod Author
+        </b-dropdown-item>
         <b-dropdown-divider />
 
         <b-dropdown-item disabled>Mod I/O</b-dropdown-item>
@@ -43,17 +38,22 @@ variant="dark"
         <b-dropdown-divider />
 
         <b-dropdown-item disabled>Mod Testing</b-dropdown-item>
-        <b-dropdown-item
-target="_blank"
-href="https://rair.land/docs/modkit/"
->Help</b-dropdown-item>
-        <b-dropdown-item @click="downloadMongo()">Install MongoDB...</b-dropdown-item>
-        <b-dropdown-item @click="downloadRair()">Install Rair Server...</b-dropdown-item>
+        <b-dropdown-item target="_blank" href="https://rair.land/docs/modkit/">
+          Help
+        </b-dropdown-item>
+        <b-dropdown-item @click="downloadMongo()">
+          Install MongoDB...
+        </b-dropdown-item>
+        <b-dropdown-item @click="downloadRair()">
+          Install Rair Server...
+        </b-dropdown-item>
         <mod-tester :mod="mod" />
         <b-dropdown-divider />
 
         <b-dropdown-item disabled>Updates</b-dropdown-item>
-        <b-dropdown-item @click="getResources()">Update Resources</b-dropdown-item>
+        <b-dropdown-item @click="getResources()">
+          Update Resources
+        </b-dropdown-item>
         <b-dropdown-divider />
 
         <b-dropdown-item disabled>Danger Zone</b-dropdown-item>
@@ -61,44 +61,33 @@ href="https://rair.land/docs/modkit/"
       </b-dropdown>
     </b-navbar>
 
-    <div
-class="px-3 loading"
-v-if="!isLoaded"
->
+    <div class="px-3 loading" v-if="!isLoaded">
       First time load...
-      <br>
+      <br />
       Gathering resources...
     </div>
 
-    <div
-class="px-3"
-v-if="mod && isLoaded"
->
+    <div class="px-3" v-if="mod && isLoaded">
       <h3 class="text-center my-3">{{ mod.meta.name || 'UnnamedMod' }}</h3>
-      <h6 class="text-center my-2">{{ mod.meta.author || 'Unknown Author' }}</h6>
+      <h6 class="text-center my-2">
+        {{ mod.meta.author || 'Unknown Author' }}
+      </h6>
 
       <div class="mt-3">
-        <b-tabs
-content-class="mt-3"
-fill
-class="main-tabs"
->
+        <b-tabs content-class="mt-3" fill class="main-tabs">
           <b-tab active>
             <template #title>Maps ({{ mod.maps.length }})</template>
 
             <tab-maps
-:maps="mod.maps"
-:creator="mod.meta.author || 'Unknown'"
-/>
+              :maps="mod.maps"
+              :creator="mod.meta.author || 'Unknown'"
+            />
           </b-tab>
 
           <b-tab>
             <template #title>NPCs ({{ mod.npcs.length }})</template>
 
-            <tab-npcs
-:npcs="mod.npcs"
-:items="mod.items"
-/>
+            <tab-npcs :npcs="mod.npcs" :items="mod.items" />
           </b-tab>
 
           <b-tab>
@@ -111,49 +100,43 @@ class="main-tabs"
             <template #title>Droptables ({{ mod.drops.length }})</template>
 
             <tab-droptables
-:droptables="mod.drops"
-:items="mod.items"
-:maps="mod.maps"
-/>
+              :droptables="mod.drops"
+              :items="mod.items"
+              :maps="mod.maps"
+            />
           </b-tab>
 
           <b-tab>
             <template #title>Recipes ({{ mod.recipes.length }})</template>
 
-            <tab-recipes
-:recipes="mod.recipes"
-:items="mod.items"
-/>
+            <tab-recipes :recipes="mod.recipes" :items="mod.items" />
           </b-tab>
 
           <b-tab>
             <template #title>Spawners ({{ mod.spawners.length }})</template>
 
-            <tab-spawners
-:spawners="mod.spawners"
-:npcs="mod.npcs"
-/>
+            <tab-spawners :spawners="mod.spawners" :npcs="mod.npcs" />
           </b-tab>
 
           <b-tab>
             <template #title>Quests ({{ mod.quests.length }})</template>
 
             <tab-quests
-:quests="mod.quests"
-:npcs="mod.npcs"
-:items="mod.items"
-/>
+              :quests="mod.quests"
+              :npcs="mod.npcs"
+              :items="mod.items"
+            />
           </b-tab>
 
           <b-tab>
             <template #title>NPC Scripts ({{ mod.dialogs.length }})</template>
 
             <tab-dialogs
-:dialogs="mod.dialogs"
-:npcs="mod.npcs"
-:maps="mod.maps"
-:items="mod.items"
-/>
+              :dialogs="mod.dialogs"
+              :npcs="mod.npcs"
+              :maps="mod.maps"
+              :items="mod.items"
+            />
           </b-tab>
         </b-tabs>
       </div>
@@ -186,7 +169,7 @@ const defaultData = {
     name: 'UnnamedMod',
     author: 'Anonymous',
     version: 1,
-    savedAt: 0
+    savedAt: 0,
   },
   npcs: [],
   items: [],
@@ -211,20 +194,17 @@ export default {
     tabRecipes: RecipesTab,
     tabSpawners: SpawnersTab,
     tabDialogs: DialogsTab,
-    tabQuests: QuestsTab
+    tabQuests: QuestsTab,
   },
 
   async beforeCreate() {
-
     try {
       const mod = await localforage.getItem('mod');
       this.mod = Object.assign({}, defaultData, JSON.parse(mod));
       this.ensureMapsExist();
-
     } catch (e) {
       console.error(e);
     }
-
   },
 
   created() {
@@ -234,13 +214,14 @@ export default {
     window.api.send('READY_CHECK');
 
     // map
-    events.$on('add:map', incomingMap => {
+    events.$on('add:map', (incomingMap) => {
       if (!this.mod.meta.name) this.mod.meta.name = incomingMap.name;
 
-      const existingMap = this.mod.maps.findIndex(x => x.name === incomingMap.name);
-      if(existingMap !== -1) {
+      const existingMap = this.mod.maps.findIndex(
+        (x) => x.name === incomingMap.name,
+      );
+      if (existingMap !== -1) {
         this.mod.maps.splice(existingMap, 1, incomingMap);
-
       } else {
         this.mod.maps.push(incomingMap);
       }
@@ -249,8 +230,8 @@ export default {
     });
 
     events.$on('rename:map', (oldName, newName) => {
-      const existingMap = this.mod.maps.find(x => x.name === oldName);
-      if(existingMap) {
+      const existingMap = this.mod.maps.find((x) => x.name === oldName);
+      if (existingMap) {
         existingMap.name = newName;
       }
 
@@ -259,14 +240,15 @@ export default {
       this.persist();
     });
 
-    events.$on('remove:map', index => {
+    events.$on('remove:map', (index) => {
       this.mod.maps.splice(index, 1);
       this.persist();
     });
 
     // npc
     events.$on('add:npc', ({ npc }) => {
-      if(this.mod.npcs.find(x => x.npcId === npc.npcId)) npc.npcId = `${npc.npcId} (copy)`;
+      if (this.mod.npcs.find((x) => x.npcId === npc.npcId))
+        npc.npcId = `${npc.npcId} (copy)`;
 
       this.mod.npcs.push(npc);
       this.persist();
@@ -288,7 +270,8 @@ export default {
 
     // item
     events.$on('add:item', ({ item }) => {
-      if(this.mod.items.find(x => x.name === item.name)) item.name = `${item.name} (copy)`;
+      if (this.mod.items.find((x) => x.name === item.name))
+        item.name = `${item.name} (copy)`;
 
       this.mod.items.push(item);
       this.persist();
@@ -327,7 +310,8 @@ export default {
 
     // recipe
     events.$on('add:recipe', ({ recipe }) => {
-      if(this.mod.recipes.find(x => x.name === recipe.name)) recipe.name = `${recipe.name} (copy)`;
+      if (this.mod.recipes.find((x) => x.name === recipe.name))
+        recipe.name = `${recipe.name} (copy)`;
 
       this.mod.recipes.push(recipe);
       this.persist();
@@ -345,7 +329,8 @@ export default {
 
     // spawner
     events.$on('add:spawner', ({ spawner }) => {
-      if(this.mod.spawners.find(x => x.tag === spawner.tag)) spawner.tag = `${spawner.tag} (copy)`;
+      if (this.mod.spawners.find((x) => x.tag === spawner.tag))
+        spawner.tag = `${spawner.tag} (copy)`;
 
       this.mod.spawners.push(spawner);
       this.persist();
@@ -365,10 +350,11 @@ export default {
       this.mod.spawners.splice(index, 1);
       this.persist();
     });
-    
+
     // quest
     events.$on('add:quest', ({ quest }) => {
-      if(this.mod.quests.find(x => x.name === quest.name)) quest.name = `${quest.name} (copy)`;
+      if (this.mod.quests.find((x) => x.name === quest.name))
+        quest.name = `${quest.name} (copy)`;
 
       this.mod.quests.push(quest);
       this.persist();
@@ -383,10 +369,11 @@ export default {
       this.mod.quests.splice(index, 1);
       this.persist();
     });
-    
+
     // npc script
     events.$on('add:dialog', ({ dialog }) => {
-      if(this.mod.dialogs.find(x => x.tag === dialog.tag)) dialog.tag = `${dialog.name} (copy)`;
+      if (this.mod.dialogs.find((x) => x.tag === dialog.tag))
+        dialog.tag = `${dialog.name} (copy)`;
 
       this.mod.dialogs.push(dialog);
       this.persist();
@@ -406,13 +393,12 @@ export default {
   data() {
     return {
       isLoaded: this.isLoaded,
-      mod: this.mod
+      mod: this.mod,
     };
   },
 
   methods: {
     watchIPC() {
-
       window.api.reset();
 
       window.api.receive('ready', () => {
@@ -423,25 +409,25 @@ export default {
         this.$dialog.notify[type](text, { position: 'bottom-right' });
       });
 
-      window.api.receive('newmap', mapData => {
-        if(mapData.name === 'Template') return;
+      window.api.receive('newmap', (mapData) => {
+        if (mapData.name === 'Template') return;
         events.$emit('add:map', mapData);
       });
 
-      window.api.receive('renamemap', nameData => {
+      window.api.receive('renamemap', (nameData) => {
         events.$emit('rename:map', nameData.oldName, nameData.newName);
       });
 
-      window.api.receive('json', jsonData => {
+      window.api.receive('json', (jsonData) => {
         events.$emit(`json:${jsonData.name}`, jsonData.data);
       });
 
-      window.api.receive('loadmod', mod => {
+      window.api.receive('loadmod', (mod) => {
         this.mod = mod;
         this.persist();
       });
 
-      window.api.receive('importmod', mod => {
+      window.api.receive('importmod', (mod) => {
         this.mod = mod._backup;
         this.persist();
       });
@@ -449,7 +435,7 @@ export default {
 
     watchKeybinds() {
       document.onkeypress = (e) => {
-        if(e.keyCode !== 19 || !e.ctrlKey) return;
+        if (e.keyCode !== 19 || !e.ctrlKey) return;
         this.persist();
       };
     },
@@ -457,15 +443,17 @@ export default {
     persist() {
       this.presave();
       localforage.setItem('mod', JSON.stringify(this.mod));
+      window.api.send('BACKUP_MOD', this.mod);
     },
 
     exportMod(shouldExport = false) {
-      if(shouldExport) {
-
+      if (shouldExport) {
         const numErrors = numErrorsForMod(this.mod);
-        
-        if(numErrors > 0) {
-          this.$dialog.notify.error(`Your mod has ${numErrors} error(s). Check Menu > Validate Map for more info.`);
+
+        if (numErrors > 0) {
+          this.$dialog.notify.error(
+            `Your mod has ${numErrors} error(s). Check Menu > Validate Map for more info.`,
+          );
           return;
         }
       }
@@ -491,19 +479,22 @@ export default {
 
     presave() {
       this.mod.meta.savedAt = Date.now();
-      
+
       this.mod.maps.forEach(({ map }) => {
         map.properties = map.properties || {};
         map.propertytypes = map.propertytypes || {};
-        
+
         map.properties.creator = this.mod.meta.author || 'Unknown';
         map.propertytypes.creator = 'string';
       });
     },
 
     async resetMod() {
-      const willReset = await this.$dialog.confirm({ title: 'Reset Mod?', text: 'Are you sure you want to do this? You will reset all of your existing content, so make sure you have backed it up first!' });
-      if(!willReset) return;
+      const willReset = await this.$dialog.confirm({
+        title: 'Reset Mod?',
+        text: 'Are you sure you want to do this? You will reset all of your existing content, so make sure you have backed it up first!',
+      });
+      if (!willReset) return;
 
       this.mod = Object.assign({}, defaultData);
       this.persist();
@@ -514,80 +505,85 @@ export default {
     },
 
     updateItemsAcrossMod(oldName, newName) {
-
-      this.mod.drops.forEach(droptable => {
-        if(droptable.result === oldName) droptable.result = newName;
+      this.mod.drops.forEach((droptable) => {
+        if (droptable.result === oldName) droptable.result = newName;
       });
 
-      this.mod.recipes.forEach(recipe => {
-        if(recipe.item === oldName) recipe.item = newName;
+      this.mod.recipes.forEach((recipe) => {
+        if (recipe.item === oldName) recipe.item = newName;
 
         recipe.ingredients.forEach((ing, index) => {
-          if(ing !== oldName) return;
+          if (ing !== oldName) return;
 
           recipe.ingredients[index] = newName;
         });
       });
 
-      this.mod.npcs.forEach(npc => {
-        npc.items.sack.forEach(item => {
-          if(item.result !== oldName) return;
+      this.mod.npcs.forEach((npc) => {
+        npc.items.sack.forEach((item) => {
+          if (item.result !== oldName) return;
 
           item.result = newName;
         });
 
-        Object.keys(npc.items.equipment).forEach(slot => {
-          npc.items.equipment[slot].forEach(item => {
-            if(item.result !== oldName) return;
+        Object.keys(npc.items.equipment).forEach((slot) => {
+          npc.items.equipment[slot].forEach((item) => {
+            if (item.result !== oldName) return;
 
             item.result = newName;
           });
-          
         });
 
-        if(npc.tansFor === oldName) npc.tansFor = newName;
+        if (npc.tansFor === oldName) npc.tansFor = newName;
 
-        npc.drops.forEach(item => {
-          if(item.result !== oldName) return;
+        npc.drops.forEach((item) => {
+          if (item.result !== oldName) return;
 
           item.result = newName;
         });
-        
-        npc.dropPool.items = npc.dropPool.items.map(item => {
-          if(item !== oldName) return item;
+
+        npc.dropPool.items = npc.dropPool.items.map((item) => {
+          if (item !== oldName) return item;
 
           return newName;
         });
-
       });
-    
-      this.mod.dialogs.forEach(dialog => {
 
-        const npcBehaviors = (yaml.dump(dialog.behaviors || []) || '').split(oldName).join(newName);
-        const npcDialog = (yaml.dump(dialog.dialog || {}) || '').split(oldName).join(newName);
+      this.mod.dialogs.forEach((dialog) => {
+        const npcBehaviors = (yaml.dump(dialog.behaviors || []) || '')
+          .split(oldName)
+          .join(newName);
+        const npcDialog = (yaml.dump(dialog.dialog || {}) || '')
+          .split(oldName)
+          .join(newName);
 
         const newBehaviors = yaml.load(npcBehaviors);
         const newDialog = yaml.load(npcDialog);
-        
+
         dialog.behaviors = newBehaviors;
         dialog.dialog = newDialog;
       });
     },
 
     updateNPCIdAcrossMod(oldId, newId) {
-      this.mod.spawners.forEach(spawner => {
-        spawner.npcIds = spawner.npcIds.map(entry => {
-          if(entry.result !== oldId) return entry;
+      this.mod.spawners.forEach((spawner) => {
+        spawner.npcIds = spawner.npcIds.map((entry) => {
+          if (entry.result !== oldId) return entry;
 
           return { ...entry, result: newId };
         });
       });
 
-      this.mod.quests.forEach(quest => {
-        if(quest.requirements && quest.requirements.npcIds && !quest.requirements.npcIds.includes(oldId)) return;
+      this.mod.quests.forEach((quest) => {
+        if (
+          quest.requirements &&
+          quest.requirements.npcIds &&
+          !quest.requirements.npcIds.includes(oldId)
+        )
+          return;
 
-        quest.requirements.npcIds = quest.requirements.npcIds.map(entry => {
-          if(entry !== oldId) return entry;
+        quest.requirements.npcIds = quest.requirements.npcIds.map((entry) => {
+          if (entry !== oldId) return entry;
 
           return newId;
         });
@@ -595,16 +591,20 @@ export default {
     },
 
     updateMapNameAcrossMod(oldName, newName) {
-      this.mod.drops.forEach(droptable => {
-        if(droptable.mapName !== oldName) return;
+      this.mod.drops.forEach((droptable) => {
+        if (droptable.mapName !== oldName) return;
 
         droptable.mapName = newName;
       });
     },
 
     async changeName() {
-      const newName = await this.$dialog.prompt({ title: 'What would you like to call your mod?', text: 'Use the map or region name', value: this.mod.meta.name });
-      if(!newName) return;
+      const newName = await this.$dialog.prompt({
+        title: 'What would you like to call your mod?',
+        text: 'Use the map or region name',
+        value: this.mod.meta.name,
+      });
+      if (!newName) return;
 
       this.mod.meta.name = newName;
 
@@ -612,8 +612,12 @@ export default {
     },
 
     async changeAuthor() {
-      const newName = await this.$dialog.prompt({ title: 'Who should get credit for this mod?', text: 'Your Rair alias or name', value: this.mod.meta.author });
-      if(!newName) return;
+      const newName = await this.$dialog.prompt({
+        title: 'Who should get credit for this mod?',
+        text: 'Your Rair alias or name',
+        value: this.mod.meta.author,
+      });
+      if (!newName) return;
 
       this.mod.meta.author = newName;
 
@@ -621,11 +625,11 @@ export default {
     },
 
     ensureMapsExist() {
-      this.mod.maps.forEach(map => {
+      this.mod.maps.forEach((map) => {
         window.api.send('ENSURE_MAP', { ...map });
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -698,7 +702,7 @@ fieldset.optional legend {
 }
 
 fieldset.optional legend::after {
-  content: "\A(optional)";
+  content: '\A(optional)';
   font-size: 65%;
 }
 
@@ -739,7 +743,7 @@ fieldset.multi-3 .split-label {
   margin-left: 64px !important;
 }
 
-th[role="columnheader"]:last-child {
+th[role='columnheader']:last-child {
   width: 200px;
   max-width: 200px;
 }
@@ -777,34 +781,36 @@ table td {
 </style>
 
 <style>
-  .code-editor {
-    background: #2d2d2d;
-    color: #f8f8f2;
-    border: 1px solid #000;
-    font-family: Fira Code, Fira Mono, Consolas, Menlo, Courier, monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 5px;
-  }
+.code-editor {
+  background: #2d2d2d;
+  color: #f8f8f2;
+  border: 1px solid #000;
+  font-family: Fira Code, Fira Mono, Consolas, Menlo, Courier, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 5px;
+}
 
-  .code-editor.prism-editor-wrapper .prism-editor__container .prism-editor__editor {
-    color: #f8f8f2;
-    background: none;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-    font-family: Fira Code, Fira Mono, Consolas, Menlo, Courier, monospace;
-    font-size: 1em;
-    text-align: left;
-    white-space: pre;
-    word-spacing: normal;
-    word-break: normal;
-    word-wrap: normal;
-    line-height: 1.5;
-    tab-size: 4;
-    hyphens: none;
-  }
+.code-editor.prism-editor-wrapper
+  .prism-editor__container
+  .prism-editor__editor {
+  color: #f8f8f2;
+  background: none;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+  font-family: Fira Code, Fira Mono, Consolas, Menlo, Courier, monospace;
+  font-size: 1em;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  tab-size: 4;
+  hyphens: none;
+}
 
-  /* optional class for removing the outline */
-  .prism-editor__textarea:focus {
-    outline: none;
-  }
+/* optional class for removing the outline */
+.prism-editor__textarea:focus {
+  outline: none;
+}
 </style>
