@@ -154,7 +154,7 @@ export function setupIPC(sendToUI) {
     const file = res[0];
     const json = fs.readJSONSync(file);
 
-    const shouldImport = !!json._backup;
+    const shouldImport = !!json.meta._backup;
 
     if (shouldImport) {
       sendToUI('importmod', json);

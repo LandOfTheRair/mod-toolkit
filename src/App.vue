@@ -428,7 +428,7 @@ export default {
       });
 
       window.api.receive('importmod', (mod) => {
-        this.mod = mod._backup;
+        this.mod = mod.meta._backup;
         this.persist();
       });
     },
