@@ -1,16 +1,10 @@
 <template>
   <div>
-    <div
-class="true-center blank-slate"
-v-if="quests.length === 0"
->
+    <div class="true-center blank-slate" v-if="quests.length === 0">
       No Quests
-      <br>
+      <br />
 
-      <b-button
-variant="primary"
-@click="openModal()"
->Add one</b-button>
+      <b-button variant="primary" @click="openModal()">Add one</b-button>
     </div>
 
     <b-modal
@@ -32,10 +26,7 @@ variant="primary"
         <b-form>
           <div class="row mt-3">
             <div class="col-4">
-              <b-form-group
-label-cols-md="3"
-label="Name"
->
+              <b-form-group label-cols-md="3" label="Name">
                 <b-form-input
                   type="text"
                   v-model="quest.name"
@@ -44,10 +35,7 @@ label="Name"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Desc"
->
+              <b-form-group label-cols-md="3" label="Desc">
                 <b-form-input
                   type="text"
                   v-model="quest.desc"
@@ -56,10 +44,7 @@ label="Desc"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Giver"
->
+              <b-form-group label-cols-md="3" label="Giver">
                 <b-form-input
                   type="text"
                   v-model="quest.giver"
@@ -74,10 +59,7 @@ label="Giver"
                   class="col-md-4 offset-md-3"
                   @input="makeSureDailyRepeatableSet('daily')"
                 >
-                  <span
-v-b-tooltip.hover
-title="Quest can be done daily"
->
+                  <span v-b-tooltip.hover title="Quest can be done daily">
                     Daily
                   </span>
                 </b-form-checkbox>
@@ -98,10 +80,7 @@ title="Quest can be done daily"
             </div>
 
             <div class="col-4">
-              <b-form-group
-label-cols-md="3"
-label="Quest Type"
->
+              <b-form-group label-cols-md="3" label="Quest Type">
                 <b-form-select
                   v-model="quest.requirements.type"
                   required
@@ -110,10 +89,7 @@ label="Quest Type"
               </b-form-group>
 
               <div v-if="quest.requirements.type === 'kill'">
-                <b-form-group
-label-cols-md="3"
-label="Kills"
->
+                <b-form-group label-cols-md="3" label="Kills">
                   <b-form-input
                     type="number"
                     v-model="quest.requirements.killsRequired"
@@ -146,10 +122,7 @@ label="Kills"
                   </div>
 
                   <div class="col-3">
-                    <b-button
-variant="danger"
-@click="removeKillNPC(index)"
->
+                    <b-button variant="danger" @click="removeKillNPC(index)">
                       Del
                     </b-button>
                   </div>
@@ -166,10 +139,7 @@ variant="danger"
               </div>
 
               <div v-if="quest.requirements.type === 'count'">
-                <b-form-group
-label-cols-md="3"
-label="Count"
->
+                <b-form-group label-cols-md="3" label="Count">
                   <b-form-input
                     type="number"
                     v-model="quest.requirements.countRequired"
@@ -180,10 +150,7 @@ label="Count"
               </div>
 
               <div v-if="quest.requirements.type === 'array'">
-                <b-form-group
-label-cols-md="3"
-label="Size"
->
+                <b-form-group label-cols-md="3" label="Size">
                   <b-form-input
                     type="number"
                     v-model="quest.requirements.itemsRequired"
@@ -249,10 +216,7 @@ label="Size"
                   v-if="reward.type !== 'reputation' && reward.type !== 'stat'"
                 />
 
-                <div
-class="col-5"
-v-if="reward.type === 'reputation'"
->
+                <div class="col-5" v-if="reward.type === 'reputation'">
                   <b-form-group>
                     <b-form-select
                       v-model="reward.statName"
@@ -273,10 +237,7 @@ v-if="reward.type === 'reputation'"
                   </b-form-group>
                 </div>
 
-                <div
-class="col-5"
-v-if="reward.type === 'stat'"
->
+                <div class="col-5" v-if="reward.type === 'stat'">
                   <stat-selector
                     v-model="reward.statName"
                     @change="reward.statName = $event"
@@ -284,10 +245,7 @@ v-if="reward.type === 'stat'"
                 </div>
 
                 <div class="col-3">
-                  <b-button
-variant="danger"
-@click="removeReward(index)"
->
+                  <b-button variant="danger" @click="removeReward(index)">
                     Del
                   </b-button>
                 </div>
@@ -298,15 +256,9 @@ variant="danger"
       </div>
     </b-modal>
 
-    <div
-class="mb-3 row"
-v-if="quests.length > 0"
->
+    <div class="mb-3 row" v-if="quests.length > 0">
       <div class="col-6">
-        <b-form-input
-v-model="filter"
-placeholder="Search quests..."
-/>
+        <b-form-input v-model="filter" placeholder="Search quests..." />
       </div>
 
       <div class="col-6">
@@ -333,11 +285,7 @@ placeholder="Search quests..."
       @filtered="onFiltered"
     >
       <template #head(actions)>
-        <b-button
-size="sm"
-variant="success"
-@click="openModal()"
->
+        <b-button size="sm" variant="success" @click="openModal()">
           Add
         </b-button>
       </template>
@@ -381,11 +329,7 @@ variant="success"
           Edit
         </b-button>
 
-        <b-button
-size="sm"
-variant="danger"
-@click="remove(data.item)"
->
+        <b-button size="sm" variant="danger" @click="remove(data.item)">
           Remove
         </b-button>
       </template>

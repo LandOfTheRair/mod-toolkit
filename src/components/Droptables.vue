@@ -14,12 +14,9 @@
       v-if="items.length && maps.length && droptables.length === 0"
     >
       No Droptables
-      <br>
+      <br />
 
-      <b-button
-variant="primary"
-@click="openModal()"
->Add one</b-button>
+      <b-button variant="primary" @click="openModal()">Add one</b-button>
     </div>
 
     <b-modal
@@ -41,10 +38,7 @@ variant="primary"
         <b-form>
           <div class="row mt-3">
             <div class="col-6">
-              <b-form-group
-label-cols-md="3"
-label="Map"
->
+              <b-form-group label-cols-md="3" label="Map">
                 <b-form-select
                   v-model="droptable.mapName"
                   required
@@ -52,20 +46,13 @@ label="Map"
                 >
                   <option :value="''">Choose map (unselects region)</option>
 
-                  <option
-v-for="map in mapNames"
-:value="map"
-:key="map"
->
+                  <option v-for="map in mapNames" :value="map" :key="map">
                     {{ map }}
                   </option>
                 </b-form-select>
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Region"
->
+              <b-form-group label-cols-md="3" label="Region">
                 <b-form-select
                   v-model="droptable.regionName"
                   required
@@ -83,14 +70,8 @@ label="Region"
                 </b-form-select>
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Item"
->
-                <b-form-select
-v-model="droptable.result"
-required
->
+              <b-form-group label-cols-md="3" label="Item">
+                <b-form-select v-model="droptable.result" required>
                   <option :value="''">Choose item</option>
 
                   <option
@@ -103,10 +84,7 @@ required
                 </b-form-select>
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Chance to Drop (1/x)"
->
+              <b-form-group label-cols-md="3" label="Chance to Drop (1/x)">
                 <b-form-input
                   type="number"
                   v-model="droptable.maxChance"
@@ -140,15 +118,9 @@ label="Chance to Drop (1/x)"
       </div>
     </b-modal>
 
-    <div
-class="mb-3 row"
-v-if="droptables.length > 0"
->
+    <div class="mb-3 row" v-if="droptables.length > 0">
       <div class="col-6">
-        <b-form-input
-v-model="filter"
-placeholder="Search droptables..."
-/>
+        <b-form-input v-model="filter" placeholder="Search droptables..." />
       </div>
 
       <div class="col-6">
@@ -175,11 +147,7 @@ placeholder="Search droptables..."
       @filtered="onFiltered"
     >
       <template #head(actions)>
-        <b-button
-size="sm"
-variant="success"
-@click="openModal()"
->
+        <b-button size="sm" variant="success" @click="openModal()">
           Add
         </b-button>
       </template>
@@ -205,11 +173,7 @@ variant="success"
           Edit
         </b-button>
 
-        <b-button
-size="sm"
-variant="danger"
-@click="remove(data.item)"
->
+        <b-button size="sm" variant="danger" @click="remove(data.item)">
           Remove
         </b-button>
       </template>

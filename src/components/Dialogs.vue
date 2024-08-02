@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div
-class="true-center blank-slate"
-v-if="npcs.length === 0"
->
+    <div class="true-center blank-slate" v-if="npcs.length === 0">
       Add NPCs first
     </div>
 
@@ -12,12 +9,9 @@ v-if="npcs.length === 0"
       v-if="npcs.length && dialogs.length === 0"
     >
       No NPC Scripts
-      <br>
+      <br />
 
-      <b-button
-variant="primary"
-@click="openModal()"
->Add one</b-button>
+      <b-button variant="primary" @click="openModal()">Add one</b-button>
     </div>
 
     <b-modal
@@ -37,10 +31,7 @@ variant="primary"
     >
       <div class="d-block p-1">
         <b-form>
-          <b-tabs
-content-class="mt-3"
-fill
->
+          <b-tabs content-class="mt-3" fill>
             <b-tab title="Core Stats">
               <div class="row">
                 <div class="col-md-4">
@@ -51,11 +42,7 @@ fill
                     :maps="maps"
                   />
 
-                  <b-form-group
-label-cols-md="3"
-label="Name"
-class="optional"
->
+                  <b-form-group label-cols-md="3" label="Name" class="optional">
                     <b-form-input
                       type="text"
                       v-model="dialog.name"
@@ -75,11 +62,7 @@ class="optional"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="HP"
-class="multi"
->
+                  <b-form-group label-cols-md="3" label="HP" class="multi">
                     <b-form-input
                       type="number"
                       v-model="dialog.hp.min"
@@ -96,11 +79,7 @@ class="multi"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="MP"
-class="multi"
->
+                  <b-form-group label-cols-md="3" label="MP" class="multi">
                     <b-form-input
                       type="number"
                       v-model="dialog.mp.min"
@@ -117,10 +96,7 @@ class="multi"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Hostility"
->
+                  <b-form-group label-cols-md="3" label="Hostility">
                     <b-form-select
                       v-model="dialog.hostility"
                       required
@@ -128,10 +104,7 @@ label="Hostility"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Allegiance"
->
+                  <b-form-group label-cols-md="3" label="Allegiance">
                     <b-form-select
                       v-model="dialog.allegiance"
                       required
@@ -148,10 +121,7 @@ label="Allegiance"
                     />
                   </b-form-group>
 
-                  <b-form-group
-label-cols-md="3"
-label="Alignment"
->
+                  <b-form-group label-cols-md="3" label="Alignment">
                     <b-form-select
                       v-model="dialog.alignment"
                       required
@@ -309,15 +279,9 @@ label="Alignment"
       </div>
     </b-modal>
 
-    <div
-class="mb-3 row"
-v-if="dialogs.length > 0"
->
+    <div class="mb-3 row" v-if="dialogs.length > 0">
       <div class="col-6">
-        <b-form-input
-v-model="filter"
-placeholder="Search NPC scripts..."
-/>
+        <b-form-input v-model="filter" placeholder="Search NPC scripts..." />
       </div>
 
       <div class="col-6">
@@ -344,11 +308,7 @@ placeholder="Search NPC scripts..."
       @filtered="onFiltered"
     >
       <template #head(actions)>
-        <b-button
-size="sm"
-variant="success"
-@click="openModal()"
->
+        <b-button size="sm" variant="success" @click="openModal()">
           Add
         </b-button>
       </template>
@@ -380,11 +340,7 @@ variant="success"
           Edit
         </b-button>
 
-        <b-button
-size="sm"
-variant="danger"
-@click="remove(data.item)"
->
+        <b-button size="sm" variant="danger" @click="remove(data.item)">
           Remove
         </b-button>
       </template>

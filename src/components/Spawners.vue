@@ -12,12 +12,9 @@
       v-if="npcs.length && spawners.length === 0"
     >
       No Spawners
-      <br>
+      <br />
 
-      <b-button
-variant="primary"
-@click="openModal()"
->Add one</b-button>
+      <b-button variant="primary" @click="openModal()">Add one</b-button>
     </div>
 
     <b-modal
@@ -39,10 +36,7 @@ variant="primary"
         <b-form>
           <div class="row mt-3">
             <div class="col-4">
-              <b-form-group
-label-cols-md="3"
-label="Tag"
->
+              <b-form-group label-cols-md="3" label="Tag">
                 <b-form-input
                   type="text"
                   v-model="spawner.tag"
@@ -50,10 +44,7 @@ label="Tag"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Respawn Rate (sec)"
->
+              <b-form-group label-cols-md="3" label="Respawn Rate (sec)">
                 <b-form-input
                   type="number"
                   v-model="spawner.respawnRate"
@@ -62,10 +53,7 @@ label="Respawn Rate (sec)"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Spawn Radius"
->
+              <b-form-group label-cols-md="3" label="Spawn Radius">
                 <b-form-input
                   type="number"
                   v-model="spawner.spawnRadius"
@@ -74,11 +62,7 @@ label="Spawn Radius"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Walk Radius"
-class="multi"
->
+              <b-form-group label-cols-md="3" label="Walk Radius" class="multi">
                 <b-form-input
                   type="number"
                   v-model="spawner.randomWalkRadius"
@@ -128,10 +112,7 @@ class="multi"
                 @change="spawner.requireHoliday = $event"
               />
 
-              <b-form-group
-label-cols-md="3"
-label="Elite Tick Cap"
->
+              <b-form-group label-cols-md="3" label="Elite Tick Cap">
                 <b-form-input
                   type="number"
                   v-model="spawner.eliteTickCap"
@@ -194,10 +175,7 @@ label="Elite Tick Cap"
                 </b-form-checkbox>
               </div>
 
-              <b-form-group
-label-cols-md="3"
-label="Paths"
->
+              <b-form-group label-cols-md="3" label="Paths">
                 <b-form-textarea
                   v-model="spawner._paths"
                   rows="4"
@@ -211,21 +189,13 @@ label="Paths"
               <div class="row mb-3">
                 <div class="col">
                   <div class="offset-md-3">
-                    <b-button
-variant="info"
-block
-@click="makeLair()"
->
+                    <b-button variant="info" block @click="makeLair()">
                       Make Lair-like Spawner
                     </b-button>
                   </div>
                 </div>
               </div>
-
-              <b-form-group
-label-cols-md="3"
-label="Attribute Add Chance"
->
+              <b-form-group label-cols-md="3" label="Attribute Add Chance">
                 <b-form-input
                   type="number"
                   v-model="spawner.attributeAddChance"
@@ -235,10 +205,7 @@ label="Attribute Add Chance"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Strip Radius"
->
+              <b-form-group label-cols-md="3" label="Strip Radius">
                 <b-form-input
                   type="number"
                   v-model="spawner.stripRadius"
@@ -247,11 +214,7 @@ label="Strip Radius"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Strip X"
-class="multi"
->
+              <b-form-group label-cols-md="3" label="Strip X" class="multi">
                 <b-form-input
                   type="number"
                   v-model="spawner.stripX"
@@ -273,10 +236,7 @@ class="multi"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Eat Tier"
->
+              <b-form-group label-cols-md="3" label="Eat Tier">
                 <b-form-input
                   type="number"
                   v-model="spawner.shouldEatTier"
@@ -340,10 +300,7 @@ label="Eat Tier"
                 </div>
 
                 <div class="col-3">
-                  <b-button
-variant="primary"
-@click="addNPC(currentAddNPC)"
->
+                  <b-button variant="primary" @click="addNPC(currentAddNPC)">
                     Add
                   </b-button>
                 </div>
@@ -372,10 +329,7 @@ variant="primary"
                 </div>
 
                 <div class="col-2">
-                  <b-button
-variant="danger"
-@click="removeNPC(index)"
->
+                  <b-button variant="danger" @click="removeNPC(index)">
                     Del
                   </b-button>
                 </div>
@@ -386,15 +340,9 @@ variant="danger"
       </div>
     </b-modal>
 
-    <div
-class="mb-3 row"
-v-if="spawners.length > 0"
->
+    <div class="mb-3 row" v-if="spawners.length > 0">
       <div class="col-6">
-        <b-form-input
-v-model="filter"
-placeholder="Search spawners..."
-/>
+        <b-form-input v-model="filter" placeholder="Search spawners..." />
       </div>
 
       <div class="col-6">
@@ -421,11 +369,7 @@ placeholder="Search spawners..."
       @filtered="onFiltered"
     >
       <template #head(actions)>
-        <b-button
-size="sm"
-variant="success"
-@click="openModal()"
->
+        <b-button size="sm" variant="success" @click="openModal()">
           Add
         </b-button>
       </template>
@@ -439,10 +383,7 @@ variant="success"
       </template>
 
       <template #cell(npcIds)="data">
-        <div
-v-for="(item, index) in data.item.npcIds"
-:key="index"
->
+        <div v-for="(item, index) in data.item.npcIds" :key="index">
           {{ item.result }}
         </div>
       </template>
@@ -466,11 +407,7 @@ v-for="(item, index) in data.item.npcIds"
           Edit
         </b-button>
 
-        <b-button
-size="sm"
-variant="danger"
-@click="remove(data.item)"
->
+        <b-button size="sm" variant="danger" @click="remove(data.item)">
           Remove
         </b-button>
       </template>

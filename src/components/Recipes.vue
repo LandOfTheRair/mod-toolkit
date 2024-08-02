@@ -12,12 +12,9 @@
       v-if="items.length && recipes.length === 0"
     >
       No Recipes
-      <br>
+      <br />
 
-      <b-button
-variant="primary"
-@click="openModal()"
->Add one</b-button>
+      <b-button variant="primary" @click="openModal()">Add one</b-button>
     </div>
 
     <b-modal
@@ -39,10 +36,7 @@ variant="primary"
         <b-form>
           <div class="row mt-3">
             <div class="col-4">
-              <b-form-group
-label-cols-md="3"
-label="Name"
->
+              <b-form-group label-cols-md="3" label="Name">
                 <b-form-input
                   type="text"
                   v-model="recipe.name"
@@ -51,14 +45,8 @@ label="Name"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Item"
->
-                <b-form-select
-v-model="recipe.item"
-required
->
+              <b-form-group label-cols-md="3" label="Item">
+                <b-form-select v-model="recipe.item" required>
                   <option :value="''">Choose result item</option>
 
                   <option
@@ -71,30 +59,17 @@ required
                 </b-form-select>
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Tradeskill"
->
-                <b-form-select
-v-model="recipe.recipeType"
-required
->
+              <b-form-group label-cols-md="3" label="Tradeskill">
+                <b-form-select v-model="recipe.recipeType" required>
                   <option :value="''">Choose tradeskill</option>
 
-                  <option
-v-for="ts in recipeTypes"
-:value="ts"
-:key="ts"
->
+                  <option v-for="ts in recipeTypes" :value="ts" :key="ts">
                     {{ ts }}
                   </option>
                 </b-form-select>
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Category"
->
+              <b-form-group label-cols-md="3" label="Category">
                 <b-form-input
                   type="text"
                   v-model="recipe.category"
@@ -103,11 +78,7 @@ label="Category"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Min Skill"
-class="multi"
->
+              <b-form-group label-cols-md="3" label="Min Skill" class="multi">
                 <b-form-input
                   type="number"
                   v-model="recipe.requireSkill"
@@ -127,11 +98,7 @@ class="multi"
                 />
               </b-form-group>
 
-              <b-form-group
-label-cols-md="3"
-label="Skill+"
-class="multi"
->
+              <b-form-group label-cols-md="3" label="Skill+" class="multi">
                 <b-form-input
                   type="number"
                   v-model="recipe.skillGained"
@@ -224,10 +191,7 @@ class="multi"
             </div>
 
             <div class="col-4">
-              <div
-v-for="n in 2"
-:key="n"
->
+              <div v-for="n in 2" :key="n">
                 <div v-if="recipe.ozIngredients[n - 1]">
                   <b-form-group
                     label-cols-md="3"
@@ -248,10 +212,7 @@ v-for="n in 2"
                     :mod-items="items"
                   />
 
-                  <b-form-group
-label-cols-md="3"
-:label="'#' + n + ' Ounces'"
->
+                  <b-form-group label-cols-md="3" :label="'#' + n + ' Ounces'">
                     <b-form-input
                       type="number"
                       v-model="recipe.ozIngredients[n - 1].ounces"
@@ -261,7 +222,7 @@ label-cols-md="3"
                     />
                   </b-form-group>
 
-                  <hr v-if="n !== 2">
+                  <hr v-if="n !== 2" />
                 </div>
               </div>
             </div>
@@ -270,15 +231,9 @@ label-cols-md="3"
       </div>
     </b-modal>
 
-    <div
-class="mb-3 row"
-v-if="recipes.length > 0"
->
+    <div class="mb-3 row" v-if="recipes.length > 0">
       <div class="col-6">
-        <b-form-input
-v-model="filter"
-placeholder="Search recipes..."
-/>
+        <b-form-input v-model="filter" placeholder="Search recipes..." />
       </div>
 
       <div class="col-6">
@@ -305,20 +260,13 @@ placeholder="Search recipes..."
       @filtered="onFiltered"
     >
       <template #head(actions)>
-        <b-button
-size="sm"
-variant="success"
-@click="openModal()"
->
+        <b-button size="sm" variant="success" @click="openModal()">
           Add
         </b-button>
       </template>
 
       <template #cell(ingredients)="data">
-        <div
-v-for="(item, index) in data.item.ingredients"
-:key="index"
->
+        <div v-for="(item, index) in data.item.ingredients" :key="index">
           {{ item }}
         </div>
       </template>
@@ -342,11 +290,7 @@ v-for="(item, index) in data.item.ingredients"
           Edit
         </b-button>
 
-        <b-button
-size="sm"
-variant="danger"
-@click="remove(data.item)"
->
+        <b-button size="sm" variant="danger" @click="remove(data.item)">
           Remove
         </b-button>
       </template>

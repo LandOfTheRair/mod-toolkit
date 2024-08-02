@@ -20,9 +20,11 @@
             <strong>
               Extra Character Settings
               <span
-v-b-tooltip.hover
-title="If your JSON is not well-formed, you cannot run the test."
->{{ validOtherProps ? '✅' : '🚫' }}</span>
+                v-b-tooltip.hover
+                title="If your JSON is not well-formed, you cannot run the test."
+              >
+                {{ validOtherProps ? '✅' : '🚫' }}
+              </span>
             </strong>
           </div>
         </div>
@@ -30,13 +32,9 @@ title="If your JSON is not well-formed, you cannot run the test."
         <div class="row mb-3">
           <div class="col-6">
             <b-form>
-
               <div class="row">
                 <div class="col">
-                  <b-form-group
-label-cols-md="3"
-label="Level"
->
+                  <b-form-group label-cols-md="3" label="Level">
                     <b-form-input
                       type="text"
                       v-model="settings.level"
@@ -45,13 +43,10 @@ label="Level"
                   </b-form-group>
                 </div>
               </div>
-              
+
               <div class="row">
                 <div class="col">
-                  <b-form-group
-label-cols-md="3"
-label="Map"
->
+                  <b-form-group label-cols-md="3" label="Map">
                     <b-form-input
                       type="text"
                       v-model="settings.map"
@@ -60,13 +55,10 @@ label="Map"
                   </b-form-group>
                 </div>
               </div>
-              
+
               <div class="row">
                 <div class="col">
-                  <b-form-group
-label-cols-md="3"
-label="Map X"
->
+                  <b-form-group label-cols-md="3" label="Map X">
                     <b-form-input
                       type="text"
                       v-model="settings.x"
@@ -75,13 +67,10 @@ label="Map X"
                   </b-form-group>
                 </div>
               </div>
-              
+
               <div class="row">
                 <div class="col">
-                  <b-form-group
-label-cols-md="3"
-label="Map Y"
->
+                  <b-form-group label-cols-md="3" label="Map Y">
                     <b-form-input
                       type="text"
                       v-model="settings.y"
@@ -99,47 +88,46 @@ label="Map Y"
                   <span
                     v-b-tooltip.hover
                     title="If checked, will open the web client to your local server."
-                  >Open Client?</span>
+                  >
+                    Open Client?
+                  </span>
                 </b-form-checkbox>
               </div>
-
             </b-form>
           </div>
 
           <div class="col-6">
             <prism-editor
-class="code-editor"
-v-model="settings.otherProps"
-:highlight="highlighter"
-line-numbers
-/>
+              class="code-editor"
+              v-model="settings.otherProps"
+              :highlight="highlighter"
+              line-numbers
+            />
           </div>
         </div>
 
-        <div
-class="row my-3"
-v-if="numErrors > 0"
->
+        <div class="row my-3" v-if="numErrors > 0">
           <div class="col-12 text-danger text-center">
-            Your mod has {{ numErrors }} error(s). Check Menu > Validate Mod for more info.
+            Your mod has {{ numErrors }} error(s). Check Menu > Validate Mod for
+            more info.
           </div>
         </div>
 
         <div class="row">
           <div class="col-8">
             <b-button
-block
-variant="primary"
-@click="testMod()"
-:disabled="!validOtherProps || !validTestProps || numErrors > 0"
->Test Mod!</b-button>
+              block
+              variant="primary"
+              @click="testMod()"
+              :disabled="!validOtherProps || !validTestProps || numErrors > 0"
+            >
+              Test Mod!
+            </b-button>
           </div>
           <div class="col-4">
-            <b-button
-block
-variant="danger"
-@click="killMod()"
->Kill LotR/MongoDB</b-button>
+            <b-button block variant="danger" @click="killMod()">
+              Kill LotR/MongoDB
+            </b-button>
           </div>
         </div>
       </div>
@@ -172,8 +160,8 @@ export default {
         x: 0,
         y: 0,
         openClient: true,
-        otherProps: '{\n  \n}'
-      }
+        otherProps: '{\n  \n}',
+      },
     };
   },
 
@@ -183,12 +171,17 @@ export default {
 
   computed: {
     numErrors() {
-      if(!this.mod) return 0;
+      if (!this.mod) return 0;
       return numErrorsForMod(this.mod);
     },
 
     validTestProps() {
-      return this.settings.level > 0 && this.settings.map && this.settings.x > 0 && this.settings.y > 0;
+      return (
+        this.settings.level > 0 &&
+        this.settings.map &&
+        this.settings.x > 0 &&
+        this.settings.y > 0
+      );
     },
 
     validOtherProps() {
@@ -198,7 +191,7 @@ export default {
       } catch {
         return false;
       }
-    }
+    },
   },
 
   methods: {
@@ -216,10 +209,15 @@ export default {
         map: this.settings.map,
         x: +this.settings.x,
         y: +this.settings.y,
-        ...JSON.parse(this.settings.otherProps)
+        ...JSON.parse(this.settings.otherProps),
       });
 
-      window.api.send('TEST_MOD', { mod: this.mod, map: this.settings.map, settings, openClient: this.settings.openClient });
+      window.api.send('TEST_MOD', {
+        mod: this.mod,
+        map: this.settings.map,
+        settings,
+        openClient: this.settings.openClient,
+      });
 
       this.persist();
     },
@@ -230,7 +228,7 @@ export default {
 
     async loadSettings() {
       const settings = await localforage.getItem('modtestsettings');
-      if(settings) {
+      if (settings) {
         try {
           this.settings = JSON.parse(settings);
         } catch {
@@ -240,7 +238,7 @@ export default {
             x: 0,
             y: 0,
             openClient: true,
-            otherProps: '{\n  \n}'
+            otherProps: '{\n  \n}',
           };
         }
       }
@@ -248,13 +246,13 @@ export default {
 
     persist() {
       localforage.setItem('modtestsettings', JSON.stringify(this.settings));
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-  .code-editor {
-    max-height: 240px;
-  }
+.code-editor {
+  max-height: 240px;
+}
 </style>
